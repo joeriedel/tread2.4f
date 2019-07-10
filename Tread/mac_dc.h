@@ -1,0 +1,1 @@
+// MAC_DC.H// Copyright (c) 2000 Joe Riedel, Nick Randal.// Author: Joe Riedel.#ifndef MAC_DC_H#define MAC_DC_H// We pass this thing around all over the renderAPI so it's going to wrap something// eventually.class CDC{};#endif

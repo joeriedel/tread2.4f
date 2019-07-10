@@ -1,0 +1,4907 @@
+//
+// Daikatana (GDF-2) GDF Script for TREAD
+//
+//
+// Written By: Wayne W. Smith
+//
+//
+// Released : 25 July 2000
+//
+//
+// 2.0 Released : 25 July 2000
+//
+//
+// References:
+//            GDF-2 Editor by Nick Randal
+//            Coordinator - Joe Riedel
+//            Daikatana Definition File by John Romero
+//
+// 
+// Defines global info for Daikatana
+$DefGlobal [ "Daikatana" ]					// Basic game defaults
+{
+	def_author		: "Wayne Smith"               // Author
+	def_version		: "2.0"                       // Version
+	def_solid  		: "func_door"			// Solid entity
+	def_point  		: "info_player_deathmatch"	// Point entity
+	def_gamemaptype   : "QUAKE2_MAP"			// Type of MAP file to generate
+	def_textype		: "@DAIWAL"                   // Texture Format
+	def_pakdir		: "data"                      // Location of .pak file
+	def_targetkey	: "target"
+	def_namekey		: "targetname"
+	def_worldspawn	: "worldspawn"
+
+	$DefBuild
+	{
+		$DefModule [ @@MapDir : "Map Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@GameDir : "Daikatana Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@MapFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : @@MapDir : @ALWAYS : false
+				def_param : "" : "\\" : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				def_param : "" : ".map" : @ALWAYS : false
+			}
+			
+			$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@BspSection : "BSP Program" : "BSP Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" 		: @ABORT 		: 1 		: false
+				def_param : "Only Ents" 	: "-onlyents " 	: 2 		: false
+				def_param : "Verbose" 		: "-v " 		: 4 		: false
+				def_param : "No T Junctions" 	: "-notjunc " 	: 8 		: false
+				def_param : "No Fill" 		: "-nofill " 	: 16 		: false
+				def_param : "No CSG" 		: "-nocsg " 	: 32 		: false
+				def_param : "No Detail" 	: "-nodetail " 	: 64 		: false
+				def_param : "No Merge" 		: "-nomerge " 	: 128 	: false
+				def_param : "No Share" 		: "-noshare " 	: 256 	: false
+				def_param : "No Subdivision" 	: "-nosubdiv " 	: 512 	: false
+				def_param : "No Optimize" 	: "-noopt " 	: 1024 	: false
+				def_param : "No Prune" 		: "-noprune " 	: 2048 	: false
+				def_param : "No Water" 		: "-nowater " 	: 4096 	: false
+				def_param : "No Weld" 		: "-noweld " 	: 8192 	: false
+				def_param : "Full Detail" 	: "-fulldetail " 	: 16384 	: false
+				def_param : "Leak Test" 	: "-leaktest " 	: 32768 	: false
+				 				
+				def_param : "" : @@MapFile : @ALWAYS : false 
+			}
+			
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Daikatana BSP"
+		}
+
+		$DefModule [ @@BspFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : @FILENAME : @ALWAYS : false
+			}
+		}
+
+		$DefModule [ @@VisSection : "VIS Program" : "VIS Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "No Sort" : "-nosort " : 4 : false
+				def_param : "Cull Error" : "-cullerror " : 8 : false
+				def_param : "Verbose" : "-v " : 16 : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+			}		
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Daikatana VIS"
+		}
+
+		$DefModule [ @@RadSection : "RAD Program" : "RAD Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Extra" : "-extra " : 2 : false
+				def_param : "No Block" : "-noblock " : 4 : false
+				def_param : "No Color" : "-nocolor " : 8 : false
+				def_param : "No Pvs" : "-nopvs " : 16 : false	
+				def_param : "" : @@BspFile : @ALWAYS : false
+			}
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Daikatana RAD"
+		}
+
+		$DefModule [ @@Daikatana : "Daikatana Exe" : "Daikatana Options" ] 
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "" : " +map " : @ALWAYS : false
+				def_param : "" : @@BspFile : @ALWAYS : false 
+			}
+
+			$SpawnWait : @THIS : @@GameDir : @CONSOLE : "Running Daikatana"
+		}
+	}
+//
+//
+// Worldspawn Entries
+//
+	def_key : string  : "cdtrack" 		: "CD Track Number" 		: ""
+	def_key : integer : "fog_value" 		: "Fog on/off Intensity" 	: "1"
+	def_key : color 	: "fog_color" 		: "Color of Fog" 			: ""
+	def_key : integer : "fog_start" 		: "Start of Fog Volume" 	: "200"
+	def_key : integer : "fog_end" 		: "End of Fog Volume" 		: "9600"
+	def_key : string  : "fog_skyend" 		: "Fogging Distance" 		: "100000"
+	def_key : string  : "sky" 			: "Sky Box Name" 			: ""
+	def_key : string  : "cloudname" 		: "Cloud Texture" 		: ""
+	def_key : string  : "cloudxdir" 		: "Cloud X scroll" 		: "1.0"
+	def_key : string  : "cloudydir" 		: "Cloud Y Scroll" 		: ".8"
+	def_key : integer : "cloud1tile" 		: "Cloud Layer1 Repeats" 	: "8"
+	def_key : integer : "cloud2tile" 		: "Cloud Layer2 Repeats" 	: "2"
+	def_key : integer : "cloud1speed" 		: "Cloud Layer1 Speed" 		: "1"
+	def_key : integer : "cloud2speed" 		: "Cloud Layer2 Speed" 		: "4"
+	def_key : string  : "cloud2alpha" 		: "Cloud Layer2 Translucency" : ".7"
+	def_key : string  : "lightningfreq" 	: "Lightning Flashes" 		: ".25"
+	def_key : string  : "cinematic_intro" 	: "Lightning Delay" 		: ".25"
+	def_key : string  : "mapname" 		: "Map Name" 			: ""
+	def_key : string  : "palette" 		: "Palette" 			: ""
+	def_key : string  : "ambient" 		: "Ambient Light Value" 	: "5"
+	def_key : string  : "episode" 		: "Episode (Weapons Set)" 	: ""
+	def_key : string  : "loadscreen" 		: "Loadscreen" 			: ""
+	def_key : string  : "aiscript" 		: "AI Script" 			: ""
+
+	// Content Flags
+	$DefFlags [ "$CONTENTS_77X" : "$CONTENTS_77X" ]
+	{
+		def_flg : "Contents Solid"		: 1			: false
+		def_flg : "Contents Window"		: 2			: false
+		def_flg : "Contents Aux"		: 4			: false
+		def_flg : "Contents Lava"		: 8			: false
+		def_flg : "Contents Slime"		: 16			: false
+		def_flg : "Contents Water"		: 32			: false
+		def_flg : "Contents Mist"		: 64			: false
+		def_flg : "Contents Shot"		: 128			: false
+		def_flg : "Contents Fog"		: 256			: false
+		def_flg : "Contents 200"		: 512			: false
+		def_flg : "Contents 400"		: 1024		: false
+		def_flg : "Contents 800"		: 2048		: false
+		def_flg : "Contents 1000"		: 4096		: false
+		def_flg : "Contents 2000"		: 8192		: false
+		def_flg : "Contents 4000"		: 16384		: false
+		def_flg : "Contents 8000"		: 32768		: false
+		def_flg : "Contents Player Clip"	: 65536		: false
+		def_flg : "Contents Monster Clip"	: 131072		: false
+		def_flg : "Contents Current 0"	: 262144		: false
+		def_flg : "Contents Current 90"	: 524288		: false
+		def_flg : "Contents Current 180"	: 1048576		: false
+		def_flg : "Contents Current 270"	: 2097152		: false
+		def_flg : "Contents Current Up"	: 4194304		: false
+		def_flg : "Contents Current Down"	: 8388608		: false
+		def_flg : "Contents Origin"		: 16777216		: false
+		def_flg : "Contents Monster"		: 33554432		: false
+		def_flg : "Contents Corpse"		: 67108864		: false
+		def_flg : "Contents Detail"		: 134217728 	: false
+		def_flg : "Contents Translucent"	: 268435456 	: false
+		def_flg : "Contents Ladder"		: 536870912 	: false
+		def_flg : "Contents Camnoblok"	: 1073741824	: false
+		def_flg : "Contents 80000000"		: 2147483648	: false
+	}
+
+	// Surface Flags
+	$DefFlags [ "$SURFACE_77X" : "$SURFACE_77X" ]
+	{
+		def_flg : "Light" 		: 1 		: false	// value holds light strength
+		def_flg : "Slick" 		: 2 		: false	// effects game physics
+		def_flg : "Sky"   		: 4 		: false	// don't draw, but add to skybox	
+		def_flg : "Warp"			: 8 		: false	// warping.
+		def_flg : "Trans 33"		: 16 		: false	// transparent.
+		def_flg : "Trans 66"		: 32		: false	// transparent.
+		def_flg : "Flowing"		: 64		: false	
+		def_flg : "No Draw"		: 128 	: false	
+		def_flg : "Hint" 			: 256 	: false 
+		def_flg : "Skip" 			: 512 	: false
+		def_flg : "No Detail" 		: 1024 	: false
+		def_flg : "Alpha Tex" 		: 2048 	: false
+		def_flg : "Anim Speed" 		: 4096 	: false
+		def_flg : "Undulate" 		: 8192 	: false
+		def_flg : "Sky Reflect" 	: 16384 	: false
+		def_flg : "Map" 			: 32768 	: false
+		def_flg : "Region" 		: 65536 	: false
+		def_flg : "Simple Spherical" 	: 131072 	: false
+		def_flg : "40000" 		: 262144  	: false
+		def_flg : "80000" 		: 524288  	: false
+		def_flg : "100000" 		: 1048576 	: false
+		def_flg : "200000" 		: 2097152 	: false
+	}
+
+}
+//
+// Base Entities
+//
+// Defines A Point Entity
+//
+$DefEnt [ "base_point" : @VIRTUAL : @NULL ] []
+{
+	def_att : owner : false
+}
+//
+// Defines A Solid Entity
+//
+$DefEnt [ "base_solid" : @VIRTUAL : @NULL ] [] 
+{
+	def_att : owner : true
+}
+
+//
+//  Debug Entities
+//
+$DefEnt [ "base_debug" : @VIRTUAL : "Debug Entities" ] [ "base_point" ]
+{}
+$DefEnt [ "viewthing" : "View Thing" ] [ "base_debug" ]
+{
+	def_att : "size" : "32 32 56"
+}
+
+//
+//  Weapon Entities
+//
+$DefEnt [ "base_weapon" : @VIRTUAL : "Weapon Entities" ] [ "base_point" ]
+{}
+
+$DefEnt [ "weapon_c4" : "Weapon C4" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_disruptor" : "Weapon Disruptor" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_ionblaster" : "Weapon Ionblaster" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_shockwave" : "Weapon Shockwave" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_shotcycler" : "Weapon Shotcycler" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_sidewinder" : "Weapon Sidewinder" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_gashands" : "Weapon Gashands" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_discus" : "Weapon Discus" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_hammer" : "Weapon Hammer" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_sunflare" : "Weapon Sunflare" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_trident" : "Weapon Trident" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_venomous" : "Weapon Venomous" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_zeus" : "Weapon Zeus" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_ballista" : "Weapon Ballista" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_bolter" : "Weapon Bolter" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_nightmare" : "Weapon Nightmare" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_silverclaw" : "Weapon Silverclaw" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_stavros" : "Weapon Stavros" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_wyndrax" : "Weapon Wyndrax" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_glock" : "Weapon Glock" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_kineticore" : "Weapon Kineticore" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_metamaser" : "Weapon Metamaser" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_novabeam" : "Weapon Novabeam" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_ripgun" : "Weapon Ripgun" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_cordite" : "Weapon Cordite" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_slugger" : "Weapon Slugger" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_daikatana" : "Weapon Daikatana" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "weapon_flashlight" : "Weapon Flashlight" ] [ "base_weapon" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+//
+//  Ammo Entities
+//
+$DefEnt [ "base_ammo" : @VIRTUAL : "Ammo Entities" ] [ "base_point" ]
+{}
+
+$DefEnt [ "ammo_c4" : "Ammo C4" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_shells" : "Ammo Shells" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_ionpack" : "Ammo Ionpack" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_rockets" : "Ammo Rockets" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_shocksphere" : "Ammo Shocksphere" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_tritips" : "Ammo Tritips" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_venomous" : "Ammo Venomous" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_zeus" : "Ammo Zeus" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_ballista" : "Ammo Ballista" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_bolts" : "Ammo Bolts" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_stavros" : "Ammo Stavros" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_wisp" : "Ammo Wisp" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_bullets" : "Ammo Bullets" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_cordite" : "Ammo Cordite" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_kineticore" : "Ammo Kineticore" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_novabeam" : "Ammo Novabeam" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_ripgun" : "Ammo Ripgun" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "ammo_slugger" : "Ammo Slugger" ] [ "base_ammo" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+//
+//  Light Entities
+//
+$DefEnt [ "base_light_point" : @VIRTUAL : "Light" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "light" : "Invisible Source" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : integer : "light" 		: "Brightness" 	: "100"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+	def_key : string 	: "target" 		: "Target" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START OFF" 	: 1 	: false
+		def_flg : "FLARE" 	: 2 	: false
+
+	}
+
+	$DefOptions [ "style" : "Style" ]
+	{
+		def_flg : "Normal" 			: 0 : false
+		def_flg : "Flicker #1" 			: 1 : false
+		def_flg : "Slow Strong Pulse" 	: 2 : false
+		def_flg : "Candle #1" 			: 3 : false
+		def_flg : "Fast Strobe" 		: 4 : false
+		def_flg : "Gentle Pulse #1" 		: 5 : false
+		def_flg : "Flicker #2" 			: 6 : false
+		def_flg : "Candle #2" 			: 7 : false
+		def_flg : "Candle #3" 			: 8 : false
+		def_flg : "Slow Strobe" 		: 9 : false
+		def_flg : "Fluorescent Flicker" 	: 10 : false
+		def_flg : "Slow Pulse, No Black" 	: 11 : false
+		def_flg : "Custom" 			: 12 : false
+	}
+}
+
+$DefEnt [ "light_flare" : "Flare Effect" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string 	: "model" 		: "Model" 		: "models/global/e_flair.sp2"
+	def_key : string 	: "scale" 		: "Scale X Y Z" 	: "1 1 1"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_OFF" 	: 1 	: false
+
+	}
+}
+
+$DefEnt [ "light_walltorch" : "Wall Torch" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 16"	
+	def_key : integer : "light" 		: "Brightness" 	: "100"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+	def_key : string 	: "target" 		: "Target" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 	: 1 	: false
+	}
+
+	$DefOptions [ "style" : "Style" ]
+	{
+		def_flg : "Normal" 			: 0 : false
+		def_flg : "Flicker #1" 			: 1 : false
+		def_flg : "Slow Strong Pulse" 	: 2 : false
+		def_flg : "Candle #1" 			: 3 : false
+		def_flg : "Fast Strobe" 		: 4 : false
+		def_flg : "Gentle Pulse #1" 		: 5 : false
+		def_flg : "Flicker #2" 			: 6 : false
+		def_flg : "Candle #2" 			: 7 : false
+		def_flg : "Candle #3" 			: 8 : false
+		def_flg : "Slow Strobe" 		: 9 : false
+		def_flg : "Fluorescent Flicker" 	: 10 : false
+		def_flg : "Slow Pulse, No Black" 	: 11 : false
+		def_flg : "Custom" 			: 12 : false
+	}
+}
+
+$DefEnt [ "light_flame" : "Flame Effect" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 36"
+	def_key : string 	: "scale" 	: "Scale" 		: "1"
+	def_key : string 	: "model" 	: "Model" 		: "models/global/pt_fire1.sp2"
+}
+
+$DefEnt [ "light_e1" : "E1 Light" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 36"
+	def_key : string 	: "scale" 		: "Scale X Y Z" 	: "1 1 1"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+	def_key : string 	: "target" 		: "Target" 		: ""
+}
+
+$DefEnt [ "light_e2" : "E2 Light" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 36"
+	def_key : string 	: "scale" 		: "Scale X Y Z" 	: "1 1 1"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+	def_key : string 	: "target" 		: "Target" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "D2_TORCH1" 	: 1 	: false
+		def_flg : "D2_TORCH1B" 	: 2 	: false
+		def_flg : "D2_TORCH2" 	: 4 	: false
+		def_flg : "D2_TORCH3" 	: 8 	: false
+	}
+
+}
+
+$DefEnt [ "light_e3" : "E3 Light" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 36"
+	def_key : string 	: "scale" 		: "Scale X Y Z" 	: "1 1 1"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+	def_key : string 	: "target" 		: "Target" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "D3_FIRESHELF" 	: 1 	: false
+		def_flg : "D3_CANDLE" 		: 2 	: false
+		def_flg : "D3_FLAMEHOLD" 	: 4 	: false
+	}
+
+}
+
+$DefEnt [ "light_e4" : "E4 Light" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 36"
+	def_key : string 	: "scale" 		: "Scale X Y Z" 	: "1 1 1"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+	def_key : string 	: "target" 		: "Target" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "D4_BARREL1" 	: 1 	: false
+	}
+
+}
+
+$DefEnt [ "light_spot" : "Spot Light" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string 	: "target" 		: "Target" 		: ""
+	def_key : vector	: "angle" 		: "Direction" 	: ""
+	def_key : integer : "light" 		: "Brightness" 	: "100"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 	: 1 	: false
+	}
+
+	$DefOptions [ "style" : "Style" ]
+	{
+		def_flg : "Normal" 			: 0 : false
+		def_flg : "Flicker #1" 			: 1 : false
+		def_flg : "Slow Strong Pulse" 	: 2 : false
+		def_flg : "Candle #1" 			: 3 : false
+		def_flg : "Fast Strobe" 		: 4 : false
+		def_flg : "Gentle Pulse #1" 		: 5 : false
+		def_flg : "Flicker #2" 			: 6 : false
+		def_flg : "Candle #2" 			: 7 : false
+		def_flg : "Candle #3" 			: 8 : false
+		def_flg : "Slow Strobe" 		: 9 : false
+		def_flg : "Fluorescent Flicker" 	: 10 : false
+		def_flg : "Slow Pulse, No Black" 	: 11 : false
+		def_flg : "Custom" 			: 12 : false
+	}
+}
+
+$DefEnt [ "light_strobe" : "Strobe Light" ] [ "base_light_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : integer : "light" 		: "Brightness" 	: "100"
+	def_key : color 	: "_color" 		: "Color" 		: "1.000 1.000 1.000"	
+	def_key : string 	: "targetname" 	: "Name" 		: ""
+	def_key : string 	: "target" 		: "Target" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 	: 1 	: false
+	}
+
+	$DefOptions [ "style" : "Style" ]
+	{
+		def_flg : "Normal" 			: 0 : false
+		def_flg : "Flicker #1" 			: 1 : false
+		def_flg : "Slow Strong Pulse" 	: 2 : false
+		def_flg : "Candle #1" 			: 3 : false
+		def_flg : "Fast Strobe" 		: 4 : false
+		def_flg : "Gentle Pulse #1" 		: 5 : false
+		def_flg : "Flicker #2" 			: 6 : false
+		def_flg : "Candle #2" 			: 7 : false
+		def_flg : "Candle #3" 			: 8 : false
+		def_flg : "Slow Strobe" 		: 9 : false
+		def_flg : "Fluorescent Flicker" 	: 10 : false
+		def_flg : "Slow Pulse, No Black" 	: 11 : false
+		def_flg : "Custom" 			: 12 : false
+	}
+}
+//
+//  Environmental Effects
+//
+$DefEnt [ "base_effect_brush" : @VIRTUAL : "Light" ] [ "base_solid" ] 
+{}
+
+$DefEnt [ "effect_fog" : "Fog Effect" ] [ "base_effect_brush" ] 
+{}
+
+$DefEnt [ "effect_fire" : "Fire Effect" ] [ "base_effect_brush" ] 
+{
+	def_key : integer : "height" 		: "Fire Height" 	: ""		
+}
+
+$DefEnt [ "effect_snow" : "Snow Effect" ] [ "base_effect_brush" ] 
+{
+	def_key : integer : "height" 		: "Snow Height" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "FALL_STRAIGHT" 	: 1 	: false
+	}
+		
+}
+
+$DefEnt [ "effect_drip" : "Drip Effect" ] [ "base_effect_brush" ] 
+{
+	def_key : integer : "height" 		: "Drip Fall" 	: "10"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "BLOOD DRIP" 		: 1 	: false
+		def_flg : "SLUDGE DRIP" 	: 2 	: false
+	}
+		
+}
+
+$DefEnt [ "effect_rain" : "Rain Effect" ] [ "base_effect_brush" ] 
+{
+	def_key : integer : "height" 		: "Drip Fall" 	: "10"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "NORTH" 		: 1 	: false
+		def_flg : "SOUTH" 		: 2 	: false
+		def_flg : "EAST" 			: 4 	: false
+		def_flg : "WEST" 			: 8 	: false
+	}
+		
+}
+
+$DefEnt [ "base_effect_point" : @VIRTUAL : "Effects" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "effect_lightning" : "Lightning Effect" ] [ "base_effect_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 		: "Target"				: ""
+	def_key : string 	: "targetname" 	: "Name" 				: ""
+	def_key : integer : "delay" 		: "Delay" 				: "2"
+	def_key : string  : "dmg" 		: "Damage" 				: "0"
+	def_key : integer : "scale" 		: "Scale" 				: "4"
+	def_key : string  : "chance" 		: "Chance Of Player Hit" 	: "0.10"
+	def_key : string  : "modulation" 	: "Modulation" 			: ""
+	def_key : color 	: "_color" 		: "Color" 				: "1.000 1.000 1.000"
+	def_key : string  : "gnchance" 	: "Chance Of Ground Hit" 	: "0.20"
+	def_key : string  : "duration" 	: "Duration" 			: ""
+	def_key : string  : "sound" 		: "Lightning Sound" 		: ""
+	def_key : string  : "sound1" 		: "Lightning Sound1" 		: ""
+	def_key : string  : "sound2" 		: "Lightning Sound2" 		: ""
+	def_key : string  : "sound3" 		: "Lightning Sound3" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 		: 1 		: false
+		def_flg : "CYCLE" 		: 2 		: false
+		def_flg : "GROUNG STRIKES" 	: 4 		: false
+		def_flg : "RANDOM DELAY" 	: 8 		: false
+		def_flg : "SPAWN LIGHT" 	: 16 		: false
+		def_flg : "NO CLIENTS" 		: 32 		: false
+		def_flg : "TRACE DMG" 		: 64 		: false
+		def_flg : "STRIKE ONCE" 	: 128 	: false
+		def_flg : "NO SPARKS" 		: 256 	: false
+		def_flg : "CONSTANT" 		: 512 	: false
+		def_flg : "SCORCH" 		: 1024 	: false
+
+	}
+
+}
+
+$DefEnt [ "effect_storm" : "Storm Effect" ] [ "base_effect_brush" ] 
+{
+	def_key : string 	: "targetname" 	: "Name" 				: ""
+	def_key : integer : "delay" 		: "Delay In Lightning" 		: "2"
+	def_key : integer : "height" 		: "Height" 				: ""
+	def_key : integer : "snddelay" 	: "Thunder Delay" 		: "2"
+	def_key : string  : "dmg" 		: "Player Damage" 		: "0"
+	def_key : integer : "scale" 		: "Lightning Scale" 		: "4"
+	def_key : string  : "chance" 		: "Chance Of Player Hit" 	: "0.10"
+	def_key : string  : "gnchance" 	: "Chance Of Ground Hit" 	: "0.20"
+	def_key : string  : "hit_sound" 	: "Lightning Hit Sound" 	: ""
+	def_key : string  : "thunder_sound" : "Thunder Sound" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 		: 1 		: false
+		def_flg : "GROUNG STRIKES" 	: 4 		: false
+		def_flg : "RANDOM DELAY" 	: 8 		: false
+		def_flg : "NO CLIENTS" 		: 32 		: false
+		def_flg : "STRIKE ONCE" 	: 128 	: false
+		def_flg : "NO SPARKS" 		: 256 	: false
+		def_flg : "SCORCH" 		: 1024 	: false
+
+	}
+
+}
+
+$DefEnt [ "effect_steam" : "Steam Effect" ] [ "base_effect_brush" ] 
+{
+	def_key : string 	: "targetname" 	: "Name" 				: ""
+	def_key : integer : "delay" 		: "Delay In Jets" 		: "6"
+	def_key : string  : "duration" 	: "Length Of Time" 		: "2.0"
+	def_key : vector  : "vector" 		: "Direction" 			: ""
+	def_key : string  : "scale" 		: "Steam Scale" 			: "1.0"
+	def_key : string  : "sound" 		: "Sound Of Steam" 		: ""
+
+	$DefOptions [ "sndkeys" : "Sound Looped" ]
+	{
+		def_flg : "loop_sound" 		: 0 : false
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 		: 1 		: false
+		def_flg : "RANDOM DELAY" 	: 2 		: false
+		def_flg : "JET ONCE" 		: 4 		: false
+		def_flg : "FREEZE SPRAY" 	: 8 		: false
+	}
+
+}
+//
+//  SFX Entity
+//
+$DefEnt [ "base_sfx_point" : @VIRTUAL : "Light" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "SFX_ComplexParticle" : "Complex Particle" ] [ "base_sfx_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : integer : "COUNT" 		: "Number Of Particles" 	: "10"
+	def_key : integer : "SPREAD" 		: "Degrees Of Conic Spread"	: "360"
+	def_key : string 	: "VELOCITY" 	: "Partical Velocity" 		: ""
+	def_key : integer : "EMISSION" 	: "Emission Rate" 		: "1"
+	def_key : integer : "EMISSIONTIME" 	: "Emission Time" 		: "0"
+	def_key : string  : "SCALE" 		: "Scale" 				: "1.0"
+	def_key : string  : "DELTA_ALPHA" 	: "Decay Rate" 			: "0.10"
+	def_key : string  : "ALPHA_LEVEL" 	: "Initial State" 		: ""
+	def_key : string 	: "TARGET" 		: "Target" 				: ""
+	def_key : string  : "GRAVITY" 	: "Drop Down Force" 		: "0.0"
+	def_key : string  : "GRAVITYDIR" 	: "Gravity Direction" 		: ""
+	def_key : string 	: "TARGETNAME" 	: "Name" 				: ""
+	def_key : string  : "STOPTIME" 	: "Duration" 			: ""
+	def_key : string  : "RADIUS" 		: "Radius Of Spread" 		: ""
+	def_key : color   : "_color" 		: "Color" 				: "1.000 1.000 1.000"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "P_SIMPLE" 		: 1 		: false
+		def_flg : "P_TRIANGLE" 		: 2 		: false
+		def_flg : "P_RAIN" 		: 4 		: false
+		def_flg : "P_SMOKE" 		: 8 		: false
+		def_flg : "P_FLARE" 		: 16 		: false
+		def_flg : "P_DEBRIS" 		: 32 		: false
+		def_flg : "P_SOFTROUND" 	: 64 		: false
+		def_flg : "P_BUBBLE" 		: 128 	: false
+		def_flg : "Toggle Emit" 	: 256 	: false
+		def_flg : "Random Emit" 	: 512 	: false
+		def_flg : "Start Off" 		: 1024 	: false
+		def_flg : "Toggle" 		: 2048 	: false
+	}
+
+}
+//
+//  Functional Entities
+//
+$DefEnt [ "base_func_brush" : @VIRTUAL : "Functional Entities" ] [ "base_solid" ] 
+{}
+
+$DefEnt [ "func_areaportal" : "Areaportal" ] [ "base_func_brush" ] 
+{
+	def_key : string 	: "targetname" 	: "Name" 				: ""
+}
+
+$DefEnt [ "func_group" : "Group" ] [ "base_func_brush" ] 
+{
+	def_key : string 	: "targetname" 	: "Name" 				: ""
+}
+
+$DefEnt [ "base_func_point" : @VIRTUAL : "Functional Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "func_gib" : "Gib Thrower" ] [ "base_func_point" ] 
+{
+	def_att : "size" 	: "8 8 8"
+	def_key : integer : "COUNT" 		: "Number Of Gibs" 		: "10"
+	def_key : integer : "SPREAD" 		: "Degrees Of Conic Spread" 	: ""
+	def_key : string  : "VELOCITY" 	: "Gib Velocity" 			: ""
+	def_key : string  : "SCALE" 		: "Size Of Gib" 			: ""
+	def_key : string  : "TARGET" 		: "Target" 				: ""
+	def_key : string 	: "TARGETNAME" 	: "Name" 				: ""
+	def_key : string  : "STOPTIME" 	: "Duration" 			: ""
+	def_key : string  : "MIN" 		: "Min Range For Sound" 	: ""
+	def_key : string  : "MAX" 		: "Max Range For Sound" 	: ""
+	def_key : string  : "VOLUME" 		: "Sound Volume" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "GIB_ROBOTIC" 		: 1 	: false
+		def_flg : "GIB_BONE" 			: 2 	: false
+		def_flg : "NO BLOOD" 			: 4 	: false
+		def_flg : "START ON" 			: 8 	: false
+		def_flg : "NO TOGGLE" 			: 16 	: false
+
+	}
+}
+
+$DefEnt [ "func_door" : "Door" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "message" 			: "Door Message" 			: ""
+	def_key : integer : "health" 				: "Health Of Door" 		: "10"
+	def_key : string  : "speed" 				: "Velocity Of Door" 		: "100"
+	def_key : string  : "wait" 				: "Open Time" 			: "3"
+	def_key : string  : "lip" 				: "Exposure" 			: "8"
+	def_key : string  : "dmg" 				: "Player Damage" 		: "2"
+	def_key : vector 	: "angle" 				: "Door Opening Direction" 	: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "keyname" 			: "Key Name" 			: ""
+	def_key : string  : "sound_opening" 		: "Opening Sound" 		: ""
+	def_key : string  : "sound_open_finish" 		: "Opening Finish Sound" 	: ""
+	def_key : string  : "sound_closing" 		: "Closing Sound" 		: ""
+	def_key : string  : "sound_close_finish" 		: "Closing Finish Sound" 	: ""
+	def_key : string  : "cinescript" 			: "Cinematic Script" 		: ""
+	def_key : string  : "aiscript" 			: "AI Script" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_OPEN" 			: 1 	: false
+		def_flg : "REVERSE" 			: 2 	: false
+		def_flg : "DOOR_DONT_LINK" 		: 4 	: false
+		def_flg : "TOGGLE" 			: 8 	: false
+		def_flg : "AUTO_OPEN" 			: 16 	: false
+		def_flg : "USE_TO_CLOSE" 		: 32	: false
+		def_flg : "CONTINUOUS" 			: 64 	: false
+		def_flg : "LOOP_DOOR_SOUNDS" 		: 128 : false
+		def_flg : "STRUGGLE" 			: 256 : false
+		def_flg : "FORCEMOVE" 			: 512 : false
+	}
+}
+//
+//  Misc Entities
+//
+$DefEnt [ "base_misc_point" : @VIRTUAL : "Misc Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "misc_hosportal" : "Hosportal" ] [ "base_misc_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "health" 			: "Entity Health" 		: "0"
+	def_key : string 	: "max_juice" 		: "Max Health" 			: "100"	
+	def_key : string 	: "bestow_rate" 		: "Rate Of Bestow" 		: ".25"
+	def_key : string 	: "recharge_rate" 	: "Recharge Rate" 		: "1.0"
+	def_key : string  : "sound_use" 		: "Use Sound" 			: ""
+	def_key : string  : "sound_healthup" 	: "Health Up Sound" 		: ""
+	def_key : string  : "sound_use_done" 	: "Completed Use Sound" 	: ""
+	def_key : string  : "sound_use_out" 	: "Empty Use Sound" 		: ""
+	def_key : string  : "sound_recharged" 	: "Recharged Sound" 		: ""
+
+	$DefOptions [ "style" : "Style" ]
+	{
+		def_flg : "Large Portal" 	: 0 : false
+		def_flg : "Medium Portal" 	: 1 : false
+		def_flg : "Small Portal" 	: 2 : false
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "ALLOW_HEALTH" 			: 1 	: false
+	}
+
+}
+
+$DefEnt [ "misc_fountain" : "Fountain" ] [ "base_misc_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "health" 			: "Health" 		: "100"
+}
+
+$DefEnt [ "misc_drugbox" : "Drug Box" ] [ "base_misc_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "health" 			: "Health" 		: "100"
+}
+
+$DefEnt [ "misc_healthtree" : "Health Tree" ] [ "base_misc_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "health" 			: "Entity Health" 		: "0"
+	def_key : string 	: "max_fruit" 		: "Max Fruit" 			: "5"	
+	def_key : string 	: "fruit_value" 		: "Health Of Fruit" 		: "10"
+	def_key : string 	: "recharge_rate" 	: "Recharge Rate" 		: "1.0"
+}
+//
+//  Functional Entities 
+//
+$DefEnt [ "func_plat" : "Platform" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "message" 			: "Plat Message" 			: ""
+	def_key : integer : "health" 				: "Health Of Plat" 		: "10"
+	def_key : string  : "speed" 				: "Velocity Of Plat" 		: "100"
+	def_key : string  : "wait" 				: "Return Delay" 			: "3"
+	def_key : string  : "height" 				: "Height" 				: ""
+	def_key : string  : "dmg" 				: "Player Damage" 		: "2"
+	def_key : vector 	: "angle" 				: "Plat Movement Direction" 	: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "sound_up" 			: "Up Sound" 			: ""
+	def_key : string  : "sound_top" 			: "Top Finish Sound" 		: ""
+	def_key : string  : "sound_down" 			: "Down Sound" 			: ""
+	def_key : string  : "sound_bottom" 			: "Botttom Finish Sound" 	: ""
+	def_key : string  : "volume" 				: "Sound Volume 0-1" 		: "1.0"
+	def_key : string  : "min" 				: "Min Sound Distance 0-2040" : ""
+	def_key : string  : "max" 				: "Max Sound Distance 0-8160" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "PLAT_START_UP" 			: 1 	: false
+		def_flg : "PLAT_TOGGLE" 			: 8 	: false
+	}
+}
+
+$DefEnt [ "func_door_rotate" : "Rotating Door" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "message" 			: "Door Message" 			: ""
+	def_key : integer : "health" 				: "Health Of Door" 		: "10"
+	def_key : string  : "speed" 				: "Velocity Of Door" 		: "100"
+	def_key : string  : "wait" 				: "Open Time" 			: "3"
+	def_key : string  : "lip" 				: "Exposure" 			: "8"
+	def_key : string  : "damage" 				: "Player Damage" 		: "2"
+	def_key : string 	: "distance" 			: "Door Sweep Angle" 		: "90"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "keyname" 			: "Key Name" 			: ""
+	def_key : string  : "sound_opening" 		: "Opening Sound" 		: ""
+	def_key : string  : "sound_open_finish" 		: "Opening Finish Sound" 	: ""
+	def_key : string  : "sound_closing" 		: "Closing Sound" 		: ""
+	def_key : string  : "sound_close_finish" 		: "Closing Finish Sound" 	: ""
+	def_key : string  : "volume" 				: "Sound Volume 0-1" 		: "1.0"
+	def_key : string  : "min" 				: "Min Sound Distance 0-2040" : ""
+	def_key : string  : "max" 				: "Max Sound Distance 0-8160" : ""
+	def_key : string  : "boing" 				: "Bouncing 0=No 1=Yes" 	: ""
+	def_key : string  : "accelerate" 			: "Accelerate 0=No 1=Yes" 	: ""
+	def_key : string  : "mass" 				: "Mass 0=No 1-10=Yes" 		: ""
+	def_key : string  : "dust" 				: "Dust 0=No 1=Yes" 		: ""
+	def_key : string  : "spawnquake" 			: "Quake 0=No 1=Yes" 		: ""
+
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_OPEN" 			: 1 		: false
+		def_flg : "REVERSE" 			: 2 		: false
+		def_flg : "DOOR_DONT_LINK" 		: 4 		: false
+		def_flg : "TOGGLE" 			: 8 		: false
+		def_flg : "AUTO_OPEN" 			: 16 		: false
+		def_flg : "USE_TO_CLOSE" 		: 32		: false
+		def_flg : "CONTINUOUS" 			: 64 		: false
+		def_flg : "X_AXIS" 			: 128		: false
+		def_flg : "Y_AXIS" 			: 256 	: false
+		def_flg : "SWING" 			: 512 	: false
+		def_flg : "STRUGGLE" 			: 1024 	: false
+		def_flg : "ROTATE_LOOP_SOUNDS" 	: 2048 	: false
+	}
+}
+
+$DefEnt [ "func_rotate" : "Rotating Objects" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "speed" 				: "Velocity Of Door" 		: "100"
+	def_key : string  : "dmg" 				: "Player Damage" 		: "2"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" 			: 1 		: false
+		def_flg : "REVERSE" 			: 2 		: false
+		def_flg : "X_AXIS" 			: 4 		: false
+		def_flg : "Y_AXIS" 			: 8 		: false
+	}
+}
+//
+//  Trigger Entities
+//
+$DefEnt [ "base_trigger_brush" : @VIRTUAL : "Trigger Entities" ] [ "base_solid" ] 
+{}
+
+$DefEnt [ "trigger_multiple" : "Multiple Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : integer : "health" 				: "Health Of Trigger" 		: "0"
+	def_key : string  : "delay" 				: "Delay After Activation" 	: "0"
+	def_key : string  : "wait" 				: "Wait For Retriggering" 	: ".2"
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "NO_TOUCH" 			: 1 	: false
+		def_flg : "ALLOW MONSTERS" 		: 2 	: false
+		def_flg : "ALLOW SIDEKICKS" 		: 4 	: false
+	}
+}
+
+$DefEnt [ "trigger_console" : "Console Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "message" 			: "Message" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 			: 1 	: false
+	}
+}
+
+$DefEnt [ "trigger_script" : "Script Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "wait" 				: "Wait For Retriggering" 	: "2"
+	def_key : string  : "delay" 				: "Delay After Activation" 	: "0"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "cinescript" 			: "Cinematic Script" 		: ""
+	def_key : string  : "aiscript" 			: "AI Script" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "MULTIPLE" 			: 1 	: false
+		def_flg : "NOTOUCH" 			: 2 	: false
+		def_flg : "SUPERFLY REQUIRED" 	: 4 	: false
+		def_flg : "MIKIKO REQUIRED" 		: 8 	: false
+
+	}
+}
+
+$DefEnt [ "trigger_once" : "One Time Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "angle" 				: "Angle" 				: "0 0 0"
+	def_key : integer : "health" 				: "Health Of Trigger" 		: "0"
+	def_key : string  : "delay" 				: "Delay After Activation" 	: "0"
+	def_key : string  : "wait" 				: "Wait For Retriggering" 	: ".2"
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "NO_TOUCH" 			: 1 	: false
+		def_flg : "ALLOW MONSTERS" 		: 2 	: false
+		def_flg : "ALLOW SIDEKICKS" 		: 4 	: false
+	}
+}
+
+$DefEnt [ "trigger_toggle" : "Toggle Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE_ON_EXIT" 		: 1 	: false
+		def_flg : "ALLOW MONSTERS" 		: 2 	: false
+		def_flg : "ALLOW SIDEKICKS" 		: 4 	: false
+		def_flg : "SIDEKICKS ONLY" 		: 8 	: false
+	}
+}
+//
+//  Trigger Entities
+//
+$DefEnt [ "base_trigger_point" : @VIRTUAL : "Trigger Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "trigger_relay" : "Relay Trigger" ] [ "base_trigger_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "delay" 				: "Delay After Activation" 	: "0"
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+}
+
+$DefEnt [ "trigger_changetarget" : "Change Target Trigger" ] [ "base_trigger_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "newtarget" 			: "New Target" 			: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE_ONCE" 				: 1 	: false
+	}
+}
+
+$DefEnt [ "trigger_teleport" : "Teleport Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+	def_key : string  : "sound" 				: "Sound" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "PLAYER_ONLY" 		: 1 : false
+		def_flg : "NO_FLASH" 			: 2 : false
+		def_flg : "NO_ANGLE_ADJUST" 		: 4 : false
+	}
+}
+//
+//  Info Entities
+//
+$DefEnt [ "base_info_point" : @VIRTUAL : "Trigger Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "info_teleport_destination" : "Teleport Destination" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+}
+//
+//  Trigger Entities
+//
+$DefEnt [ "trigger_warp" : "Warp Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "speed" 				: "Speed Of Warp" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "PLAYER_ONLY" 		: 1 : false
+	}
+}
+
+//
+//  Info Entities
+//
+$DefEnt [ "info_warp_destination" : "Warp Destination" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "speed" 				: "Speed Of Warp" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SKIP_TO" 		: 1 : false
+	}
+
+}
+
+//
+//  Trigger Entities
+//
+$DefEnt [ "trigger_onlyregistered" : "Registered Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "wait" 				: "Wait For Retriggering" 	: ".2"
+	def_key : string  : "message" 			: "Message" 			: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+
+}
+
+$DefEnt [ "trigger_hurt" : "Hurt Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "dmg" 				: "Damage" 				: "2"
+	def_key : string  : "wait" 				: "Delay" 				: "2"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "ALLOW_TOGGLE" 		: 1 : false
+		def_flg : "START_DISABLED" 		: 2 : false
+		def_flg : "FLOWTHRU DMG" 		: 4 : false
+	}
+}
+
+$DefEnt [ "trigger_push" : "Push Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "speed" 				: "Speed" 				: "200"
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "message" 			: "Message" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "PUSH_ONCE" 			: 1 : false
+		def_flg : "ALLOW_TOGGLE" 		: 2 : false
+		def_flg : "START_DISABLED" 		: 4 : false
+	}
+}
+
+$DefEnt [ "trigger_counter" : "Counter Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "count" 			: "Number Of Times Till Trigger" 	: "200"
+	def_key : string  : "sound" 			: "Sound" 					: ""
+	def_key : string  : "message" 		: "Message" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "NO_MESSAGE" 			: 1 : false
+		def_flg : "NO_TOUCH" 			: 2 : false
+		def_flg : "INCLUDE_MONSTERS" 		: 4 : false
+	}
+}
+
+$DefEnt [ "trigger_changelevel" : "Change Level Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "map" 				: "Map Name" 			: ""
+	def_key : string  : "cinematic" 			: "Cinematic" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "INTERMISSION" 		: 1 : false
+		def_flg : "REQUIRES_SUPERFLY" 	: 2 : false
+		def_flg : "REQUIRES_MIKIKO" 		: 4 : false
+		def_flg : "THE_END" 			: 8 : false
+	}
+}
+//
+//  Target Entities
+//
+$DefEnt [ "base_target_brush" : @VIRTUAL : "Trigger Entities" ] [ "base_solid" ] 
+{}
+
+$DefEnt [ "target_crosslevel_target" : "Crosslevel Target" ] [ "base_target_brush" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TARGET 1" 		: 1 		: false
+		def_flg : "TARGET 2" 		: 2 		: false
+		def_flg : "TARGET 3" 		: 4 		: false
+		def_flg : "TARGET 4" 		: 8 		: false
+		def_flg : "TARGET 5" 		: 16 		: false
+		def_flg : "TARGET 6" 		: 32 		: false
+		def_flg : "TARGET 7" 		: 64 		: false
+		def_flg : "TARGET 8" 		: 128 	: false
+
+	}
+}
+
+$DefEnt [ "target_crosslevel_trigger" : "Crosslevel Trigger" ] [ "base_target_brush" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TARGET 1" 		: 1 		: false
+		def_flg : "TARGET 2" 		: 2 		: false
+		def_flg : "TARGET 3" 		: 4 		: false
+		def_flg : "TARGET 4" 		: 8 		: false
+		def_flg : "TARGET 5" 		: 16 		: false
+		def_flg : "TARGET 6" 		: 32 		: false
+		def_flg : "TARGET 7" 		: 64 		: false
+		def_flg : "TARGET 8" 		: 128 	: false
+
+	}
+}
+//
+//  Trigger Entities
+//
+
+$DefEnt [ "trigger_remove_inventory_item" : "Change Inventory Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "item" 				: "Item To Remove" 		: ""
+}
+
+$DefEnt [ "trigger_change_sfx" : "SFX Change Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "fxstyle" 			: "FX Style" 			: "0"
+	def_key : string  : "wait" 				: "Delay" 				: "0"
+	def_key : string  : "volume" 				: "Volume" 				: "100"
+	def_key : string  : "reverb" 				: "Reverb" 				: "0"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "NORMAL" 			: 1 : false
+		def_flg : "PRESET1" 			: 2 : false
+		def_flg : "PRESET2" 			: 4 : false
+		def_flg : "PRESET3" 			: 8 : false
+		def_flg : "PRESET4" 			: 16 : false
+	}
+}
+
+$DefEnt [ "trigger_secret" : "Secret Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "sound" 			: "Sound" 			: ""
+	def_key : string  : "message" 		: "Message" 		: ""
+	def_key : string  : "target" 			: "Target" 			: ""
+}
+
+$DefEnt [ "trigger_sidekick" : "Side Kick Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "sound" 			: "Sound" 			: ""
+	def_key : string  : "sidekick" 		: "Sidekick Name" 	: ""
+	def_key : string  : "message" 		: "Message" 		: ""
+	def_key : string  : "toggle" 			: "Toggle 0=Off 1=On" 	: ""
+}
+
+$DefEnt [ "trigger_sidekick_stop" : "Side Kick Trigger Stop" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "sound" 			: "Sound" 			: ""
+	def_key : string  : "animation" 		: "Animation" 		: ""
+	def_key : string  : "x" 			: "New X Location" 	: ""
+	def_key : string  : "y" 			: "New Y Location" 	: ""
+	def_key : string  : "z" 			: "New Z Location" 	: ""
+}
+
+$DefEnt [ "trigger_sidekick_teleport" : "Side Kick Trigger Teleport" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "sound" 			: "Sound" 			: ""
+	def_key : string  : "animation" 		: "Animation" 		: ""
+	def_key : string  : "x" 			: "New X Location" 	: ""
+	def_key : string  : "y" 			: "New Y Location" 	: ""
+	def_key : string  : "z" 			: "New Z Location" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TELEPORT_AND_STAY" 			: 1 : false
+		def_flg : "TELEPORT_AND_COME_TO_OWNER" 		: 2 : false
+	}
+
+}
+//
+//  Functional Entities
+//
+$DefEnt [ "func_wall" : "Wall" ] [ "base_func_brush" ] 
+{
+	def_key : integer : "health" 				: "Health Of Wall" 		: "10"
+	def_key : string  : "message" 			: "Door Message" 			: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "cinescript" 			: "Cinescript" 			: ""
+	def_key : string  : "aiscript" 			: "AI Script" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TRIGGER_SPAWN" 			: 1 		: false
+		def_flg : "TOGGLE" 				: 2 		: false
+		def_flg : "START_ON" 				: 4 		: false
+		def_flg : "ANIMATED" 				: 8 		: false
+		def_flg : "ANIMATED_FAST" 			: 16 		: false
+		def_flg : "NOT_SOLID" 				: 32		: false
+		def_flg : "CTF_WALL_ONLY" 			: 64 		: false
+	}
+}
+
+$DefEnt [ "func_button" : "Button" ] [ "base_func_brush" ] 
+{
+	def_key : integer : "health" 				: "Health Of Button" 		: "10"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "keyname" 			: "Key Name" 			: ""
+	def_key : string  : "sound_use" 			: "Use Sound" 			: ""
+	def_key : string  : "sound_return" 			: "Return Sound" 			: ""
+	def_key : string  : "speed" 				: "Speed" 				: ""
+	def_key : string  : "wait" 				: "Delay For Return" 		: "1"
+	def_key : vector  : "angle" 				: "Movement Direction" 		: ""
+	def_key : string  : "lip" 				: "Lip" 				: "4"
+	def_key : string  : "cinescript" 			: "Cinescript" 			: ""
+	def_key : string  : "aiscript" 			: "AI Script" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "PUSH_TOUCH" 			: 1 		: false
+		def_flg : "STRUGGLE" 			: 2 		: false
+	}
+}
+
+$DefEnt [ "func_multi_button" : "Multi Button" ] [ "base_func_brush" ] 
+{
+	def_key : integer : "health" 				: "Health Of Button" 		: "0"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "speed" 				: "Speed" 				: ""
+	def_key : string  : "wait" 				: "Delay For Return" 		: "1"
+	def_key : vector  : "angle" 				: "Movement Direction" 		: ""
+	def_key : string  : "lip" 				: "Lip" 				: "4"
+	def_key : string  : "sound_use" 			: "Use Sound" 			: ""
+	def_key : string  : "sound_return" 			: "Return Sound" 			: ""
+	def_key : string  : "distance" 			: "Travel per Push" 		: ""
+	def_key : string  : "count" 				: "Number Of Positions" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "PUSH_TOUCH" 			: 1 		: false
+		def_flg : "CYCLE" 			: 2 		: false
+	}
+}
+
+$DefEnt [ "func_nodetrain" : "Train Node" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "PUSH_TOUCH" 			: 1 		: false
+		def_flg : "CYCLE" 			: 2 		: false
+	}
+}
+
+$DefEnt [ "func_train" : "Train" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "cinescript" 			: "Cinescript" 			: ""
+	def_key : string  : "aiscript" 			: "AI Script" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "FORCEMOVE" 				: 64 		: false
+		def_flg : "START_ON" 				: 128 	: false
+	}
+}
+//
+//  Path Entities
+//
+$DefEnt [ "base_path_point" : @VIRTUAL : "Path Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "path_corner_train" : "Wall" ] [ "base_path_point" ] 
+{
+	def_att : "size" : "16 16 16"
+	def_key : string  : "sound_start" 			: "Start Sound" 			: ""
+	def_key : string  : "sound_stop" 			: "End Sound" 			: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "speed" 				: "Speed To Next Corner" 	: ""
+	def_key : string  : "wait" 				: "Delay" 				: ""
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "x_distance" 			: "Degrees Of X Rotation" 	: ""
+	def_key : string  : "y_distance" 			: "Degrees Of Y Rotation" 	: ""
+	def_key : string  : "z_distance" 			: "Degrees Of Z Rotation" 	: ""
+	def_key : string  : "x_speed" 			: "Speed Of X Movement" 	: ""
+	def_key : string  : "y_speed" 			: "Speed Of Y Movement" 	: ""
+	def_key : string  : "x_speed" 			: "Speed Of Z Movement" 	: ""
+	def_key : integer : "health" 				: "Health Of Train At Corner" : ""
+	def_key : string  : "pathtarget" 			: "Target" 				: ""
+	def_key : string  : "cinescript" 			: "Cinescript" 			: ""
+	def_key : string  : "aiscript" 			: "AI Script" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "X_AXIS" 				: 1 		: false
+		def_flg : "Y_AXIS" 				: 2 		: false
+		def_flg : "Z_AXIS" 				: 4 		: false
+		def_flg : "TRIGWAIT" 				: 8 		: false
+		def_flg : "TELEPORT" 				: 32		: false
+		def_flg : "LOOPSOUND" 				: 256 	: false
+	}
+}
+//
+//  Info Entities 
+//
+$DefEnt [ "info_player_start" : "Single Player Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "NO_OFFSET" 		: 1 : false
+	}
+
+}
+
+$DefEnt [ "info_player_intermission" : "Intermission Camera Point" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+}
+
+$DefEnt [ "info_mikiko_start" : "Mikiko Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+}
+
+$DefEnt [ "info_superfly_start" : "Superfly Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "IDLE" 		: 1 : false
+	}
+
+}
+
+$DefEnt [ "info_mikikofly_start" : "Mikikofly Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "IDLE" 		: 1 : false
+	}
+
+}
+
+$DefEnt [ "info_null" : "Info Null" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+}
+
+$DefEnt [ "info_not_null" : "Info Not Null" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+}
+
+$DefEnt [ "info_player_deathmatch" : "Deathmatch Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : vector  : "angle" 			: "Angle" 		: "0"
+	def_key : string  : "targetname" 		: "Name" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "OVERRIDE WEAPONS" 	: 1 		: false
+		def_flg : "WEAPON 1" 		: 2 		: false
+		def_flg : "WEAPON 2" 		: 4 		: false
+		def_flg : "WEAPON 3" 		: 8 		: false
+		def_flg : "WEAPON 4" 		: 16 		: false
+		def_flg : "WEAPON 5" 		: 32 		: false
+		def_flg : "WEAPON 6" 		: 64 		: false
+		def_flg : "WEAPON 7" 		: 128 	: false
+
+	}
+
+}
+
+$DefEnt [ "info_player_coop" : "Cooperative Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : vector  : "angle" 			: "Angle" 		: "0"
+	def_key : string  : "targetname" 		: "Name" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "OVERRIDE WEAPONS" 	: 1 		: false
+		def_flg : "WEAPON 1" 		: 2 		: false
+		def_flg : "WEAPON 2" 		: 4 		: false
+		def_flg : "WEAPON 3" 		: 8 		: false
+		def_flg : "WEAPON 4" 		: 16 		: false
+		def_flg : "WEAPON 5" 		: 32 		: false
+		def_flg : "WEAPON 6" 		: 64 		: false
+		def_flg : "WEAPON 7" 		: 128 	: false
+
+	}
+
+}
+//
+//  Functional Entities
+//
+$DefEnt [ "func_door_secret" : "Secret Door" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "message" 			: "Door Message" 			: ""
+	def_key : integer : "health" 				: "Health Of Door" 		: "0"
+	def_key : string  : "speed" 				: "Velocity Of Door" 		: "100"
+	def_key : string  : "wait" 				: "Open Time" 			: "3"
+	def_key : string  : "dmg" 				: "Player Damage" 		: "2"
+	def_key : vector 	: "angle" 				: "Door Opening Direction" 	: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "sound_opening" 		: "Opening Sound" 		: ""
+	def_key : string  : "sound_open_finish" 		: "Opening Finish Sound" 	: ""
+	def_key : string  : "sound_closing" 		: "Closing Sound" 		: ""
+	def_key : string  : "sound_close_finish" 		: "Closing Finish Sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "OPEN_ONCE" 			: 1 	: false
+		def_flg : "1ST_LEFT" 			: 2 	: false
+		def_flg : "1ST_DOWN" 			: 4 	: false
+		def_flg : "NO_SHOOT" 			: 8 	: false
+		def_flg : "YES_SHOOT" 			: 16 	: false
+	}
+}
+
+$DefEnt [ "func_wall_explode" : "Exploding Wall" ] [ "base_func_brush" ] 
+{
+	def_key : integer : "health" 				: "Health Of Wall" 		: "10"
+	def_key : string  : "message" 			: "Door Message" 			: ""
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "killtarget" 			: "Kill Target" 			: ""
+	def_key : string  : "model_1" 			: "Model 1" 			: ""
+	def_key : string  : "model_2" 			: "Model 2" 			: ""
+	def_key : string  : "model_3" 			: "Model 3" 			: ""
+	def_key : string  : "group" 				: "Group Name" 			: ""
+	def_key : string  : "triggerindex" 			: "Priority" 			: ""
+	def_key : string  : "mindamage" 			: "Minimum Damage" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "ROCK_CHUNKS" 		: 1 		: false
+		def_flg : "WOOD_CHUNKS" 		: 2 		: false
+		def_flg : "EXTRA_CHUNKS" 		: 4 		: false
+		def_flg : "EXTRA_VELOCITY" 		: 8 		: false
+		def_flg : "NO_CHUNKS" 			: 16 		: false
+		def_flg : "NO_SOUND" 			: 32		: false
+		def_flg : "METAL_CHUNKS" 		: 64 		: false
+		def_flg : "NO_EXPLOSIONS" 		: 128 	: false
+	}
+}
+
+$DefEnt [ "func_anim" : "Animation" ] [ "base_func_brush" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "VISIBLE" 		: 1 		: false
+	}
+}
+
+$DefEnt [ "func_floater" : "Floater" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "model" 			: "Model" 				: ""
+	def_key : string  : "velocity_cap" 		: "Velocity Up/Down" 		: ""
+	def_key : string  : "dissipate" 		: "Slow Down" 			: ".99"
+	def_key : string 	: "object_mass" 		: "Mass Of Object" 		: ""
+	def_key : string  : "object_volume" 	: "Volume Of Object" 		: ""
+
+}
+
+$DefEnt [ "func_debris" : "Debris" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "target" 			: "Target" 					: ""
+	def_key : string  : "fly_sound" 		: "Fly Sound" 				: ""
+	def_key : string  : "hit_sound" 		: "Hit Sound" 				: ""
+	def_key : string  : "volume" 			: "Sound Volume" 				: "1"
+	def_key : string  : "min" 			: "Min Sound Distance 0-2040" 	: ""
+	def_key : string  : "max" 			: "Max Sound Distance 0-8160" 	: ""
+	def_key : string  : "damage" 			: "Damage" 					: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "GO_TO_ACTIVATOR" 		: 1 		: false
+		def_flg : "NO_ROTATE" 			: 2 		: false
+		def_flg : "MOMENTUM_DAMAGE" 		: 4 		: false
+		def_flg : "NO_ROTATION_ADJUST" 	: 8 		: false
+		def_flg : "DROP_ONLY" 			: 16 		: false
+		def_flg : "QUARTER_SIZE" 		: 32		: false
+	}
+}
+
+$DefEnt [ "func_debris_visible" : "Debris Visible" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "target" 			: "Target" 					: ""
+	def_key : string  : "fly_sound" 		: "Fly Sound" 				: ""
+	def_key : string  : "hit_sound" 		: "Hit Sound" 				: ""
+	def_key : string  : "volume" 			: "Sound Volume" 				: "1"
+	def_key : string  : "min" 			: "Min Sound Distance 0-2040" 	: ""
+	def_key : string  : "max" 			: "Max Sound Distance 0-8160" 	: ""
+	def_key : string  : "damage" 			: "Damage" 					: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "GO_TO_ACTIVATOR" 		: 1 		: false
+		def_flg : "NO_ROTATE" 			: 2 		: false
+		def_flg : "MOMENTUM_DAMAGE" 		: 4 		: false
+		def_flg : "NO_ROTATION_ADJUST" 	: 8 		: false
+		def_flg : "DROP_ONLY" 			: 16 		: false
+		def_flg : "QUARTER_SIZE" 		: 32		: false
+	}
+}
+
+$DefEnt [ "func_particlefield" : "Particlefield" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "targetname" 		: "Name" 				: ""
+	def_key : string  : "count" 			: "Trigger Times" 		: ""
+	def_key : string  : "color" 			: "Color" 				: ""
+//
+// Color Choices - black, blue, green, cyan, red, purple, brown, ltgray, dkgray
+//                 ltblue, ltgreen, ltcyan, ltpurple, yellow, white
+//
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE_COUNT" 			: 1 		: false
+	}
+}
+
+$DefEnt [ "func_monitor" : "Monitor" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "target" 			: "Name Of Camera" 		: ""
+	def_key : string  : "fov" 			: "Field-Of-View" 		: ""
+	def_key : string  : "delay" 			: "Start Delay" 			: ""
+	def_key : string  : "wait" 			: "End Delay" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE_COUNT" 			: 1 		: false
+	}
+}
+
+$DefEnt [ "func_dynalight" : "Dynalight" ] [ "base_func_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "length" 		: "Lenght Of Beam" 			: "2048"
+	def_key : color   : "_color" 		: "Color" 					: "1.0 1.0 1.0"
+	def_key : string  : "light" 		: "Brightness" 				: ""
+	def_key : string  : "radius" 		: "Radius Of Start" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" 		: 1 		: false
+		def_flg : "SPOTLIGHT" 		: 2 		: false
+		def_flg : "LIGHTFLARE" 		: 4 		: false
+		def_flg : "X_AXIS" 		: 16 		: false
+		def_flg : "Y_AXIS" 		: 32		: false
+		def_flg : "Z_AXIS" 		: 64		: false
+		def_flg : "REVERSE" 		: 128		: false
+	}
+}
+
+$DefEnt [ "func_explosive" : "Explosive" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "damage" 				: "Strength" 			: "10"
+	def_key : string  : "health" 				: "Health" 				: "100"
+	def_key : string  : "delay" 				: "Delay" 				: "1.0"
+	def_key : string  : "count" 				: "No Chunks 5-10" 		: "5"
+	def_key : string  : "rndcount" 			: "Random"	 			: "0"
+	def_key : string  : "scale" 				: "Chunk Scale" 			: "1.0"
+	def_key : vector  : "vectortarget" 			: "Initial Target" 		: ""
+	def_key : string  : "speed" 				: "Scaled Speed" 			: "1.0"
+	def_key : string  : "gravity" 			: "Chunk Drop" 			: "1.0"
+	def_key : string  : "cinescript" 			: "Cinematic Script" 		: ""
+	def_key : string  : "aiscript" 			: "AI Script" 			: ""
+	def_key : string  : "target" 				: "Target To Be Triggered" 	: ""
+	def_key : string  : "volume" 				: "Sound Volume 0.0-1.0" 	: "1.0"
+	def_key : string  : "min" 				: "Min Sound Distance 0-2040"	: ""
+	def_key : string  : "max" 				: "Max Sound Distance 0-8160"	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TRIGGER_SPAWN" 		: 1 		: false
+		def_flg : "ANIMATED" 			: 2 		: false
+		def_flg : "ANIMATED_FAST" 		: 4 		: false
+		def_flg : "STONE" 			: 8 		: false
+		def_flg : "WOOD" 				: 16 		: false
+		def_flg : "METAL" 			: 32		: false
+		def_flg : "NO CHUNKS" 			: 64 		: false
+		def_flg : "NO SOUND" 			: 128 	: false
+		def_flg : "NO EXPLOSION" 		: 256 	: false
+		def_flg : "NOT SOLID" 			: 512 	: false
+	}
+}
+
+$DefEnt [ "func_timer" : "Timer" ] [ "base_func_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 				: "Target To Be Triggered" 	: ""
+	def_key : string  : "wait" 				: "Time Between Triggers" 	: "1"
+	def_key : string  : "random" 				: "Wait Variance" 		: "0"
+	def_key : string  : "delay" 				: "Delay" 				: "1.0"
+	def_key : string  : "pausetime" 			: "Initial Delay" 		: "1.0"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" 			: 1 		: false
+		def_flg : "USE_ONCE" 			: 2 		: false
+	}
+}
+
+$DefEnt [ "func_talking_head" : "Talking Head" ] [ "base_func_point" ] 
+{
+	def_att : "size" 	: "32 32 32"
+	def_key : string  : "angle" 				: "Direction At start" 		: "0 0 0"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 			: 1 		: false
+		def_flg : "TRACK CLIENT" 		: 2 		: false
+		def_flg : "HOLOGRAPH" 			: 4 		: false
+		def_flg : "USE TOGGLE" 			: 8 		: false
+	}
+}
+
+$DefEnt [ "func_fog" : " Volumetric Fog" ] [ "base_func_brush" ] 
+{
+	def_key : color   : "color" 				: "Color 0-1.0" 			: "1.0 1.0 1.0"
+	def_key : string  : "_color" 				: "Color 0-255" 			: "255 255 255"
+	def_key : string  : "distance" 			: "Distance Light-Heavy" 	: ""
+}
+
+$DefEnt [ "func_water" : "Water" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "angle" 				: "Direction At Start" 		: "0 0 0"
+	def_key : string  : "speed" 				: "Speed" 				: "25"
+	def_key : string  : "wait" 				: "Wait" 				: "-1"
+	def_key : string  : "lip" 				: "Lip" 				: "0"
+	def_key : string  : "sounds" 				: "Sounds" 				: "0"
+	def_key : string  : "sound_opening" 		: "Rising Sound" 			: ""
+	def_key : string  : "sound_open_finish" 		: "Top Sound" 			: ""
+	def_key : string  : "sound_closing" 		: "Receeding Sound" 		: ""
+	def_key : string  : "sound_close_finish" 		: "Empty Sound" 			: ""
+
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START ON" 			: 1 		: false
+	}
+}
+
+$DefEnt [ "info_camera" : "Camera Info" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+}
+
+$DefEnt [ "misc_lavaball_drop" : "Lava Ball Drop" ] [ "base_misc_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+}
+
+$DefEnt [ "misc_lavaball_toss" : "Lava Ball Toss" ] [ "base_misc_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 			: "Target" 				: ""
+	def_key : string 	: "mintime" 		: "Min Time Between Tosses" 	: "4.0"	
+	def_key : string 	: "maxtime" 		: "Max Time Between Tosses" 	: "12"
+	def_key : string 	: "damage" 			: "Damage" 				: ""
+	def_key : string 	: "upmin" 			: "Min Up Velocity" 		: "200"
+	def_key : string 	: "upmax" 			: "Max Up Velocity" 		: "800"
+}
+//
+//  Sound Entities
+//
+$DefEnt [ "base_sound_point" : @VIRTUAL : "Sound Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "sound_ambient" : "Ambient Sound" ] [ "base_sound_point" ] 
+{
+	def_att : "size" 	: "8 8 8"
+	def_key : string  : "sound" 		: "Sound" 				: ""
+	def_key : string 	: "targetname" 	: "Name" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_OFF" 		: 1 	: false
+		def_flg : "NON_DIRECTIONAL" 	: 16 	: false
+
+	}
+}
+
+//
+//  Node Entity
+//
+$DefEnt [ "base_node_point" : @VIRTUAL : "Node Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "node_node" : "Ambient Sound" ] [ "base_node_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "number" 		: "Number Of Node" 		: ""
+	def_key : string 	: "link" 		: "Link Node Number" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_OFF" 		: 1 	: false
+		def_flg : "NON_DIRECTIONAL" 	: 16 	: false
+
+	}
+}
+
+$DefEnt [ "trigger_changemusic" : "Change Music Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "Path" 				: "Music" 				: ""
+	def_key : string  : "volume" 				: "Volume 0-1" 			: ""
+}
+
+$DefEnt [ "trigger_superfly_spawn" : "Superfly Spawn trigger" ] [ "base_trigger_brush" ] 
+{}
+
+$DefEnt [ "trigger_mikiko_spawn" : "Mikiko Spawn trigger" ] [ "base_trigger_brush" ] 
+{}
+//
+// Monsters
+// 
+$DefEnt [ "base_monster_point" : @VIRTUAL : "Monster Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "monster_froginator" : "Monster Froginator" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_rockgat" : "Monster Rockgat" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "24 24 24"
+	def_key : string  : "height/frames" : "Number Of Frames" 		: ""
+	def_key : string 	: "fire_rate" 	: "Secs Between Firings" 	: ".2"
+	def_key : string  : "range" 		: "Range Of Attack" 		: "512"
+	def_key : string  : "basedmg" 	: "Damage" 				: ""
+	def_key : string 	: "rnddmg" 		: "Random Damage Added" 	: ""
+	def_key : string  : "health" 		: "Entity Health" 		: ""
+}
+
+$DefEnt [ "monster_slauterskeet" : "Monster Slauterskeet" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_thunderskeet" : "Monster Thunderskeet" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_venomvermin" : "Monster Venomvermin" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_sludgeminiom" : "Monster Sludgeminion" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 80"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_prisoner" : "Monster Prisoner" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_prisonerb" : "Monster Prisonerb" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "func_prisoner_respawn" : "Prisoner Respawn" ] [ "base_func_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string 	: "time" 		: "Time To Respawn" 		: ""
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+}
+
+$DefEnt [ "monster_inmater" : "Monster Inmater" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 108"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_trackattack" : "Monster Track Attack" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "target" 		: "Target" 				: ""
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_lasergat" : "Monster Lasergat" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 13"
+	def_key : string  : "target" 		: "Target" 				: ""
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_psyclaw" : "Monster Psyclaw" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_cryotech" : "Monster Cryotech" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_battleboar" : "Monster Battle Boar" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_ragemaster" : "Monster Rage Master" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_cambot" : "Monster Cambot" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_deathsphere" : "Monster Death Sphere" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_protopod" : "Monster Protopod" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_skinnyworker" : "Monster Skinny Worker" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_fatworker" : "Monster Fat Worker" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_mishimaguard" : "Monster Mishima Guard" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_surgeon" : "Monster Surgeon" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_crox" : "Monster Crox" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_skeleton" : "Monster Skeleton" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_spider" : "Monster Spider" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 48"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_smallspider" : "Monster Small Spider" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 32"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_griffon" : "Monster Griffon" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 80"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_harpy" : "Monster Harpy" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_minotaur" : "Monster Minotaur" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_ferryman" : "Monster Ferryman" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_satyr" : "Monster Satyr" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 108"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_column" : "Monster Column" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 88"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_cyclops" : "Monster Cyclops" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 80"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_cerberus" : "Monster Cerberus" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "36 36 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_thief" : "Monster Thief" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 80"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_centurion" : "Monster Centurion" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 80"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_kingminos" : "Monster King Minos" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 80"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_medusa" : "Monster Medusa" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "64 64 80"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_plague_rat" : "Monster Plague Rat" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_rotworm" : "Monster Rotworm" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_buboid" : "Monster Buboid" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_priest" : "Monster Priest" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_doombat" : "Monster Doom Bat" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_lycanthir" : "Monster Lycanthir" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_fletcher" : "Monster Fletcher" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_dwarf" : "Monster Dwarf" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_dragon" : "Monster Dragon" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_dragonegg" : "Monster Dragon Egg" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_babydragon" : "Monster Baby Dragon" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_garroth" : "Monster Garroth" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_knight1" : "Monster Knight1" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_knight2" : "Monster Knight2" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_nharre" : "Monster Nharre" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_stavros" : "Monster Stavros" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_wyndrax" : "Monster Wyndrax" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_piperat" : "Monster Pipe Rat" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_gang1" : "Monster Gang1" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_gang2" : "Monster Gang2" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_blackprisoner" : "Monster Black Prisoner" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_whiteprisoner" : "Monster White Prisoner" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_femgang" : "Monster Fem Gang" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_rocketdude" : "Monster Rocket Dude" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_chaingang" : "Monster Chain Gang" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_labmonkey" : "Monster Lab Monkey" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monkey_message" : "Monkey Message" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 		: "Target" 				: ""
+}
+
+$DefEnt [ "monster_sealcommando" : "Monster Seal Commando" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_sealcaptain" : "Monster Seal Captain" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_sealgirl" : "Monster Seal Girl" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_shark" : "Monster Shark" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_uzigang" : "Monster Uzi Gang" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_rocketmp" : "Monster Rocket MP" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_kage" : "Monster Kage" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_sdiver" : "Monster Skin Diver" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+	def_key : string 	: "sight" 		: "Monster Sight Range" 	: ""
+	def_key : string  : "speak" 		: "Monster Speak Range" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "monster_firefly" : "Monster Firefly" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "10 10 10"
+	def_key : string  : "count" 		: "Number Of Fireflys Max=10" : "10"
+	def_key : string 	: "distance" 	: "Maximum Range Max=200" 	: "200"
+	def_key : string  : "velocity" 	: "Firefly Speed Max=200" 	: "200"
+	def_key : string  : "scale" 		: "Firefly Size .5=Half"	: "1"
+	def_key : string 	: "delta_alpha" 	: "Alpha Blending" 		: "0"
+	def_key : string  : "alpha_level" 	: "Alpha Blending Initial" 	: "1"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "YELLOW" 		: 1 		: false
+		def_flg : "GREEN" 		: 2 		: false
+		def_flg : "BLUE" 			: 4 		: false
+		def_flg : "WHITE" 		: 8 		: false
+		def_flg : "RED" 			: 16 		: false
+	}
+}
+
+$DefEnt [ "monster_wisp" : "Monster Wisp" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "4 4 4"
+	def_key : string  : "count" 		: "Number Of Wisps Max=10" 	: "10"
+	def_key : string 	: "distance" 	: "Maximum Range Max=200" 	: "200"
+	def_key : string  : "velocity" 	: "Wisp Speed Max=200" 		: "200"
+	def_key : string  : "scale" 		: "Wisp Size .5=Half"		: "1"
+	def_key : string 	: "delta_alpha" 	: "Alpha Blending" 		: "0"
+	def_key : string  : "alpha_level" 	: "Alpha Blending Initial" 	: "1"
+}
+
+$DefEnt [ "monster_path_corner" : "Monster Path Corner" ] [ "base_monster_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target1" 	: "First Target" 			: ""
+	def_key : string  : "target2" 	: "Second Target" 		: ""
+	def_key : string  : "target3" 	: "Third Target" 			: ""
+	def_key : string  : "target4" 	: "Forth Target" 			: ""
+	def_key : string  : "pathtarget" 	: "Entity Target" 		: ""
+	def_key : string  : "aiscript" 	: "AI Script" 			: ""
+	def_key : string 	: "targetname" 	: "Name" 				: ""
+	def_key : string  : "velocity" 	: "Wisp Speed Max=200" 		: "200"
+	def_key : string  : "scale" 		: "Wisp Size .5=Half"		: "1"
+	def_key : string 	: "delta_alpha" 	: "Alpha Blending" 		: "0"
+	def_key : string  : "alpha_level" 	: "Alpha Blending Initial" 	: "1"
+}
+//
+// Decortations
+// 
+$DefEnt [ "base_deco_point" : @VIRTUAL : "Decoration Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "deco_e1" : "Decoration E1" ] [ "base_deco_point" ] 
+{
+	def_att : "size" 	: "16 16 64"
+	def_key : string  : "damage" 		: "Damage" 				: "15"
+	def_key : string 	: "scale" 		: "Size Scale" 			: "1.0"
+	def_key : string  : "model" 		: "Model" 				: ""
+	def_key : string 	: "mass" 		: "Object Mass" 			: ""
+	def_key : string 	: "frame" 		: "Start Frame" 			: "0"
+	def_key : string 	: "animseq" 	: "Animation Sequence" 		: ""
+	def_key : string 	: "x_speed" 	: "X Axis Rotation Speed" 	: ""
+	def_key : string 	: "y_speed" 	: "Y Axis Rotation Speed" 	: ""
+	def_key : string 	: "z_speed" 	: "Z Axis Rotation Speed" 	: ""
+	def_key : string 	: "alpha" 		: "Alpha" 				: ""
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "DECO_EXPLODE" 		: 1 		: false
+		def_flg : "NO_EXPLODE_NO_BREAK" 	: 2 		: false
+		def_flg : "DECO_PUSHABLE" 		: 4 		: false
+		def_flg : "WOOD_DEBRIS" 		: 8 		: false
+		def_flg : "METAL_DEBRIS" 		: 16 		: false
+		def_flg : "GLASS_DEBRIS" 		: 32 		: false
+		def_flg : "ROTATE" 			: 64 		: false
+		def_flg : "DECO_TRANSLUCENT" 		: 128 	: false
+	}
+}
+
+$DefEnt [ "deco_e2" : "Decoration E2" ] [ "base_deco_point" ] 
+{
+	def_att : "size" 	: "16 16 64"
+	def_key : string  : "model" 		: "Model" 				: ""
+	def_key : string 	: "mass" 		: "Object Mass" 			: ""
+	def_key : string 	: "frame" 		: "Start Frame" 			: "0"
+	def_key : string 	: "animseq" 	: "Animation Sequence" 		: ""
+	def_key : string 	: "x_speed" 	: "X Axis Rotation Speed" 	: ""
+	def_key : string 	: "y_speed" 	: "Y Axis Rotation Speed" 	: ""
+	def_key : string 	: "z_speed" 	: "Z Axis Rotation Speed" 	: ""
+	def_key : string 	: "alpha" 		: "Alpha" 				: ""
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "DECO_EXPLODE" 		: 1 		: false
+		def_flg : "NO_EXPLODE_NO_BREAK" 	: 2 		: false
+		def_flg : "DECO_PUSHABLE" 		: 4 		: false
+		def_flg : "WOOD_DEBRIS" 		: 8 		: false
+		def_flg : "METAL_DEBRIS" 		: 16 		: false
+		def_flg : "GLASS_DEBRIS" 		: 32 		: false
+		def_flg : "ROTATE" 			: 64 		: false
+		def_flg : "DECO_TRANSLUCENT" 		: 128 	: false
+	}
+}
+
+$DefEnt [ "deco_e3" : "Decoration E3" ] [ "base_deco_point" ] 
+{
+	def_att : "size" 	: "16 16 64"
+	def_key : string  : "model" 		: "Model" 				: ""
+	def_key : string 	: "mass" 		: "Object Mass" 			: ""
+	def_key : string 	: "frame" 		: "Start Frame" 			: "0"
+	def_key : string 	: "animseq" 	: "Animation Sequence" 		: ""
+	def_key : string 	: "x_speed" 	: "X Axis Rotation Speed" 	: ""
+	def_key : string 	: "y_speed" 	: "Y Axis Rotation Speed" 	: ""
+	def_key : string 	: "z_speed" 	: "Z Axis Rotation Speed" 	: ""
+	def_key : string 	: "alpha" 		: "Alpha" 				: ""
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "DECO_EXPLODE" 		: 1 		: false
+		def_flg : "NO_EXPLODE_NO_BREAK" 	: 2 		: false
+		def_flg : "DECO_PUSHABLE" 		: 4 		: false
+		def_flg : "WOOD_DEBRIS" 		: 8 		: false
+		def_flg : "METAL_DEBRIS" 		: 16 		: false
+		def_flg : "GLASS_DEBRIS" 		: 32 		: false
+		def_flg : "ROTATE" 			: 64 		: false
+		def_flg : "DECO_TRANSLUCENT" 		: 128 	: false
+	}
+}
+
+$DefEnt [ "deco_e4" : "Decoration E4" ] [ "base_deco_point" ] 
+{
+	def_att : "size" 	: "16 16 64"
+	def_key : string  : "model" 		: "Model" 				: ""
+	def_key : string 	: "mass" 		: "Object Mass" 			: ""
+	def_key : string 	: "frame" 		: "Start Frame" 			: "0"
+	def_key : string 	: "animseq" 	: "Animation Sequence" 		: ""
+	def_key : string 	: "x_speed" 	: "X Axis Rotation Speed" 	: ""
+	def_key : string 	: "y_speed" 	: "Y Axis Rotation Speed" 	: ""
+	def_key : string 	: "z_speed" 	: "Z Axis Rotation Speed" 	: ""
+	def_key : string 	: "alpha" 		: "Alpha" 				: ""
+	def_key : string  : "spawnname" 	: "Entity To Throw At Death" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "DECO_EXPLODE" 		: 1 		: false
+		def_flg : "NO_EXPLODE_NO_BREAK" 	: 2 		: false
+		def_flg : "DECO_PUSHABLE" 		: 4 		: false
+		def_flg : "WOOD_DEBRIS" 		: 8 		: false
+		def_flg : "METAL_DEBRIS" 		: 16 		: false
+		def_flg : "GLASS_DEBRIS" 		: 32 		: false
+		def_flg : "ROTATE" 			: 64 		: false
+		def_flg : "DECO_TRANSLUCENT" 		: 128 	: false
+	}
+}
+
+$DefEnt [ "kingg" : "King" ] [ "base_debug" ]
+{
+	def_att : "size" : "32 32 56"
+}
+//
+//  Target Entities
+//
+$DefEnt [ "base_target_point" : @VIRTUAL : "Target Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "target_turret" : "Turret Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "targetname" 			: "Name" 				: ""
+	def_key : string  : "model" 				: "Turret Model" 			: ""
+	def_key : string  : "height/frames" 		: "Number Of Frames" 		: ""
+	def_key : string  : "sound_up" 			: "Up Sound" 			: ""
+	def_key : string  : "sound_down" 			: "Down Sound" 			: ""
+	def_key : string  : "hit_sound" 			: "Death Sound" 			: ""
+	def_key : string  : "ammo_type" 			: "Future Use Only" 		: ""
+	def_key : string  : "fire_rate" 			: "Firing delay" 			: ".2"
+	def_key : string  : "range" 				: "Attack Radius" 		: "512"
+	def_key : string  : "basedmg" 			: "Damage" 				: ""
+	def_key : string  : "rnddmg" 				: "Additional Damage" 		: ""
+	def_key : string  : "health" 				: "Turret Health" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TOGGLE" 			: 1 		: false
+	}
+
+}
+
+$DefEnt [ "target_laser" : "Laser Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : vector  : "angle" 				: "Direction" 			: ""
+	def_key : string  : "target" 				: "Aim Point" 			: ""
+	def_key : string  : "sound" 				: "Laser sound" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" 		: 1 		: false
+		def_flg : "RED" 			: 2 		: false
+		def_flg : "GREEN" 		: 4 		: false
+		def_flg : "BLUE" 			: 8 		: false
+		def_flg : "YELLOW" 		: 16 		: false
+		def_flg : "LIGHTRED" 		: 32 		: false
+		def_flg : "WIDE BEAM" 		: 64 		: false
+	}
+}
+
+$DefEnt [ "target_earthquake" : "Earthquake Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "speed" 				: "Severity" 			: ""
+	def_key : string  : "count" 				: "Duration" 			: ""
+	def_key : string  : "damage" 				: "Damage Per Frame" 		: ""
+	def_key : string  : "radius" 				: "Effect Radius" 		: ""
+	def_key : string  : "mins" 				: "Start Sound Attenuation" 	: ""
+	def_key : string  : "maxs" 				: "End Sound Attenuation" 	: ""
+}
+
+$DefEnt [ "target_spotlight" : "Spot Light Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "length" 				: "Lenght" 				: "2048"
+	def_key : string  : "radius" 				: "Start Radius" 			: ""
+	def_key : color   : "color" 				: "Color" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" 		: 1 		: false
+		def_flg : "RED" 			: 2 		: false
+		def_flg : "GREEN" 		: 4 		: false
+		def_flg : "BLUE" 			: 8 		: false
+		def_flg : "YELLOW" 		: 16 		: false
+		def_flg : "LIGHTRED" 		: 32 		: false
+		def_flg : "WIDE BEAM" 		: 64 		: false
+	}
+}
+
+$DefEnt [ "target_lightramp" : "Light Ramp Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "speed" 				: "Duration" 			: "2"
+	def_key : string  : "message" 			: "Light Level" 			: "am"
+	def_key : string  : "sound_up" 			: "Up Sound" 			: ""
+	def_key : string  : "sound_down" 			: "Down Sound" 			: ""
+	def_key : string  : "hit_sound" 			: "Death Sound" 			: ""
+	def_key : string  : "ammo_type" 			: "Future Use Only" 		: ""
+	def_key : string  : "fire_rate" 			: "Firing delay" 			: ".2"
+	def_key : string  : "range" 				: "Attack Radius" 		: "512"
+	def_key : string  : "basedmg" 			: "Damage" 				: ""
+	def_key : string  : "rnddmg" 				: "Additional Damage" 		: ""
+	def_key : string  : "health" 				: "Turret Health" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TOGGLE" 			: 1 		: false
+	}
+}
+
+$DefEnt [ "target_framechange" : "Frame Change Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "start" 				: "Start Frame" 			: "0"
+	def_key : string  : "end" 				: "End Frame" 			: "0"
+	def_key : string  : "frametime" 			: "Delta Frames" 			: ".1"
+	def_key : string  : "delay" 				: "Delay" 				: "0"
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "animseq" 			: "Animation Sequence" 		: ""
+	def_key : string  : "seqstring" 			: "New Sequence" 			: ""
+
+// For looping use 0~59 for a 60 frame loop
+// For sequencing thru 60 frames w/o looping, use 0-59
+// For one frame use 59"
+
+	$DefFlags [ "seqtype" : "Type" ]
+	{
+		def_flg : "FRAME_ONCE" 			: 1 		: false
+	}
+}
+
+$DefEnt [ "target_effect" : "Effect Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : vector  : "angle" 				: "Direction" 			: ""
+	def_key : color  	: "_color" 				: "Color" 				: ""
+	def_key : string  : "speed" 				: "Particle speed" 		: "5"
+	def_key : string  : "count" 				: "Number Of Particles 10-64" : "10"
+	def_key : string  : "length" 				: "Spawn Time" 			: "1"
+	def_key : string  : "frametime" 			: "Spawn Time Delta" 		: ".1"
+	def_key : string  : "sound" 				: "Sound" 				: ""
+
+	$DefOptions [ "gravity" : "Gravity Type" ]
+	{
+		def_flg : "FALL" 			: 0 : false
+		def_flg : "RISE" 			: 1 : true
+		def_flg : "FLOAT" 		: 2 : false
+	}
+
+	$DefOptions [ "type" : "Type Of Effect" ]
+	{
+		def_flg : "SIMPLE" 			: 0 : false
+		def_flg : "SNOW" 				: 1 : false
+		def_flg : "RAIN" 				: 2 : false
+		def_flg : "BLOOD" 			: 3 : false
+		def_flg : "BUBBLE" 			: 4 : false
+		def_flg : "SMOKE" 			: 5 : true
+		def_flg : "SPARKS" 			: 6 : false
+		def_flg : "BIG SPARKS" 			: 7 : false
+		def_flg : "POISON" 			: 8 : false
+		def_flg : "BLUE SPARKS" 		: 9 : false
+		def_flg : "ICE" 				: 10 : false
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "RANDON_EFFECT" 			: 1 		: false
+		def_flg : "START_ON" 				: 2 		: false
+		def_flg : "TARGET_EFFECT_BEAMS" 		: 4 		: false
+		def_flg : "TARGET_EFFECT_RANDOM" 		: 8 		: false
+		def_flg : "TARGET_EFFECT_BEAMS_SMOKE" 	: 16 		: false
+	}
+}
+
+$DefEnt [ "target_attractor" : "Attractor Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "target" 				: "Target" 			: ""
+	def_key : string  : "targetname" 			: "Name" 			: ""
+	def_key : string  : "triggerindex" 			: "Priority" 		: ""
+}
+
+$DefEnt [ "target_monster_spawn" : "Monster Spawn Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 32"
+	def_key : string  : "targetname" 	: "Name" 				: ""
+	def_key : string  : "monsterclass" 	: "Monster Class" 		: ""
+	def_key : string 	: "sound" 		: "Spawn Sound" 			: ""
+	def_key : string  : "aistate" 	: "AI State" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+		def_flg : "NODE WANDER" 	: 4 		: false
+		def_flg : "RANDOM WANDER" 	: 8 		: false
+		def_flg : "IGNORE PLAYER" 	: 16 		: false
+		def_flg : "SNIPE" 		: 32 		: false
+		def_flg : "DO NOT FLY" 		: 64 		: false
+		def_flg : "DO NOT MOVE" 	: 128 	: false
+		def_flg : "DEATHTARGET" 	: 256 	: false
+		def_flg : "TAKE COVER" 		: 1024 	: false
+		def_flg : "ALWAYS GIB" 		: 2048 	: false
+	}
+}
+
+$DefEnt [ "target_lightray" : "Light Ray Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : vector  : "angle" 				: "Direction" 			: ""
+	def_key : string  : "Target" 				: "Target" 				: ""
+	def_key : color   : "color" 				: "Color" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" 		: 1 		: false
+		def_flg : "RED" 			: 2 		: false
+		def_flg : "GREEN" 		: 4 		: false
+		def_flg : "BLUE" 			: 8 		: false
+		def_flg : "YELLOW" 		: 16 		: false
+		def_flg : "LIGHTRED" 		: 32 		: false
+		def_flg : "WIDE BEAM" 		: 64 		: false
+	}
+}
+
+$DefEnt [ "target_throw" : "Throw Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string  : "xy_vel" 				: "Horizontal Velocity" 	: ""
+	def_key : string  : "z_vel" 				: "Up Velocity" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "CLIENT_ONLY" 	: 1 		: false
+	}
+}
+//
+//  Ambient Entities
+//
+$DefEnt [ "base_ambient_point" : @VIRTUAL : "Ambient Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "e_seagull" : "Seagull" ] [ "base_ambient_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "fish_goldfish" : "Goldfish" ] [ "base_ambient_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "fish_dopefish" : "Dope Fish" ] [ "base_ambient_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "fish_grayfish" : "Gray Fish" ] [ "base_ambient_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "fish_guppy1" : "Guppy1" ] [ "base_ambient_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "fish_guppy2" : "Guppy2" ] [ "base_ambient_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "WANDER" 		: 1 		: false
+		def_flg : "PATHFOLLOW" 		: 2 		: false
+	}
+}
+//
+//  Item Entities
+//
+$DefEnt [ "base_item_point" : @VIRTUAL : "Item Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "item_health_25" : "Health 25" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_health_50" : "Health 50" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_goldensoul" : "Golden Soul" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_megashield" : "Mega Shield" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_invincibility" : "Invincibility" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_wraithorb" : "Wraith Orb" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_savegem" : "Save Gem" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_power_boost" : "Power Boost" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_attack_boost" : "Attack Boost" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_speed_boost" : "Speed Boost" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_acro_boost" : "Acro Boost" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_vita_boost" : "Vitality Boost" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+}
+
+$DefEnt [ "item_antidote" : "Antidote" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_drachma" : "Drachma" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_horn" : "Horn" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_purifier_shard1" : "Purifier Shard1" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_purifier_shard2_1" : "Purifier Shard 2-1" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_purifier_shard2_2" : "Purifier Shard 2-2" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_purifier_shard2_3" : "Purifier Shard 2-3" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_purifier_shard2_4" : "Purifier Shard 2-4" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_purifier_shard2_5" : "Purifier Shard 2-5" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_purifier_shard3" : "Purifier Shard 3" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_black_chest" : "Black Chest" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+}
+
+$DefEnt [ "item_wood_chest" : "Wood Chest" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+}
+
+$DefEnt [ "item_ice_boots" : "Ice Boots" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+}
+
+$DefEnt [ "item_ring_of_fire" : "Ring Of Fire" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+}
+
+$DefEnt [ "item_ring_of_undead" : "Ring Of Undead" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+}
+
+$DefEnt [ "item_ring_of_lightning" : "Ring Of Lightning" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+}
+
+$DefEnt [ "item_envirosuit" : "Envirosuit" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+}
+
+$DefEnt [ "item_bottle" : "Bottle" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 74"
+
+}
+
+$DefEnt [ "item_sulpher" : "Sulpher Pouch" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 72"
+
+}
+
+$DefEnt [ "item_charcoal" : "Charcoal Explosive Part" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 68"
+
+}
+
+$DefEnt [ "item_saltpeter" : "Saltpeter Explosive Part" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 73"
+
+}
+
+$DefEnt [ "item_keycard_cell" : "Keycard Cell" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 71"
+	def_key : string  : "sound" 		: "Use Sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_rune_a" : "Rune-A" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_rune_e" : "Rune-E" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_rune_g" : "Rune-G" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_rune_i" : "Rune-I" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_rune_s" : "Rune-S" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_crypt_key" : "Crypt Key" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_wyndrax_key" : "Wyndrax Key" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_spellbook" : "Spell Book" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_hex_keystone" : "Hex Keystone" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_quad_keystone" : "Quad Keystone" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_trigon_keystone" : "Trigon Keystone" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_control_card_blue" : "Control Card Blue" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_control_card_yellow" : "Control Card Yellow" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_control_card_green" : "Control Card Green" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+	def_key : string  : "sound" 		: "Use sound" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "USE ONCE" 		: 1 		: false
+		def_flg : "UNLOCK" 		: 2 		: false
+		def_flg : "USE TARGETS" 	: 4 		: false
+	}
+}
+
+$DefEnt [ "item_plasteel_armor" : "Armor Plasteel" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 74"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_chromatic_armor" : "Armor Chromatic" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 75"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_silver_armor" : "Armor Silver" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_gold_armor" : "Armor Gold" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_chainmail_armor" : "Armor Chainmail" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_black_adamant_armor" : "Armor Black Adamant" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_kevlar_armor" : "Armor Kevlar" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_ebonite_armor" : "Armor Ebonite" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 64"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUPERFLY" 		: 1 		: false
+		def_flg : "MIKIKO" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "item_health_field" : "Health Field" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 40"
+}
+
+$DefEnt [ "item_health_kit_10" : "Health Kit-10" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 40"
+}
+
+$DefEnt [ "item_health_kit_20" : "Health Kit-20" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 40"
+}
+
+$DefEnt [ "item_jet_boots" : "Jet Boots" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 40"
+}
+
+$DefEnt [ "item_oxylung" : "Oxygen Lung" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "32 32 40"
+}
+
+//
+//  NPC Entities
+//
+$DefEnt [ "base_npc_brush" : @VIRTUAL : "NPC Entities" ] [ "base_solid" ] 
+{}
+
+$DefEnt [ "NPCtrigger_waithere" : "NPC Trigger Waithere" ] [ "base_npc_brush" ] 
+{
+	def_key : vector : "angle" 	: "Trigger Direction" 	: ""
+	def_key : string : "sfly_msg" : "Syperfly Message" 	: ""
+	def_key : string : "miko_msg" : "Mikiko Message" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "ANY_DIR" 		: 1 		: false
+	}
+}
+
+$DefEnt [ "NPCtrigger_stopwaithere" : "NPC Trigger Stopwaithere" ] [ "base_npc_brush" ] 
+{
+	def_key : vector : "angle" 	: "Trigger Direction" 	: ""
+	def_key : string : "sfly_msg" : "Syperfly Message" 	: ""
+	def_key : string : "miko_msg" : "Mikiko Message" 	: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "ANY_DIR" 		: 1 		: false
+	}
+}
+
+$DefEnt [ "base_npc_point" : @VIRTUAL : "NPC Entities" ] [ "base_point" ] 
+{}
+
+$DefEnt [ "NPCteleport_dest" : "NPC Teleport Destination" ] [ "base_npc_point" ] 
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "targetname" 	: "Name" 	: ""
+
+}
+
+$DefEnt [ "trigger_monsterjump" : "Monsterjump Trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "target" 			: "Target" 			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "ANY_DIR" 	: 1 : false
+		def_flg : "ONCE" 		: 2 : false
+	}
+
+}
+
+$DefEnt [ "target_speaker" : "Speaker Target" ] [ "base_target_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : vector  : "sound1" 				: "Sound1" 			: ""
+	def_key : vector  : "sound2" 				: "Sound2" 			: ""
+	def_key : vector  : "sound3" 				: "Sound3" 			: ""
+	def_key : vector  : "sound4" 				: "Sound4" 			: ""
+	def_key : string  : "delay" 				: "Delay" 			: "0"
+	def_key : string  : "mindelay" 			: "Min Delay" 		: "0"
+	def_key : string  : "volume" 				: "Volume 0-1" 		: "1"
+	def_key : string  : "min" 				: "Min Distance 0-2040" : ""
+	def_key : string  : "max" 				: "Max Distance 0-8160" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "LOOPED_ON" 		: 1 		: false
+		def_flg : "LOOPED_OFF" 		: 2 		: false
+		def_flg : "RELIABLE" 		: 4 		: false
+		def_flg : "NON_DIRECTIONAL" 	: 8 		: false
+		def_flg : "START_OFF" 		: 16 		: false
+	}
+}
+
+$DefEnt [ "view_rotate" : "View Rotate" ] [ "base_debug" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "func_event_generator" : "Event Generator" ] [ "base_func_brush" ] 
+{
+	def_key : string  : "sound" 				: "Sound" 				: ""
+	def_key : string  : "target" 				: "Target" 				: ""
+	def_key : string  : "delay" 				: "Delay" 				: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TRIGGER_ONCE" 			: 1 		: false
+		def_flg : "TRIGGER_TOUCHABLE" 		: 2 		: false
+		def_flg : "ALLOW_MONSTERS" 			: 4 		: false
+	}
+}
+
+$DefEnt [ "item_flag_team1" : "Team1 Flag" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefOptions [ "FLAGCOLOR" : "Flag Color" ]
+	{
+		def_flg : "Red" 				: 1 : true
+		def_flg : "Blue" 				: 2 : false
+		def_flg : "Chrome" 			: 3 : false
+		def_flg : "Metal" 			: 4 : false
+		def_flg : "Green" 			: 5 : false
+		def_flg : "Orange" 			: 6 : false
+		def_flg : "Purple" 			: 7 : false
+		def_flg : "Yellow" 			: 8 : false
+	}
+}
+
+$DefEnt [ "item_flag_team2" : "Team2 Flag" ] [ "base_item_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+
+	$DefOptions [ "FLAGCOLOR" : "Flag Color" ]
+	{
+		def_flg : "Red" 				: 1 : false
+		def_flg : "Blue" 				: 2 : true
+		def_flg : "Chrome" 			: 3 : false
+		def_flg : "Metal" 			: 4 : false
+		def_flg : "Green" 			: 5 : false
+		def_flg : "Orange" 			: 6 : false
+		def_flg : "Purple" 			: 7 : false
+		def_flg : "Yellow" 			: 8 : false
+	}
+}
+
+$DefEnt [ "trigger_Capture_flag1" : "Capture Flag1 trigger" ] [ "base_trigger_brush" ] 
+{}
+
+$DefEnt [ "trigger_Capture_flag2" : "Capture Flag2 trigger" ] [ "base_trigger_brush" ] 
+{}
+
+$DefEnt [ "trigger_Capture" : "Capture trigger" ] [ "base_trigger_brush" ] 
+{
+	def_key : string  : "POINTS" 				: "Award Points" 				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "TEAM1" 		: 1 		: false
+		def_flg : "TEAM2" 		: 2 		: false
+	}
+}
+
+$DefEnt [ "info_player_team1" : "Team1 Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : vector  : "angle" 			: "Angle" 		: "0"
+	def_key : string  : "targetname" 		: "Name" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "OVERRIDE WEAPONS" 	: 1 		: false
+		def_flg : "WEAPON 1" 		: 2 		: false
+		def_flg : "WEAPON 2" 		: 4 		: false
+		def_flg : "WEAPON 3" 		: 8 		: false
+		def_flg : "WEAPON 4" 		: 16 		: false
+		def_flg : "WEAPON 5" 		: 32 		: false
+		def_flg : "WEAPON 6" 		: 64 		: false
+		def_flg : "WEAPON 7" 		: 128 	: false
+
+	}
+
+}
+
+$DefEnt [ "info_player_team2" : "Team2 Start" ] [ "base_info_point" ] 
+{
+	def_att : "size" 	: "32 32 56"
+	def_key : vector  : "angle" 			: "Angle" 		: "0"
+	def_key : string  : "targetname" 		: "Name" 		: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "OVERRIDE WEAPONS" 	: 1 		: false
+		def_flg : "WEAPON 1" 		: 2 		: false
+		def_flg : "WEAPON 2" 		: 4 		: false
+		def_flg : "WEAPON 3" 		: 8 		: false
+		def_flg : "WEAPON 4" 		: 16 		: false
+		def_flg : "WEAPON 5" 		: 32 		: false
+		def_flg : "WEAPON 6" 		: 64 		: false
+		def_flg : "WEAPON 7" 		: 128 	: false
+
+	}
+
+}

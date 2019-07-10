@@ -1,0 +1,4490 @@
+//
+//
+// Half-Life (GDF-2) GDF Script for TREAD
+//
+//
+// Written By: Wayne W. Smith
+//
+//
+// Released : 16 June 2000
+//
+//
+// 2.0 Released : 16 June 2000
+// 1.2 Revision : 19th March 2000
+// 1.0 Released : 24th December 1999
+//
+//
+// References:
+//            GDF-2 Editor by Nick Randal
+//            Coordinator - Joe Riedel
+//            Revised Half-Life GDF-2 file by Wayne W. Smith
+//            Revised Half-Life GDF file by Wayne W. Smith            
+//            Initial Half-Life GDF file by Terry Kirby
+//            WorldCraft-3.3 Half-Life fgd by Chris Bokitch
+//            WorldCraft-2.0 Half-Life fgd by Autolycus
+// 
+//
+//
+// 
+$DefGlobal [ "HalfLife" ]					// Basic game defaults
+{
+	def_author		: "Wayne W. Smith"
+	def_version		: "2.0"
+	def_solid		: "base_solid"			// Solid entity
+	def_point		: "base_point"			// Point entity
+	def_gamemaptype	: "HALFLIFE_MAP"			// Type of MAP file to generate
+	def_textype		: "@WAD"                    	// Texture Format
+	def_worldspawn	: "worldspawn"
+	def_targetkey	: "target"
+	def_namekey		: "targetname"
+
+	$DefBuild
+	{
+		$DefModule [ @@MapDir : "Map Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@GameDir : "Half-Life Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@MapFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : @@MapDir : @ALWAYS : false
+				def_param : "" : "\\" : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				def_param : "" : ".map" : @ALWAYS : false
+			}
+			
+			$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@CsgSection : "CSG Program" : "" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "" : @@MapFile : @ALWAYS : false
+			}
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing CSG..."
+		}
+
+		$DefModule [ @@BspSection : "BSP Program" : "Bsp Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "No Junctions" : "-nojunc" : 2 : false
+				def_param : "No Fill" : "-nofill" : 4 : false
+				def_param : "Draw" : "-draw" : 8 : false
+				def_param : "Only Ents" : "-onlyents" : 16 : false
+				def_param : "Verbose" : "-verbose" : 32 : false
+				
+				def_param : "" : @@MapFile : @ALWAYS : false 
+			}
+			
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing HL BSP"
+		}
+
+		$DefModule [ @@BspFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : "+map " : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				//def_param : "" : ".bsp" : @ALWAYS : false
+			}
+			
+			//$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@VisSection : "VIS Program" : "VIS Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+			}		
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing HL VIS"
+		}
+
+		$DefModule [ @@RadSection : "RAD Program" : "RAD Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+			}
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing HL RAD"
+		}
+
+		$DefModule [ @@Half-Life : "Half-Life Exe" : "Half-Life Options" ] 
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "" : @@BspFile : @ALWAYS : false 
+			}
+
+			$SpawnWait : @THIS : @@GameDir : @CONSOLE : "Running Half-Life ..."
+		}
+	}
+//
+// Worldspawn Entries
+//
+	def_key : string 	: "message" 	: "Map Description / Title" 		: ""
+	def_key : string 	: "skyname" 	: "Environment Map / Sky" 		: ""
+	def_key : integer : "sounds" 		: "CD Sound Track" 			: 1
+	def_key : integer : "light" 		: "Default Light Level" 		: 0
+	def_key : string 	: "WaveHeight"   	: "Default Wave Height"       	: ""
+	def_key : string 	: "MaxRange"     	: "Maximum Viewable Distance" 	: 4096
+	def_key : string 	: "chaptertitle" 	: "Chapter Title Message" 		: ""
+	$DefOptions [ "startdark" : "Level Fade In?" ]
+	{
+		def_flg : "No"    : 0 : true
+		def_flg : "Yes" 	: 1 : false
+	}
+	$DefOptions [ "gametitle" : "Display Title?" ]
+	{
+		def_flg : "No"    : 0 : true
+		def_flg : "Yes" 	: 1 : false
+	}
+	$DefOptions [ "newunit" : "New level unit?" ]
+	{
+		def_flg : "No, keep current"    : 0 : true
+		def_flg : "Yes, clear previous" : 1 : false
+	}
+	def_key : string 	: "mapteams" 	: "Map Team List" 	: ""
+	$DefOptions [ "defaultteam" 		: "Default Team?" ]
+	{
+		def_flg : "Fewest Players"    : 0 : true
+		def_flg : "First Team" 		: 1 : false
+	}
+}
+//
+// Basic Entities :
+//
+// Defines A Point Entity
+//
+$DefEnt [ "base_point" : @VIRTUAL : @NULL ] [] 
+{
+	def_att : owner 	: false
+}
+//
+// Defines A Solid Entity
+//
+$DefEnt [ "base_solid" : @VIRTUAL : @NULL ] [] 
+{
+	def_att : owner 	: true
+}
+//
+// Entities :
+//
+//
+// AI Scripted Sequence 
+//
+$DefEnt [ "aiscripted_sequence" : "AI Scripted Sequence" ] [ "base_point" ]
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string	: "m_iszEntity"		: "Target Monster"		: ""
+	def_key : string	: "m_iszPlay"		: "Action Animation"		: ""
+	def_key : integer	: "m_flRadius"		: "Search Radius"			: 512
+	def_key : integer : "m_flRepeat"		: "Repeat Rate ms"		: 0
+	$DefOptions [ "m_fMoveTo" : "Move To Position" ]
+	{
+		def_flg : "No"			: 0	: true
+		def_flg : "Walk"			: 1	: false
+		def_flg : "Run"			: 2	: false
+		def_flg : "Instantaneous"	: 4	: false
+		def_flg : "No - Turn To Face"	: 5	: false
+	}
+	$DefOptions [ "m_iFinishSchedule" : "AI Schedule When Done" ]
+	{
+		def_flg : "Default AI"		: 0	: true
+		def_flg : "Ambush"		: 1	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Repeatable"		: 4	: false
+		def_flg : "Leave Corpse"	: 8	: false
+	}
+}
+//
+//
+// Ambient Sounds
+//
+$DefEnt [ "ambient_generic" : "Ambient Generic" ] [ "base_point" ]
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "message"		: "Path/file.wav of WAV"	: ""
+	def_key : integer	: "health"		: "Volume (MAX=10)"		: 10
+	def_key : integer	: "volstart"	: "Start Volume"			: 0
+	def_key : integer	: "fadein"		: "Fade In Time (0-100)"	: 0
+	def_key : integer	: "fadeout"		: "Fade Out Time (0-100)"	: 0
+	def_key : integer : "pitch"		: "Pitch (> 100=Higher)"	: 100
+	def_key : integer : "pitchstart"	: "Start Pitch"			: 100
+	def_key : integer : "spinup"		: "Spin Up Time (0-100)"	: 0
+	def_key : integer : "spindown"	: "Spin Down Time (0-100)"	: 0
+	def_key : integer : "lfotype"		: "LFO Type (0-3)"		: 0
+	def_key : integer	: "lforate"		: "LFO Rate (0-1000)"		: 0
+	def_key : integer : "lfomodpitch"	: "LFO Mod Pitch (0-1000)"	: 0
+	def_key : integer	: "lfomodvol"	: "LFO Volume (0-100)"		: 0
+	def_key : integer	: "cspinup"		: "Incremental Spinup Count"	: 0
+	$DefOptions [ "preset" : "Dynamic Presets" ]
+	{
+		def_flg : "None"				: 0	: true
+		def_flg : "Huge Machine"		: 1	: false
+		def_flg : "Big Machine"			: 2	: false
+		def_flg : "Machine"			: 3	: false
+		def_flg : "Slow Fade In"		: 4	: false
+		def_flg : "Fade In"			: 5	: false
+		def_flg : "Quick Fade In"		: 6	: false
+		def_flg : "Slow Pulse"			: 7	: false
+		def_flg : "Pulse"				: 8	: false
+		def_flg : "Quick Pulse"			: 9	: false
+		def_flg : "Slow Oscillator"		: 10	: false
+		def_flg : "Oscillator"			: 11	: false
+		def_flg : "Quick Oscillator"		: 12	: false
+		def_flg : "Grunge Pitch"		: 13	: false
+		def_flg : "Very Low Pitch"		: 14	: false
+		def_flg : "Low Pitch"			: 15	: false
+		def_flg : "High Pitch"			: 16	: false
+		def_flg : "Very High Pitch"		: 17	: false
+		def_flg : "Screaming Pitch"		: 18	: false
+		def_flg : "Oscillate spinup/down"	: 19	: false
+		def_flg : "Pulse Spinup/down"		: 20	: false
+		def_flg : "Random Pitch"		: 21	: false
+		def_flg : "Random Pitch Fast"		: 22	: false
+		def_flg : "Incremental Spinup"	: 23	: false
+		def_flg : "Alien"				: 24	: false
+		def_flg : "Bizzare"			: 25	: false
+		def_flg : "Planet X"			: 26	: false
+		def_flg : "Haunted"			: 27	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Play Everywhere"	: 1	: false
+		def_flg : "Small Radius"	: 2	: false
+		def_flg : "Medium Radius"	: 4	: false
+		def_flg : "Large Radius"	: 8	: false
+		def_flg : "Start Silent"	: 16	: false
+		def_flg : "Is Not Looped"	: 32	: false
+	}
+}
+//
+//
+// Ammo
+//
+$DefEnt [ "Weapon" : @VIRTUAL : @NULL ] [ "base_point" ]
+{
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+}
+$DefEnt [ "ammo_9mmclip" 	: "Ammo:9mm Clip" ] 	[ "Weapon" ]
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_9mmAR" 		: "Ammo:9mmAR" ] 		[ "Weapon" ]
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_9mmbox" 	: "Ammo:9mm Box" ] 	[ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_ARgrenades" 	: "Ammo:AR Grenades" ] 	[ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_buckshot" 	: "Ammo:Buckshot" ] 	[ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_357" 		: "Ammo:357" ] 		[ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_rpgclip" 	: "Ammo:RPG Clip" ] 	[ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_gaussclip" 	: "Ammo:Gauss Clip" ] 	[ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "ammo_crossbow" 	: "Ammo:Crossbow" ] 	[ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+//
+//
+// Button
+//
+$DefEnt [ "button_target" : "Button_Target" ] [ "base_solid" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Use Activates"	: 1	: true
+		def_flg : "Start On"		: 2	: false
+	}
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "master"		: "Master"				: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+//
+//
+// Cyclers
+//
+$DefEnt [ "cycler" : "Monster Cycler" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "model"		: "Model"				: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "cycler_sprite" : "Sprite Cycler" ] [ "base_point" ] 
+{
+	def_att : "size"	: "16 16 16"
+	def_key : string	: "model"		: "Sprite"				: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : integer	: "framerate"	: "Frames Per Second"		: 10
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "cycler_weapon" : "Weapon Cycler" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 32"
+	def_key : string	: "model"			: "Model"				: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	def_key : string	: "TriggerTarget"	: "Trigger Target"	: ""
+	$DefOptions [ "TriggerCondition" : "Trigger Condition" ]
+	{
+		def_flg : "No Trigger"				: 0	: true
+		def_flg : "See Player, Mad"			: 1	: false
+		def_flg : "Take Damage"				: 2	: false
+		def_flg : "50% Health Left"			: 3	: false
+		def_flg : "Death"					: 4	: false
+		def_flg : "(N/A) Squad Member Dead"		: 5	: false
+		def_flg : "(N/A) Squad Leader Dead"		: 6	: false
+		def_flg : "Hear World"				: 7	: false
+		def_flg : "Hear Player"				: 8	: false
+		def_flg : "Hear Combat"				: 9	: false
+		def_flg : "See Player, Unconditional"	: 10	: false
+		def_flg : "See Player, Noncombat"		: 11	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Wait Til Seen"	: 1	: false
+		def_flg : "Gag"			: 2	: false
+		def_flg : "Monster Clip"	: 4	: false
+		def_flg : "Prisoner"		: 16	: false
+		def_flg : "Wait For Script"	: 128	: false
+		def_flg : "Pre-Disaster"	: 256	: false
+		def_flg : "Fade Corpse"		: 512	: false
+	}
+}
+//
+//
+// Environmental Effects
+//
+$DefEnt [ "env_beam" : "Env:Beam" ] [ "base_point" ] 
+{
+	def_att : "size"  : "32 32 32"
+	def_key : string  : "LighteningStart"		: "Start Entity"				: ""
+	def_key : string  : "LighteningEnd"			: "Ending Entity"				: ""
+	def_key : string	: "targetname"			: "Target Source"				: ""
+	def_key : integer : "Radius"				: "Radius"					: 256
+	def_key : integer : "renderamt"			: "Brightness (1 - 255)"		: 100
+	def_key : color	: "rendercolor"			: "Beam Color (R G B)"			: ""
+	def_key : string  : "life"				: "Life (Seconds, 0 = infinite)" 	: 1
+	def_key : integer : "BoltWidth"			: "Width of Beam (0-255)" 		: 0
+	def_key : integer : "NoiseAmplitude"		: "Amount of noise (0-255)"		: 0
+	def_key : string  : "texture"				: "Sprite Name" : sprites/laserbeam.spr
+	def_key : integer : "TextureScroll"			: "Texture Scroll Rate (0-100)" 	: 35
+	def_key : integer : "framerate"			: "Frames Per 10 Seconds"		: 0
+	def_key : integer : "framestart"			: "Starting Frame"			: 0
+	def_key : string  : "StrikeTime"			: "Strike again time (secs)"		: 1
+	def_key : string  : "damage"				: "Damage Per Second"			: 0
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Start On"				: 1   : false
+		def_flg : "Toggle"				: 2   : false
+		def_flg : "Random Strike"			: 4   : false
+		def_flg : "Ring"					: 8   : false
+		def_flg : "Start Sparks"			: 16  : false
+		def_flg : "End Sparks"				: 32  : false
+		def_flg : "Decal End"				: 64  : false
+		def_flg : "Shade Start"				: 128	: false
+		def_flg : "Shade End"				: 256 : false
+	}
+}
+$DefEnt [ "env_beverage" : "Env:Beverage" ] [ "base_point" ] 
+{
+	def_att : "size" : "8 8 8"
+	def_key : integer : "health"		: "Capacity" 			: 10
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	
+	$DefOptions [ "skin" : "Beverage Type" ]
+	{
+		def_flg : "Coke"					: 0  : false
+		def_flg : "Sprite"				: 1  : false
+		def_flg : "Diet Coke"				: 2  : false
+		def_flg : "Orange"				: 3  : false
+		def_flg : "Surge"					: 4  : false
+		def_flg : "Moxie"					: 5  : false
+		def_flg : "Random"				: 6  : false
+	}
+}
+
+$DefEnt [ "env_blood" : "Env:Blood" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 32"
+	def_key : string  : "amount"		: "Amount of Blood"		: 100
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "color" : "Blood Color" ]
+	{
+		def_flg : "Red (Human)"				: 0  : true
+		def_flg : "Yellow (Alien)"			: 1  : false
+	}	
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Random Direction"			: 1	: false
+		def_flg : "Blood Stream"			: 2	: false
+		def_flg : "On Player"				: 4   : false
+		def_flg : "Spray decals"			: 8	: false
+	}
+}
+$DefEnt [ "env_bubbles" : "Env:Bubbles" ] [ "base_solid" ] 
+{
+	def_key : integer : "density"				: "Bubble Density"	: 2
+	def_key : integer : "frequency"			: "Bubble Frequency"	: 2
+	def_key : integer : "current"				: "Speed of Current"	: 0
+	def_key : string	: "targetname"			: "Target Source"		: ""
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Start Off"				: 1 : false
+	}
+}
+$DefEnt [ "env_explosion" : "Env:Explosion" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 32"
+	def_key : integer	: "iMagnitude"	: "Magnitude"	: 100
+	def_key : string	: "targetname"	: "Target Source"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "No Damage"		: 1	: false
+		def_flg : "Repeatable"		: 2	: false
+		def_flg : "No Fireball"		: 4	: false
+		def_flg : "No Smoke"		: 8	: false
+		def_flg : "No Decal"		: 16	: false
+		def_flg : "No Sparks"		: 32	: false
+	}
+}
+$DefEnt [ "env_fade" : "Screen Fade" ] [ "base_point" ] 
+{
+	def_att : "size"  : "16 16 16"
+	def_key : string	: "targetname"			: "Target Source"		: ""
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Fade From"				: 1	: false
+		def_flg : "Modulate"				: 2	: false
+		def_flg : "Activate Only"			: 4	: false
+	}
+	def_key : string  : "duration"			: "Duration (Seconds)"	: 2
+	def_key : string  : "holdtime"			: "Hold Fade"		: 0
+	def_key : integer : "renderamt"			: "Fade Alpha"		: 255
+	def_key : color   : "rendercolor"			: "Fade Color (R G B)"	: ""
+}
+$DefEnt [ "env_funnel" : "Env:Funnel (Large Portal)" ] [ "base_point" ] 
+{
+	def_att : "size"  : "32 32 32"
+	def_key : string	: "targetname"			: "Target Source"		: ""	
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Reverse"				: 1 : false
+	}
+}
+$DefEnt [ "env_global" : "Env:Global" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "globalstate"	: "Global State To Set" 	: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""	
+	$DefOptions [ "triggermode" : "Trigger Mode" ]
+	{
+		def_flg : "Off"					: 0 : true
+		def_flg : "On"					: 1 : false
+		def_flg : "Dead"					: 2 : false
+		def_flg : "Toggle"				: 3 : false
+	}
+	
+	$DefOptions [ "initialstate" : "Initial State" ]
+	{
+		def_flg : "Off"					: 0 : true
+		def_flg : "On"					: 1 : false
+		def_flg : "Dead"					: 2 : false
+	}
+
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Set Initial State"			: 1 : false
+	}
+}
+$DefEnt [ "env_glow" : "Env:Glow" ] [ "base_point" ] 
+{
+	def_att : "size"  : "8 8 8"
+	def_key : string  : "model"			: "Model" 			: sprites/glow01.spr
+	def_key : string	: "targetname"		: "Target Source"		: ""
+	def_key : integer : "scale"			: "Scale"			: 1
+
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "env_laser" : "Env:Laser" ] [ "base_point" ] 
+{
+	def_att : "size"  : "32 32 32"
+	def_key : string  : "LaserTarget"		: "Laser Target"				: ""
+	def_key : integer : "renderamt"		: "Brightness (1 - 255)" 		: 0
+	def_key : color   : "rendercolor"		: "Beam Color"				: ""
+	def_key : integer : "width"			: "Beam Width (0-255)"  		: 0
+	def_key : integer : "NoiseAmplitude"	: "Amount of Noise (0-255)"		: 0
+	def_key : string  : "texture"			: "Sprite Name" : sprites/laserbeam.spr
+	def_key : string	: "EndSprite"		: "End Sprite"				: ""
+	def_key : integer : "TextureScroll"		: "Texture Scroll Rate (0-100)"	: 35
+	def_key : integer : "framestart"		: "Starting Frame"			: 0
+	def_key : string  : "damage"			: "Damage Per Second"			: 100
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"		: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"		: 0  	: true
+		def_flg : "Slow Pulse"		: 1  	: false
+		def_flg : "Fast Pulse"		: 2	: false
+		def_flg : "Slow Wide Pulse"	: 3	: false
+		def_flg : "Fast Wide Pulse"	: 4  	: false
+		def_flg : "Slow Strobe"		: 9	: false
+		def_flg : "Fast Strobe"		: 10	: false
+		def_flg : "Faster Strobe"	: 11	: false
+		def_flg : "Slow Flicker"	: 12 	: false
+		def_flg : "Fast Flicker"	: 13 	: false
+		def_flg : "Slow Fade Away"	: 5	: false
+		def_flg : "Fast Fade Away"	: 6	: false
+		def_flg : "Slow Become Solid"	: 7	: false
+		def_flg : "Fast Become Solid"	: 8	: false
+		def_flg : "Constant Glow"	: 14	: false
+		def_flg : "Distort"		: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Start On"				: 1  : false
+		def_flg : "Start Sparks"			: 16 : false
+		def_flg : "End Sparks"				: 32 : false
+		def_flg : "Decal End"				: 64 : false
+	}
+}
+$DefEnt [ "env_message" : "Env:Message" ] [ "base_point" ] 
+{
+	def_att : "size"  : "16 16 16"
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string  : "message"			: "Message Name"			: ""
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Play Once"  			: 1 : false
+		def_flg : "All Clients"			: 2 : false
+	}
+	def_key : string  : "messagesound"			: "Sound Effect"		: ""
+	def_key : string  : "messaagevolume"		: "Volume (0 - 10)"	: 10	
+	$DefOptions [ "messageattenuation" : "Sound Radius" ]
+	{
+		def_flg : "Small Radius"			: 0 : true
+		def_flg : "Medium Radius"			: 1 : false
+		def_flg : "Large Radius"			: 2 : false
+		def_flg : "Play Everywhere"			: 3 : false
+	}
+}
+$DefEnt [ "env_render" : "Env:Render" ] [ "base_point" ] 
+{
+	def_att : "size"  : "32 32 32"
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""	
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "No Renderfx"				: 1 : false
+		def_flg : "No Renderamt"			: 2 : false
+		def_flg : "No Rendermode"			: 4 : false
+		def_flg : "No Rendercolor"			: 8 : false
+	}
+}
+$DefEnt [ "env_shake" : "Env:Shake" ] [ "base_point" ] 
+{
+	def_att : "size"  : "16 16 16"
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Global Shake"			: 1 : false
+	}
+	def_key : string 	: "amplitude"			: "Amplitude (0 - 16)"		: 4
+	def_key : string 	: "radius"				: "Effect Radius"			: 500
+	def_key : string 	: "duration"			: "Duration (seconds)"		: 1
+	def_key : string 	: "frequency"			: "Frequency (0.1 - 255.0)"	: 2.5
+	def_key : string	: "targetname"			: "Target Source"			: ""
+}
+$DefEnt [ "env_shooter" : "Env:Shooter" ] [ "base_point" ] 
+{
+	def_att : "size"  : "32 32 32"
+	def_key : integer : "m_iGibs"			: "Number of Gibs" 			: 3
+	def_key : string  : "delay"			: "Delay between shots" 		: 0
+	def_key : integer : "m_flVelocity"		: "Gib Velocity"				: 200
+	def_key : string	: "m_flVariance"		: "Course Variance"			: 0.15
+	def_key : string  : "m_flGibLife"		: "Gib Life (in seconds)"		: 4
+	def_key : string  : "shootmodel"		: "Model"					: ""
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"		: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""	
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Repeatable" : 1 : false
+	}
+
+	$DefOptions [ "shootsounds" : "Material Sound" ]
+	{
+		def_flg : "None"				: -1 : true
+		def_flg : "Glass"				: 0  : false
+		def_flg : "Wood"				: 1  : false
+		def_flg : "Metal"				: 2  : false
+		def_flg : "Flesh"				: 3  : false
+		def_flg : "Concrete"			: 4  : false
+	}
+
+	def_key : string  : "scale"			: "Gib Scale"		: ""
+	def_key : integer : "skin"			: "Gib Skin"		: 0
+}
+$DefEnt [ "env_sound" : "Env:Sound" ] [ "base_point" ] 
+{
+	def_att : "size"	: "16 16 16"
+	def_key : integer : "radius"			: "Radius" 			: 128
+	$DefOptions [ "roomtype" : "Room Type" ]
+	{
+		def_flg : "Normal (Off)"		: 0  : true
+		def_flg : "Generic"			: 1  : false
+		def_flg : "Metal Small"			: 2  : false
+		def_flg : "Metal Medium"		: 3  : false
+		def_flg : "Metal Large"			: 4  : false
+		def_flg : "Tunnel Small"		: 5  : false
+		def_flg : "Tunnel Medium"		: 6  : false
+		def_flg : "Tunnel Large"		: 7  : false
+		def_flg : "Chamber Small"		: 8  : false
+		def_flg : "Chamber Medium"		: 9  : false
+		def_flg : "Chamber Large"		: 10 : false
+		def_flg : "Bright Small"		: 11 : false
+		def_flg : "Bright Medium"		: 12 : false
+		def_flg : "Bright Large"		: 13 : false
+		def_flg : "Water 1"			: 14 : false
+		def_flg : "Water 2"			: 15 : false
+		def_flg : "Water 3"			: 16 : false
+		def_flg : "Concrete Small"		: 17 : false
+		def_flg : "Concrete Medium"		: 18 : false
+		def_flg : "Concrete Large"		: 19 : false
+		def_flg : "Big 1"				: 20 : false
+		def_flg : "Big 2"				: 21 : false
+		def_flg : "Big 3"				: 22 : false
+		def_flg : "Cavern Small"		: 23 : false
+		def_flg : "Cavern Medium"		: 24 : false
+		def_flg : "Cavern Large"		: 25 : false
+		def_flg : "Weirdo 1"			: 26 : false
+		def_flg : "Weirdo 2"			: 27 : false
+		def_flg : "Weirdo 3"			: 28 : false
+	}
+}
+$DefEnt [ "env_spark" : "Env:Spark" ] [ "base_point" ] 
+{
+	def_att : "size"  : "32 32 32"
+	def_key : string  : "MaxDelay"		: "Max Delay"		: 0
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"		: "0 0 0"	
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Toggle"			: 32 : false
+		def_flg : "Start On"			: 64 : false
+	}
+}
+$DefEnt [ "env_sprite" : "Env:Sprite" ] [ "base_point" ] 
+{
+	def_att : "size"  : "8 8 8"
+	def_key : string  : "framerate"		: "Frame Rate"			: 10.0
+	def_key : string  : "model"			: "Sprite Name"			: sprites/glow01.spr
+	def_key : string  : "scale"			: "Scale"				: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"	
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""	
+	$DefFlags [ "spawnflags" : "SpawnFlags" ]
+	{
+		def_flg : "Start On"			: 1 : false
+		def_flg : "Play Once"			: 2 : false
+	}
+}
+//
+//
+// Func Entities
+//
+$DefEnt [ "func_breakable" : "Func:Breakable" ] [ "base_solid" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Only Trigger"		: 1	: false
+		def_flg : "Touch"				: 2	: false
+		def_flg : "Pressure"			: 4	: false
+		def_flg : "Instant Crowbar"		: 256	: false
+	}
+	def_key : string 	: "globalname"		: "Global Entity Name"			: ""
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string	: "target"			: "Target On Break"			: ""
+	def_key : integer	: "health"			: "Strength"				: 1
+	def_key : string	: "delay"			: "Delay before Fire"			: 0
+	def_key : string	: "gibmodel"		: "Gib Model"				: ""
+	def_key : integer	: "explodemagnitude"	: "Explode Magnitude (0=None)"	: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"			: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""	
+	$DefOptions [ "material" : "Material type" ] 
+	{
+		def_flg : "Glass"				: 0	: true
+		def_flg : "Wood"				: 1	: false
+		def_flg : "Metal"				: 2	: false
+		def_flg : "Flesh"				: 3	: false
+		def_flg : "Cinder Block"		: 4	: false
+		def_flg : "Ceiling Tile"		: 5	: false
+		def_flg : "Computer"			: 6	: false
+		def_flg : "Unbreakable Glass"		: 7	: false
+		def_flg : "Rocks"				: 8	: false
+	}
+	$DefOptions [ "explosion" : "Gibs Direction" ]
+	{
+		def_flg : "Random"			: 0	: true
+		def_flg : "Relative To Attack"	: 1	: false
+	}
+	$DefOptions [ "spawnobject" : "Spawn On Break" ]
+	{
+		def_flg : "Nothing"			: 0	: true
+		def_flg : "Battery"			: 1	: false
+		def_flg : "Healthkit"			: 2	: false
+		def_flg : "9mm Handgun"			: 3	: false
+		def_flg : "9mm Clip"			: 4	: false
+		def_flg : "Machine Gun"			: 5	: false
+		def_flg : "Machine Gun Clip"		: 6	: false
+		def_flg : "Machine Gun Grenades"	: 7	: false
+		def_flg : "Shotgun"			: 8	: false
+		def_flg : "Shotgun Shells"		: 9	: false
+		def_flg : "Crossbow"			: 10	: false
+		def_flg : "Crossbow Bolts"		: 11	: false
+		def_flg : "357"				: 12	: false
+		def_flg : "357 Clip"			: 13	: false
+		def_flg : "RPG"				: 14	: false
+		def_flg : "RPG Clip"			: 15 	: false
+		def_flg : "Gauss Clip"			: 16 	: false
+		def_flg : "Hand Grenade"		: 17 	: false
+		def_flg : "Tripmine"			: 18	: false
+		def_flg : "Satchel Charge"		: 19	: false
+		def_flg : "Snark"				: 20	: false
+		def_flg : "Hornet Gun"			: 21	: false
+	}
+}
+$DefEnt [ "func_button" : "Func:Button" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string	: "target"			: "Targetted Object"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"		: "0 0 0"	
+	def_key : string 	: "globalname"		: "Global Entity Name"			: ""
+	def_key : integer	: "speed"			: "Speed"					: 5
+	def_key : integer	: "health"			: "Health (Shootable if > 0)"		: 1
+	def_key : integer	: "lip"			: "Lip"					: 0
+	def_key : string	: "master"			: "Master"					: ""
+	def_key : integer	: "wait"			: "Delay Before Reset (-1 Stay)"	: 3
+	def_key : string	: "delay"			: "Delay before Trigger"		: ""
+	def_key : string	: "_minlight"		: "Minimum Light Level"			: ""
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None"			: 0	: true
+		def_flg : "Big Zap & Warmup"	: 1	: false
+		def_flg : "Access Granted"	: 3	: false
+		def_flg : "Quick Combolock"	: 4	: false
+		def_flg : "Power Deadbolt 1"	: 5	: false
+		def_flg : "Power Deadbolt 2"	: 6	: false
+		def_flg : "Plunger"		: 7	: false
+		def_flg : "Small Zap"		: 8	: false
+		def_flg : "Keycard Sound"	: 9	: false
+		def_flg : "Buzz"			: 10	: false
+		def_flg : "Buzz Off"		: 11	: false
+		def_flg : "Lightswitch"		: 14	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Don't Move"		: 0 	: false
+		def_flg : "Toggle"		: 32	: false
+		def_flg : "Sparks"		: 64	: false
+		def_flg : "Touch Activates"	: 256	: false
+	}
+	$DefOptions [ "locked_sound" : "Locked Sound" ]
+	{
+		def_flg : "None"			: 0	: true
+		def_flg : "Access Denied"	: 2	: false
+		def_flg : "Small Zap"		: 8	: false
+		def_flg : "Buzz"			: 10	: false
+		def_flg : "Buzz Off"		: 11	: false
+		def_flg : "Latch Locked"	: 12	: false
+	}
+	$DefOptions [ "unlocked_sound" : "Unlocked Sound" ]
+	{
+		def_flg : "None"			: 0	: true
+		def_flg : "Big Zap & Warmup"	: 1	: false
+		def_flg : "Access Granted"	: 3	: false
+		def_flg : "Quick Combolock"	: 4	: false
+		def_flg : "Power Deadbolt 1"	: 5	: false
+		def_flg : "Power Deadbolt 2"	: 6	: false
+		def_flg : "Plunger"		: 7	: false
+		def_flg : "Small Zap"		: 8	: false
+		def_flg : "Keycard Sound"	: 9	: false
+		def_flg : "Buzz"			: 10	: false
+		def_flg : "Latch Unlocked"	: 13	: false
+		def_flg : "Lightswitch"		: 14	: false
+	}
+	$DefOptions [ "locked_sentence" : "Locked Sentence" ]
+	{
+		def_flg : "None"				: 0	: true
+		def_flg : "General Access Denied"	: 1	: false
+		def_flg : "Security Lockout"		: 2	: false
+		def_flg : "Blast Door"			: 3	: false
+		def_flg : "Fire Door"			: 4	: false
+		def_flg : "Chemical Door"		: 5	: false
+		def_flg : "Radiation Door"		: 6	: false
+		def_flg : "General Containment"	: 7	: false
+		def_flg : "Maintenance Door"		: 8	: false
+		def_flg : "Broken Shut Door"		: 9	: false
+	}
+	$DefOptions [ "unlocked_sentence" : "Unlocked Sentence" ]
+	{
+		def_flg : "None"				: 0	: true
+		def_flg : "General Access Granted"	: 1	: false
+		def_flg : "Security Disengaged"	: 2	: false
+		def_flg : "Blast Door"			: 3	: false
+		def_flg : "Fire Door"			: 4	: false
+		def_flg : "Chemical Door"		: 5	: false
+		def_flg : "Radiation Door"		: 6	: false
+		def_flg : "General Containment"	: 7	: false
+		def_flg : "Maintenance Area"		: 8	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""	
+}
+$DefEnt [ "func_conveyor" : "Func:Conveyor" ] [ "base_solid" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "No Push"		: 1	: false
+		def_flg : "Not Solid"		: 2	: false
+	}
+	def_key : string	: "targetname"	: "Target Source"				: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"		: "0 0 0"	
+	def_key : string 	: "speed"		: "Conveyor Speed"			: 100
+	def_key : string	: "_minlight"	: "Minimum Light Level"			: ""
+	def_key : string 	: "globalname"	: "Global Entity Name"			: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_door" : "Func:Door" ] [ "base_solid" ] 
+{
+	def_key : string	: "globalname"	: "Global Entity Name"			: ""
+	def_key : string	: "targetname"	: "Target Source"				: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"		: "0 0 0"	
+	def_key : string	: "target"		: "Targetted Object"			: ""
+	def_key : string 	: "killtarget"	: "Kill Target"				: ""
+	def_key : integer	: "speed"		: "Speed"					: 5
+	def_key : string	: "master"		: "Master"					: ""
+	def_key : integer : "wait"		: "Close Delay (-1 Stay Open)"	: 4
+	def_key : integer : "lip"		: "Lip"					: 0
+	def_key : integer : "dmg"		: "Damage If Blocked"			: 0
+	def_key : string	: "message"		: "Message If Triggered"		: ""
+	def_key : integer : "delay"		: "Delay Before Fire"			: 0
+	def_key : string	: "netname"		: "Fire On Close"				: ""
+	def_key : integer	: "health"		: "Health (shoot open)"			: 0
+	def_key : string	: "_minlight"	: "Minimum Light Level"			: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefOptions [ "movesnd" : "Move Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Servo (Sliding)"		: 1	: false
+		def_flg : "Pneumatic (Sliding)"	: 2	: false
+		def_flg : "Pneumatic (Rolling)"	: 3	: false
+		def_flg : "Vacuum"			: 4	: false
+		def_flg : "Power Hydraulic"		: 5	: false
+		def_flg : "Large Rollers"		: 6	: false
+		def_flg : "Track Door"			: 7	: false
+		def_flg : "Snappy Metal Door"		: 8	: false
+		def_flg : "Squeaky 1"			: 9	: false
+		def_flg : "Squeaky 2"			: 10	: false
+	}
+	$DefOptions [ "stopsnd" : "Stop Sound" ]
+	{
+		def_flg : "No Sound"		: 0	: true
+		def_flg : "Clang With Brake"	: 1	: false
+		def_flg : "Clang Reverb"	: 2	: false
+		def_flg : "Ratchet Stop"	: 3	: false
+		def_flg : "Chunk"			: 4	: false
+		def_flg : "Light Airbrake"	: 5	: false
+		def_flg : "Metal Slide Stop"	: 6	: false
+		def_flg : "Metal Lock Stop"	: 7	: false
+		def_flg : "Snappy Metal Stop"	: 8	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Starts Open"		: 1	: false
+		def_flg : "Don't Link"		: 4	: false
+		def_flg : "Passable"		: 8	: false
+		def_flg : "Toggle"		: 32	: false
+		def_flg : "Use Only"		: 256	: false
+		def_flg : "Monsters Can't"	: 512	: false
+	}
+//
+// NOTE: must be duplicated in BUTTON
+//
+	$DefOptions [ "locked_sound" : "Locked Sound" ]
+	{
+		def_flg : "None"			: 0	: true
+		def_flg : "Access Denied"	: 2	: false
+		def_flg : "Small Zap"		: 8	: false
+		def_flg : "Buzz"			: 10	: false
+		def_flg : "Buzz Off"		: 11 	: false
+		def_flg : "latch Locked"	: 12	: false
+	}
+	$DefOptions [ "unlocked_sound" : "Unlocked Sound" ]
+	{
+		def_flg : "None"			: 0	: true
+		def_flg : "Big Zap & Warmup"	: 1	: false
+		def_flg : "Access Granted"	: 3	: false
+		def_flg : "Quick Combolock"	: 4	: false
+		def_flg : "Power Deadbolt 1"	: 5	: false
+		def_flg : "Power Deadbolt 2"	: 6	: false
+		def_flg : "Plunger"		: 7	: false
+		def_flg : "Small Zap"		: 8	: false
+		def_flg : "Keycard Sound"	: 9	: false
+		def_flg : "Buzz"			: 10	: false
+		def_flg : "Latch Unlocked"	: 13	: false
+	}
+	$DefOptions [ "locked_sentence" : "Locked Sentence" ]
+	{
+		def_flg : "None"				: 0	: true
+		def_flg : "General Access Denied"	: 1	: false
+		def_flg : "Security Lockout"		: 2	: false
+		def_flg : "Blast Door"			: 3	: false
+		def_flg : "Fire Door"			: 4	: false
+		def_flg : "Chemical Door"		: 5	: false
+		def_flg : "Radiation Door"		: 6	: false
+		def_flg : "General Containment"	: 7	: false
+		def_flg : "Maintenance Door"		: 8	: false
+		def_flg : "Broken Shut Door"		: 9	: false
+	}
+	$DefOptions [ "unlocked_sentence" : "Unlocked Sentence" ]
+	{
+		def_flg : "None"				: 0	: true
+		def_flg : "General Access Granted"	: 1	: false
+		def_flg : "Security Disengaged"	: 2	: false
+		def_flg : "Blast Door"			: 3	: false
+		def_flg : "Fire Door"			: 4	: false
+		def_flg : "Chemical Door"		: 5	: false
+		def_flg : "Radiation Door"		: 6	: false
+		def_flg : "General Containment"	: 7	: false
+		def_flg : "Maintenance Area"		: 8	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+}
+$DefEnt [ "func_door_rotating" : "Func:Door Rotating" ] [ "func_door" ] 
+{
+	def_key : integer	: "distance"	: "Distance (Degrees)"		: 90
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Reverse Direction"	: 2	: false
+		def_flg : "One-Way"		: 16	: false
+		def_flg : "X Axis"		: 64	: false
+		def_flg : "Y Axis"		: 128	: false
+	}
+}
+$DefEnt [ "func_friction" : "Func:Friction" ] [ "base_solid" ] 
+{
+	def_key : integer : "modifier"	: "Percentage Of Standard (0-100)"	: 15
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+}
+$DefEnt [ "func_guntarget" : "Func:Gun Target" ] [ "base_solid" ] 
+{
+	def_key : string	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : integer	: "speed"			: "Speed (Units Per Second)"	: 100
+	def_key : string	: "target"			: "First Stop Target"		: ""
+	def_key : string	: "message"			: "Fire On Damage"		: ""
+	def_key : integer	: "health"			: "Damage To Take"		: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_healthcharger" : "Health Recharger" ] [ "base_solid" ] 
+{
+	def_key : string	: "globalname"	: "Global entity Name"		: ""
+	def_key : string	: "_minlight"	: "Minimum Light Level"		: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_illusionary" : "Fake Wall/Light" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "_minlight"	: "Minimum Light Level"		: ""
+	$DefOptions [ "skin" : "Contents" ]
+	{
+		def_flg : "Empty"			: -1	: true
+		def_flg : "Volumetric Light"	: -7	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_ladder" : "Func:Ladder" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"	: "Target Source"			: ""
+}
+$DefEnt [ "func_monsterclip" : "Monster Clip Brush" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"	: "Target Source"			: ""
+}
+$DefEnt [ "func_mortar_field" : "Mortar Field" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"		: ""
+	def_key : integer	: "m_flSpread"		: "Spread Radius"		: 64
+	def_key : integer : "m_iCount"		: "Repeat Count"		: 1
+	def_key : string	: "m_iszXController"	: "X Controller"		: ""
+	def_key : string 	: "m_iszYController"	: "Y Controller"		: ""
+	$DefOptions [ "m_fControl" : "Targeting" ]
+	{
+		def_flg : "Random"		: 0 : true
+		def_flg : "Activator"		: 1 : false
+		def_flg : "Table"			: 2 : false
+	}
+}
+$DefEnt [ "func_pendulum" : "Swings Back & Forth" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "globalname"	: "Global entity Name"		: ""
+	def_key : integer	: "speed"		: "Speed"				: 100
+	def_key : integer : "distance"	: "Distance (Degrees)"		: 90
+	def_key : integer : "damp"		: "Damping (0-1000)"		: 0
+	def_key : integer	: "dmg"		: "Damage Done When Blocked"	: 0
+	def_key : integer	: "_minlight"	: "Minimum Light Level"		: 0
+	def_key : string 	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start On"		: 1	: false
+		def_flg : "Passable"		: 8	: false
+		def_flg : "Auto-return"		: 16	: false
+		def_flg : "X Axis"		: 64	: false
+		def_flg : "Y Axis"		: 128	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_plat" : "Elevator" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"	: "Target Source"				: ""
+	def_key : string	: "globalname"	: "Global entity Name"			: ""
+	def_key : integer : "height"		: "Travel Altitude (can be < 0)"	: 0
+	def_key : integer : "speed"		: "Speed"					: 50
+	def_key : string	: "_minlight"	: "Minimum Light Level"			: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Toggle"		: 1	: false
+	}
+	$DefOptions [ "movesnd" : "Move Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator 1"		: 1	: false
+		def_flg : "Big Elevator 2"		: 2	: false
+		def_flg : "Tech Elevator 1"		: 3	: false
+		def_flg : "Tech Elevator 2"		: 4 	: false
+		def_flg : "Tech Elevator 3"		: 5	: false
+		def_flg : "Freight Elevator 1"	: 6	: false
+		def_flg : "Freight Elevator 2"	: 7	: false
+		def_flg : "Heavy Elevator"		: 8	: false
+		def_flg : "Rack Elevator"		: 9 	: false
+		def_flg : "Rail Elevator"		: 10	: false
+		def_flg : "Squeak Elevator"		: 11	: false
+		def_flg : "Odd Elevator 1"		: 12	: false
+		def_flg : "Odd Elevator 2"		: 13	: false
+	}
+	$DefOptions [ "stopsnd" : "Stop Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator Stop 1"	: 1 	: false
+		def_flg : "Big Elevator Stop 2"	: 2	: false
+		def_flg : "Freight Elevator Stop"	: 3	: false
+		def_flg : "Heavy Elevator Stop"	: 4	: false
+		def_flg : "Rack Elevator Stop"	: 5	: false
+		def_flg : "Rail Elevator Stop"	: 6	: false
+		def_flg : "Squeak Elevator Stop"	: 7	: false
+		def_flg : "Quick Elevator Stop"	: 8	: false
+	}
+	def_key : string	: "volume"		: "Sound volume (0.0-1.0)"	: 0.85
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_platrot" : "Rotating Platform" ] [ "base_solid" ] 
+{
+	def_key : integer	: "speed"		: "Rotation Speed"			: 50
+	def_key : string	: "targetname"	: "Target Source"				: ""
+	def_key : string	: "globalname"	: "Global entity Name"			: ""
+	def_key : integer	: "height"		: "Travel Altitude (can be < 0)"	: 0
+	def_key : integer : "rotation"	: "Spin Amount"				: 0
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"		: ""
+	def_key : string	: "_minlight"	: "Minimum Light Level"			: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Toggle"		: 1	: false
+		def_flg : "X Axis"		: 64	: false
+		def_flg : "Y Axis"		: 128	: false
+	}
+	$DefOptions [ "movesnd" : "Move Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator 1"		: 1	: false
+		def_flg : "Big Elevator 2"		: 2	: false
+		def_flg : "Tech Elevator 1"		: 3	: false
+		def_flg : "Tech Elevator 2"		: 4 	: false
+		def_flg : "Tech Elevator 3"		: 5	: false
+		def_flg : "Freight Elevator 1"	: 6	: false
+		def_flg : "Freight Elevator 2"	: 7	: false
+		def_flg : "Heavy Elevator"		: 8	: false
+		def_flg : "Rack Elevator"		: 9 	: false
+		def_flg : "Rail Elevator"		: 10	: false
+		def_flg : "Squeak Elevator"		: 11	: false
+		def_flg : "Odd Elevator 1"		: 12	: false
+		def_flg : "Odd Elevator 2"		: 13	: false
+	}
+	$DefOptions [ "stopsnd" : "Stop Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator Stop 1"	: 1 	: false
+		def_flg : "Big Elevator Stop 2"	: 2	: false
+		def_flg : "Freight Elevator Stop"	: 3	: false
+		def_flg : "Heavy Elevator Stop"	: 4	: false
+		def_flg : "Rack Elevator Stop"	: 5	: false
+		def_flg : "Rail Elevator Stop"	: 6	: false
+		def_flg : "Squeak Elevator Stop"	: 7	: false
+		def_flg : "Quick Elevator Stop"	: 8	: false
+	}
+	def_key : string	: "volume"		: "Sound volume (0.0-1.0)"	: 0.85
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_pushable" : "Pushable Object" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"		: "Target On Break"	: ""
+	def_key : string	: "targetname"	: "Target Source"		: ""
+	def_key : string	: "globalname"	: "Global entity Name"	: ""
+	def_key : string	: "health"		: "Strength"		: 1
+	def_key : integer	: "friction"	: "Friction (0-400)"	: 50
+	def_key : integer : "buoyancy"	: "Buoyancy"		: 20
+	def_key : string	: "_minlight"	: "Minimum Light Level"	: ""
+	$DefOptions [ "size" : "Hull Size" ]
+	{
+		def_flg : "Point size"		: 0	: true
+		def_flg : "Player Size"		: 1	: false
+		def_flg : "Big Size"		: 2	: false
+		def_flg : "Player Duck"		: 3	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Breakable"		: 128 : false
+	}
+	$DefOptions [ "material" : "Material type" ] 
+	{
+		def_flg : "Glass"				: 0	: true
+		def_flg : "Wood"				: 1	: false
+		def_flg : "Metal"				: 2	: false
+		def_flg : "Flesh"				: 3	: false
+		def_flg : "Cinder Block"		: 4	: false
+		def_flg : "Ceiling Tile"		: 5	: false
+		def_flg : "Computer"			: 6	: false
+		def_flg : "Unbreakable Glass"		: 7	: false
+		def_flg : "Rocks"				: 8	: false
+	}
+	$DefOptions [ "explosion" : "Gibs Direction" ]
+	{
+		def_flg : "Random"			: 0	: true
+		def_flg : "Relative To Attack"	: 1	: false
+	}
+	def_key : string	: "delay"			: "Delay before Fire"			: 0
+	def_key : string	: "gibmodel"		: "Gib Model"				: ""
+	$DefOptions [ "spawnobject" : "Spawn On Break" ]
+	{
+		def_flg : "Nothing"			: 0	: true
+		def_flg : "Battery"			: 1	: false
+		def_flg : "Healthkit"			: 2	: false
+		def_flg : "9mm Handgun"			: 3	: false
+		def_flg : "9mm Clip"			: 4	: false
+		def_flg : "Machine Gun"			: 5	: false
+		def_flg : "Machine Gun Clip"		: 6	: false
+		def_flg : "Machine Gun Grenades"	: 7	: false
+		def_flg : "Shotgun"			: 8	: false
+		def_flg : "Shotgun Shells"		: 9	: false
+		def_flg : "Crossbow"			: 10	: false
+		def_flg : "Crossbow Bolts"		: 11	: false
+		def_flg : "357"				: 12	: false
+		def_flg : "357 Clip"			: 13	: false
+		def_flg : "RPG"				: 14	: false
+		def_flg : "RPG Clip"			: 15 	: false
+		def_flg : "Gauss Clip"			: 16 	: false
+		def_flg : "Hand Grenade"		: 17 	: false
+		def_flg : "Tripmine"			: 18	: false
+		def_flg : "Satchel Charge"		: 19	: false
+		def_flg : "Snark"				: 20	: false
+		def_flg : "Hornet Gun"			: 21	: false
+	}
+	def_key : integer	: "explodemagnitude"	: "Explode Magnitude (0=None)"	: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_recharge" : "Battery Recharger" ] [ "base_solid" ] 
+{
+	def_key : string	: "globalname"	: "Global entity Name"		: ""
+	def_key : string	: "_minlight"	: "Minimum Light Level"		: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_rot_button" : "Rotating Button" ] [ "base_solid" ] 
+{
+	def_key : string 	: "globalname"	: "Global Entity Name"			: ""
+	def_key : string	: "targetname"	: "Target Source"				: ""
+	def_key : string	: "target"		: "Targetted Object"			: ""
+	def_key : string	: "changetarget"	: "Change Target Name"			: ""
+	def_key : string	: "master"		: "Master"					: ""
+	def_key : integer	: "speed"		: "Speed"					: 50
+	def_key : integer : "health"		: "Health (shootable if > 0)"		: 0
+	def_key : integer	: "wait"		: "Delay Before Reset (-1=Stay)"	: 3
+	def_key : string	: "delay"		: "Delay Before Trigger"		: ""
+	def_key : integer	: "distance"	: "Distance (Degrees)"			: 90
+	def_key : integer	: "minlight"	: "Minimum Light Level"			: 0
+	def_key : string 	: "angles"		: "Pitch Yaw Roll (Y Z X)"		: ""
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Squeaky"		: 21	: true
+		def_flg : "Squeaky Pneumatic"	: 22	: false
+		def_flg : "Ratchet Gun"		: 23	: false
+		def_flg : "Clean Ratchet" 	: 24	: false
+		def_flg : "Gas Clunk"		: 25	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not Solid"		: 1	: false
+		def_flg : "Reverse Direction"	: 2	: false
+		def_flg : "Toggle"		: 32	: false
+		def_flg : "X Axis"		: 64	: false
+		def_flg : "Y Axis"		: 128	: false
+		def_flg : "Touch Activates"	: 256	: false
+	}
+}
+$DefEnt [ "func_rotating" : "Rotating Object" ] [ "base_solid" ] 
+{
+	def_key : string 	: "globalname"		: "Global Entity Name"			: ""
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string 	: "angles"			: "Pitch Yaw Roll (Y Z X)"		: ""
+	def_key : integer	: "speed"			: "Rotation Speed"			: 0
+	def_key : integer : "volume"			: "Volume (10=MAX)"			: 10
+	def_key : integer : "fanfriction"		: "Friction (0-100%)"			: 20
+	def_key : string	: "message"			: "Path/filename.wav of WAV"		: ""
+	def_key : integer : "_minlight"		: "Minimum Light Level"			: 0
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"		: ""
+	def_key : string 	: "spawnorigin"		: "XYZ - Move here after lighting" 	: ""
+	def_key : integer : "dmg"			: "Damage If Blocked"			: 0
+	$DefOptions [ "sounds" : "Fan Sounds" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Fast Whine"			: 1	: false
+		def_flg : "Slow Rush"			: 2	: false
+		def_flg : "Medium Rickety"		: 3	: false
+		def_flg : "Fast Beating"		: 4	: false
+		def_flg : "Slow Smooth"			: 5	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start On"			: 1	: false
+		def_flg : "Reverse Direction"		: 2	: false
+		def_flg : "X Axis"			: 4	: false
+		def_flg : "Y Axis"			: 8	: false
+		def_flg : "Acc/Dec"			: 16	: false
+		def_flg : "Fan Pain"			: 32	: false
+		def_flg : "Not Solid"			: 64	: false
+		def_flg : "Small Radius"		: 128	: false
+		def_flg : "Medium Radius"		: 256	: false
+		def_flg : "Large Radius"		: 512	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_tank" : "Brush Gun Turret" ] [ "base_solid" ] 
+{
+	$DefOptions [ "bullet" : "Bullets" ]
+	{
+		def_flg : "None"				: 0	: true
+		def_flg : "9mm"				: 1	: false
+		def_flg : "MP5"				: 2	: false
+		def_flg : "12mm"				: 3	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Active"			: 1	: false
+		def_flg : "Only Direct"			: 16	: false
+		def_flg : "Controllable"		: 32	: false
+	}
+	def_key : string 	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "target"			: "Targetted Object"		: ""
+	def_key : string 	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: ""
+	def_key : string 	: "master"			: "(Team) Master"			: ""
+	def_key : string 	: "yawrate"			: "Yaw Rate"			: 30
+	def_key : string	: "yawrange"		: "Yaw Range"			: 180
+	def_key : string	: "yawtolerance"		: "Yaw Tolerance"			: 15
+	def_key : string	: "pitchrate"		: "Pitch Rate"			: 0
+	def_key : string 	: "pitchrange"		: "Pitch Range"			: 0
+	def_key : string 	: "pitchtolerance"	: "Pitch Tolerance"		: 5
+	def_key : string	: "barrel"			: "Barrel Length"			: 0
+	def_key : string	: "barrely"			: "Barrel Horizontal"		: 0
+	def_key : string 	: "barrelz"			: "Barrel Veritcal"		: 0
+	def_key : string 	: "spritesmoke"		: "Smoke Sprite"			: ""
+	def_key : string	: "spriteflash"		: "Flash Sprite"			: ""
+	def_key : string 	: "spritescale"		: "Sprite Scale"			: 1
+	def_key : string	: "rotatesound"		: "Rotate Sound"			: ""
+	def_key : string 	: "firerate"		: "Rate Of Fire"			: 1
+	def_key : string	: "bullet_damage"		: "Damage Per Bullet"		: 0
+	def_key : string	: "persistence"		: "Firing Persistence"		: 1
+	def_key : string	: "minRange"		: "Minimum Target Range"	: 0
+	def_key : string	: "maxRange"		: "Maximum Target Range"	: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefOptions [ "firespread" : "Bullet Accuracy" ]
+	{
+		def_flg : "Perfect Shot"		: 0	: true
+		def_flg : "Small Cone"			: 1	: false
+		def_flg : "Medium Cone"			: 2	: false
+		def_flg : "Large Cone"			: 3	: false
+		def_flg : "Extra-Large Cone"		: 4	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}	
+$DefEnt [ "func_tankcontrols" : "Tank Controls" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"		: "Tank Entity Name"		: ""
+}
+$DefEnt [ "func_tanklaser" : "Brush Laser Turret" ] [ "base_solid" ] 
+{
+	def_key : string	: "laserentity"	: "env_laser Entity"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Active"			: 1	: false
+		def_flg : "Only Direct"			: 16	: false
+		def_flg : "Controllable"		: 32	: false
+	}
+	def_key : string 	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "target"			: "Targetted Object"		: ""
+	def_key : string 	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: ""
+	def_key : string 	: "master"			: "(Team) Master"			: ""
+	def_key : string 	: "yawrate"			: "Yaw Rate"			: 30
+	def_key : string	: "yawrange"		: "Yaw Range"			: 180
+	def_key : string	: "yawtolerance"		: "Yaw Tolerance"			: 15
+	def_key : string	: "pitchrate"		: "Pitch Rate"			: 0
+	def_key : string 	: "pitchrange"		: "Pitch Range"			: 0
+	def_key : string 	: "pitchtolerance"	: "Pitch Tolerance"		: 5
+	def_key : string	: "barrel"			: "Barrel Length"			: 0
+	def_key : string	: "barrely"			: "Barrel Horizontal"		: 0
+	def_key : string 	: "barrelz"			: "Barrel Veritcal"		: 0
+	def_key : string 	: "spritesmoke"		: "Smoke Sprite"			: ""
+	def_key : string	: "spriteflash"		: "Flash Sprite"			: ""
+	def_key : string 	: "spritescale"		: "Sprite Scale"			: 1
+	def_key : string	: "rotatesound"		: "Rotate Sound"			: ""
+	def_key : string 	: "firerate"		: "Rate Of Fire"			: 1
+	def_key : string	: "bullet_damage"		: "Damage Per Bullet"		: 0
+	def_key : string	: "persistence"		: "Firing Persistence"		: 1
+	def_key : string	: "minRange"		: "Minimum Target Range"	: 0
+	def_key : string	: "maxRange"		: "Maximum Target Range"	: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefOptions [ "firespread" : "Bullet Accuracy" ]
+	{
+		def_flg : "Perfect Shot"		: 0	: true
+		def_flg : "Small Cone"			: 1	: false
+		def_flg : "Medium Cone"			: 2	: false
+		def_flg : "Large Cone"			: 3	: false
+		def_flg : "Extra-Large Cone"		: 4	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_tankmortar" : "Brush Mortar Turret" ] [ "base_solid" ] 
+{
+	def_key : integer	: "iMagnitude"	: "Explosion Magnitude"	: 100
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Active"			: 1	: false
+		def_flg : "Only Direct"			: 16	: false
+		def_flg : "Controllable"		: 32	: false
+	}
+	def_key : string 	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "target"			: "Targetted Object"		: ""
+	def_key : string 	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string 	: "master"			: "(Team) Master"			: ""
+	def_key : string 	: "yawrate"			: "Yaw Rate"			: 30
+	def_key : string	: "yawrange"		: "Yaw Range"			: 180
+	def_key : string	: "yawtolerance"		: "Yaw Tolerance"			: 15
+	def_key : string	: "pitchrate"		: "Pitch Rate"			: 0
+	def_key : string 	: "pitchrange"		: "Pitch Range"			: 0
+	def_key : string 	: "pitchtolerance"	: "Pitch Tolerance"		: 5
+	def_key : string	: "barrel"			: "Barrel Length"			: 0
+	def_key : string	: "barrely"			: "Barrel Horizontal"		: 0
+	def_key : string 	: "barrelz"			: "Barrel Veritcal"		: 0
+	def_key : string 	: "spritesmoke"		: "Smoke Sprite"			: ""
+	def_key : string	: "spriteflash"		: "Flash Sprite"			: ""
+	def_key : string 	: "spritescale"		: "Sprite Scale"			: 1
+	def_key : string	: "rotatesound"		: "Rotate Sound"			: ""
+	def_key : string 	: "firerate"		: "Rate Of Fire"			: 1
+	def_key : string	: "bullet_damage"		: "Damage Per Bullet"		: 0
+	def_key : string	: "persistence"		: "Firing Persistence"		: 1
+	def_key : string	: "minRange"		: "Minimum Target Range"	: 0
+	def_key : string	: "maxRange"		: "Maximum Target Range"	: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefOptions [ "firespread" : "Bullet Accuracy" ]
+	{
+		def_flg : "Perfect Shot"		: 0	: true
+		def_flg : "Small Cone"			: 1	: false
+		def_flg : "Medium Cone"			: 2	: false
+		def_flg : "Large Cone"			: 3	: false
+		def_flg : "Extra-Large Cone"		: 4	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_tankrocket" : "Brush Rocket Turret" ] [ "base_solid" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Active"			: 1	: false
+		def_flg : "Only Direct"			: 16	: false
+		def_flg : "Controllable"		: 32	: false
+	}
+	def_key : string 	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "target"			: "Targetted Object"		: ""
+	def_key : string 	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: ""
+	def_key : string 	: "master"			: "(Team) Master"			: ""
+	def_key : string 	: "yawrate"			: "Yaw Rate"			: 30
+	def_key : string	: "yawrange"		: "Yaw Range"			: 180
+	def_key : string	: "yawtolerance"		: "Yaw Tolerance"			: 15
+	def_key : string	: "pitchrate"		: "Pitch Rate"			: 0
+	def_key : string 	: "pitchrange"		: "Pitch Range"			: 0
+	def_key : string 	: "pitchtolerance"	: "Pitch Tolerance"		: 5
+	def_key : string	: "barrel"			: "Barrel Length"			: 0
+	def_key : string	: "barrely"			: "Barrel Horizontal"		: 0
+	def_key : string 	: "barrelz"			: "Barrel Veritcal"		: 0
+	def_key : string 	: "spritesmoke"		: "Smoke Sprite"			: ""
+	def_key : string	: "spriteflash"		: "Flash Sprite"			: ""
+	def_key : string 	: "spritescale"		: "Sprite Scale"			: 1
+	def_key : string	: "rotatesound"		: "Rotate Sound"			: ""
+	def_key : string 	: "firerate"		: "Rate Of Fire"			: 1
+	def_key : string	: "bullet_damage"		: "Damage Per Bullet"		: 0
+	def_key : string	: "persistence"		: "Firing Persistence"		: 1
+	def_key : string	: "minRange"		: "Minimum Target Range"	: 0
+	def_key : string	: "maxRange"		: "Maximum Target Range"	: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefOptions [ "firespread" : "Bullet Accuracy" ]
+	{
+		def_flg : "Perfect Shot"		: 0	: true
+		def_flg : "Small Cone"			: 1	: false
+		def_flg : "Medium Cone"			: 2	: false
+		def_flg : "Large Cone"			: 3	: false
+		def_flg : "Extra-Large Cone"		: 4	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_trackautochange" : "Automatic Track Changer" ] [ "base_solid" ] 
+{
+	def_key : string 	: "globalname"		: "Global Entity Name"	: ""
+	def_key : string	: "targetname"		: "Target Source"		: ""
+	def_key : integer	: "height"			: "Travel Altitude"	: 0
+	def_key : integer	: "rotation"		: "Spin Amount"		: 0
+	def_key : string	: "train"			: "Train To Switch"	: ""
+	def_key : string	: "toptrack"		: "Top Track"		: ""
+	def_key : string	: "bottomtrack"		: "Bottom Track"		: ""
+	def_key : integer : "speed"			: "Move/Rotate Speed"	: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Auto Activate Train"	: 1	: false
+		def_flg : "Relink Track"		: 2	: false
+		def_flg : "Start at Bottom"		: 8	: false
+		def_flg : "Rotate Only"			: 16	: false
+		def_flg : "X Axis"			: 64	: false
+		def_flg : "Y Axis"			: 128	: false
+	}
+	$DefOptions [ "movesnd" : "Move Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator 1"		: 1	: false
+		def_flg : "Big Elevator 2"		: 2	: false
+		def_flg : "Tech Elevator 1"		: 3	: false
+		def_flg : "Tech Elevator 2"		: 4 	: false
+		def_flg : "Tech Elevator 3"		: 5	: false
+		def_flg : "Freight Elevator 1"	: 6	: false
+		def_flg : "Freight Elevator 2"	: 7	: false
+		def_flg : "Heavy Elevator"		: 8	: false
+		def_flg : "Rack Elevator"		: 9 	: false
+		def_flg : "Rail Elevator"		: 10	: false
+		def_flg : "Squeak Elevator"		: 11	: false
+		def_flg : "Odd Elevator 1"		: 12	: false
+		def_flg : "Odd Elevator 2"		: 13	: false
+	}
+	$DefOptions [ "stopsnd" : "Stop Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator Stop 1"	: 1 	: false
+		def_flg : "Big Elevator Stop 2"	: 2	: false
+		def_flg : "Freight Elevator Stop"	: 3	: false
+		def_flg : "Heavy Elevator Stop"	: 4	: false
+		def_flg : "Rack Elevator Stop"	: 5	: false
+		def_flg : "Rail Elevator Stop"	: 6	: false
+		def_flg : "Squeak Elevator Stop"	: 7	: false
+		def_flg : "Quick Elevator Stop"	: 8	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_trackchange" : "Track Changer" ] [ "base_solid" ] 
+{
+	def_key : string 	: "globalname"		: "Global Entity Name"	: ""
+	def_key : string	: "targetname"		: "Target Source"		: ""
+	def_key : integer	: "height"			: "Travel Altitude"	: 0
+	def_key : integer	: "rotation"		: "Spin Amount"		: 0
+	def_key : string	: "train"			: "Train To Switch"	: ""
+	def_key : string	: "toptrack"		: "Top Track"		: ""
+	def_key : string	: "bottomtrack"		: "Bottom Track"		: ""
+	def_key : integer : "speed"			: "Move/Rotate Speed"	: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Auto Activate Train"	: 1	: false
+		def_flg : "Relink Track"		: 2	: false
+		def_flg : "Start at Bottom"		: 8	: false
+		def_flg : "Rotate Only"			: 16	: false
+		def_flg : "X Axis"			: 64	: false
+		def_flg : "Y Axis"			: 128	: false
+	}
+	$DefOptions [ "movesnd" : "Move Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator 1"		: 1	: false
+		def_flg : "Big Elevator 2"		: 2	: false
+		def_flg : "Tech Elevator 1"		: 3	: false
+		def_flg : "Tech Elevator 2"		: 4 	: false
+		def_flg : "Tech Elevator 3"		: 5	: false
+		def_flg : "Freight Elevator 1"	: 6	: false
+		def_flg : "Freight Elevator 2"	: 7	: false
+		def_flg : "Heavy Elevator"		: 8	: false
+		def_flg : "Rack Elevator"		: 9 	: false
+		def_flg : "Rail Elevator"		: 10	: false
+		def_flg : "Squeak Elevator"		: 11	: false
+		def_flg : "Odd Elevator 1"		: 12	: false
+		def_flg : "Odd Elevator 2"		: 13	: false
+	}
+	$DefOptions [ "stopsnd" : "Stop Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator Stop 1"	: 1 	: false
+		def_flg : "Big Elevator Stop 2"	: 2	: false
+		def_flg : "Freight Elevator Stop"	: 3	: false
+		def_flg : "Heavy Elevator Stop"	: 4	: false
+		def_flg : "Rack Elevator Stop"	: 5	: false
+		def_flg : "Rail Elevator Stop"	: 6	: false
+		def_flg : "Squeak Elevator Stop"	: 7	: false
+		def_flg : "Quick Elevator Stop"	: 8	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_tracktrain" : "Track, Train" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string 	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "target"			: "First Stop Target"		: ""
+	def_key : integer : "wheels"			: "Distance Between Wheels"	: 50
+	def_key : integer : "height"			: "Height Above Track"		: 4
+	def_key : integer	: "startspeed"		: "Initial Speed"			: 0
+	def_key : integer : "speed"			: "Speed (Units Per Second)"	: 64
+	def_key : integer	: "dmg"			: "Damage On Crush"		: 0
+	def_key : integer : "volume"			: "Volume (10=MAX)"		: 10
+	def_key : string	: "bank"			: "Bank Angle On Turns"		: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "No Pitch (X-Rotation)"	: 1	: false
+		def_flg : "No User Control"		: 2	: false
+		def_flg : "Passable"			: 8	: false
+	}
+	$DefOptions [ "sounds" : "Sound" ]
+	{
+		def_flg : "None"				: 0	: true
+		def_flg : "Rail 1"			: 1	: false
+		def_flg : "Rail 2"			: 2	: false
+		def_flg : "Rail 3"			: 3	: false
+		def_flg : "Rail 4"			: 4	: false
+		def_flg : "Rail 6"			: 5	: false
+		def_flg : "Rail 7"			: 6	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_train" : "Train" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string 	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "target"			: "First Stop Target"		: ""
+	def_key : integer	: "speed"			: "Speed (Units Per Second"	: 0
+	def_key : integer	: "dmg"			: "Damage On Crush"		: 0
+	def_key : integer	: "skin"			: "Contents"			: 0
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not Solid"			: 8	: false
+	}
+	$DefOptions [ "movesnd" : "Move Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator 1"		: 1	: false
+		def_flg : "Big Elevator 2"		: 2	: false
+		def_flg : "Tech Elevator 1"		: 3	: false
+		def_flg : "Tech Elevator 2"		: 4 	: false
+		def_flg : "Tech Elevator 3"		: 5	: false
+		def_flg : "Freight Elevator 1"	: 6	: false
+		def_flg : "Freight Elevator 2"	: 7	: false
+		def_flg : "Heavy Elevator"		: 8	: false
+		def_flg : "Rack Elevator"		: 9 	: false
+		def_flg : "Rail Elevator"		: 10	: false
+		def_flg : "Squeak Elevator"		: 11	: false
+		def_flg : "Odd Elevator 1"		: 12	: false
+		def_flg : "Odd Elevator 2"		: 13	: false
+	}
+	$DefOptions [ "stopsnd" : "Stop Sound" ]
+	{
+		def_flg : "No Sound"			: 0	: true
+		def_flg : "Big Elevator Stop 1"	: 1 	: false
+		def_flg : "Big Elevator Stop 2"	: 2	: false
+		def_flg : "Freight Elevator Stop"	: 3	: false
+		def_flg : "Heavy Elevator Stop"	: 4	: false
+		def_flg : "Rack Elevator Stop"	: 5	: false
+		def_flg : "Rail Elevator Stop"	: 6	: false
+		def_flg : "Squeak Elevator Stop"	: 7	: false
+		def_flg : "Quick Elevator Stop"	: 8	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_traincontrols" : "Train Controls" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"		: "Train Name"	: ""
+}
+$DefEnt [ "func_wall" : "Wall" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string 	: "globalname"		: "Global Entity Name"		: ""
+	def_key : string	: "_minlight"		: "Minimum Light Level"		: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "func_wall_toggle" : "Toggleable Geometry" ] [ "func_wall" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Starts Invisible"	: 1	: false
+	}
+}
+$DefEnt [ "func_water" : "Liquid" ] [ "func_door" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Starts Open"		: 1	: false
+		def_flg : "Use Only"		: 256	: false
+	}
+	$DefOptions [ "skin" : "Contents" ]
+	{
+		def_flg : "Water"			: -3	: true
+		def_flg : "Slime"			: -4	: false
+		def_flg : "Lava"			: -5	: false
+	}
+	def_key : string	: "WaveHeight"	: "Wave Height"		: 3.2
+}
+//
+//
+// Game Entities
+//
+$DefEnt [ "game_counter" : "Fires At Limit" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "delay"		: "Delay Before Trigger"	: ""
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "killtarget"	: "Kill Target"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+	def_key : integer	: "frags"		: "Initial Value"			: 0
+	def_key : integer	: "health"		: "Limit Value"			: 10
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire"	: 1	: false
+		def_flg : "Reset On Fire"	: 2	: false
+	}
+}
+$DefEnt [ "game_counter_set" : "Sets a Game Counter" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+	def_key : integer	: "frags"		: "New Value"			: 10
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire"	: 1	: false
+	}
+}
+$DefEnt [ "game_end" : "Game:End" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+}
+$DefEnt [ "game_player_equip" : "Initial Player Equip" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string 	: "master"		: "Team Master"			: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Use Only"		: 1	: false
+	}
+}
+$DefEnt [ "game_player_hurt" : "Hurts Player" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string 	: "master"		: "Team Master"			: ""
+	def_key : string	: "dmg"		: "Damage To Apply"		: 999
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire"	: 1	: false
+	}
+}
+$DefEnt [ "game_player_team" : "Player Changes Team" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+	def_key : string	: "target"		: "Game_team_master to use" 	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire"	: 1	: false
+		def_flg : "Kill Player"		: 2	: false
+		def_flg : "Gib Player"		: 4	: false
+	}
+}		
+$DefEnt [ "game_score" : "Award/Deduct Points" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+	def_key : integer	: "points"		: "Points To Add (+/-)"		: 1
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Allow Negative" 	: 1	: false
+		def_flg : "Team Points"		: 2	: false
+	}
+}
+$DefEnt [ "game_team_master" : "Team Based Relay" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "delay"		: "Delay Before Trigger"	: ""
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "killtarget"	: "Kill Target"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+	def_key : integer	: "teamindex"	: "Team Index (-1=None)"	: -1
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire" 	: 1	: false
+	}
+	$DefOptions [ "triggerstate" : "Trigger State" ]
+	{
+		def_flg : "Off"			: 0	: true
+		def_flg : "On"			: 1	: false
+		def_flg : "Toggle"		: 2	: false
+	}
+}
+$DefEnt [ "game_team_set" : "Assigns Team To Master" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "delay"		: "Delay Before Trigger"	: ""
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "killtarget"	: "Kill Target"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire" 	: 1	: false
+	}
+}
+$DefEnt [ "game_text" : "HUD Message" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string 	: "master"		: "Master"				: ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "All Players"		: 1	: false
+	}
+	def_key : string	: "message"		: "Message Text"	: ""
+	def_key : string 	: "x"			: "X(0-1.0=left-right,-1=center)"	: -1
+	def_key : string 	: "y"			: "Y(0-1.0=up-down,-1=center)"	: -1
+	def_key : color	: "color"		: "Color1"		: ""
+	def_key : color	: "color2"		: "Color2"		: ""
+	def_key : string	: "fadein"		: "Fade In Time"	: 1.5
+	def_key : string 	: "fadeout"		: "Fade Out Time"	: 0.5
+	def_key : string	: "holdtime"	: "Hold Time"	: 1.2
+	def_key : string	: "fxtime"		: "Scan Time"	: 0.25
+	$DefOptions [ "effect" : "Text Effect" ]
+	{
+		def_flg : "Fade In/Out"		: 0	: true
+		def_flg : "Credits"		: 1	: false
+		def_flg : "Scan Out"		: 2	: false
+	}
+	$DefOptions [ "channel" : "Text Channel" ]
+	{
+		def_flg : "Channel 1"		: 1	: true
+		def_flg : "Channel 2"		: 2	: false
+		def_flg : "Channel 3"		: 3	: false
+		def_flg : "Channel 4"		: 4	: false
+	}
+}
+$DefEnt [ "game_zone_player" : "Player Zone Brush" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "intarget"	: "Target For IN Players"	: ""
+	def_key : string	: "outtarget"	: "Target For OUT Platers"	: ""
+	def_key : string	: "incount"		: "Counter For IN Players"	: ""
+	def_key : string	: "outcount"	: "Counter For OUT Players"	: ""
+
+}
+//
+//
+// Gibshooter
+//
+$DefEnt [ "gibshooter" : "Gib Shooter" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 32"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : integer	: "m_iGibs"		: "Number Of Gibs"		: 3
+	def_key : string	: "delay"		: "Delay Between Shots"		: 0
+	def_key : integer	: "m_flVelocity"	: "Gib Velocity"			: 200
+	def_key : string	: "m_flVariance"	: "Course Variance"		: 0.15
+	def_key : string	: "m_flGibLife"	: "Gib Life"			: 4
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Repeatable" 		: 1	: false
+	}
+}
+//
+// Info Entities
+//
+$DefEnt [ "infodecal" : "Decal" ] [ "base_point" ] 
+{
+	def_att : "size"	: "16 16 16"		
+	def_key : string	: "texture"			: "Decal"			: ""
+	def_key : string	: "targetname"		: "Target Source"		: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"	: 2048	: false
+	}
+}
+$DefEnt [ "info_bigmomma" : "Big Momma Node" ] [ "base_point" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ] 
+	{
+		def_flg : "Run To Node"			: 1	: false
+		def_flg : "Wait Indefinitely"		: 2	: false
+	}
+	def_att : "size"  : "48 48 16"
+	def_key : string	: "target"				: "Next Node"			: ""
+	def_key : string	: "targetname"			: "Target Source"			: ""
+	def_key : string	: "radius"				: "Radius"				: ""
+	def_key : string	: "reachdelay"			: "Wait After Approach"		: ""
+	def_key : string	: "killtarget"			: "Kill Target"			: ""
+	def_key : string 	: "reachtarget"			: "Fire On Approach"		: ""
+	def_key : string	: "reachsequence"			: "Sequence On Approaach"	: ""
+	def_key : string	: "health"				: "Health On Approach"		: ""
+	def_key : string	: "presequence"			: "Sequence Before Approach"	: ""
+}
+$DefEnt [ "info_intermission" : "Intermission Spot" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "8 8 8"
+	def_key : string	: "target"			: "Target"				: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+}
+$DefEnt [ "info_landmark" : "Transition Landmark" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "16 16 16"
+	def_key : string	: "targetname"			: "Target Source"			: ""
+}
+$DefEnt [ "info_node" : "AI Node" ] [ "base_point" ] 
+{
+	def_att : "size"	: "48 48 8"
+}
+$DefEnt [ "info_node_air" : "AI Air Node" ] [ "base_point" ] 
+{
+	def_att : "size"	: "64 64 64"
+}
+$DefEnt [ "info_null" : "Spotlight Target" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+}
+$DefEnt [ "info_player_coop" : "Player Cooperative Start" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "32 32 72"
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"	: 2048	: false
+	}
+}
+$DefEnt [ "info_player_deathmatch" : "Player DM Start" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "32 32 72"
+	def_key : string	: "target"				: "Target"				: ""
+	def_key : string	: "master"				: "Master"				: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"	: 2048	: false
+	}
+}
+$DefEnt [ "info_player_start" : "Player SP Start" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "32 32 72"
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"	: 2048	: false
+	}
+}
+$DefEnt [ "info_target" : "Beam Target" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+
+}
+$DefEnt [ "info_teleport_destination" : "Teleport Destination" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "targetname"		: "Name"				: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"	: 2048	: false
+	}
+}
+//
+// Item Entities
+//
+$DefEnt [ "Item" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 36"
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+}
+$DefEnt [ "item_airtank" : "Airtank" ] [ "Item" ] 
+{}
+$DefEnt [ "item_antidote" : "Poison Antidote" ] [ "Item" ] 
+{}
+$DefEnt [ "item_battery" : "HEV Battery" ] [ "Item" ] 
+{}
+$DefEnt [ "item_healthkit" : "Small Healthkit" ] [ "Item" ] 
+{}
+$DefEnt [ "item_longjump" : "Longjump Module" ] [ "Item" ] 
+{}
+$DefEnt [ "item_security" : "Security Card" ] [ "Item" ] 
+{}
+$DefEnt [ "item_suit" : "HEV Suit" ] [ "Item" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Short Logon" 	: 1	: false
+	}
+}
+//
+//
+// Lights
+//
+$DefEnt [ "light" : "Light:No Source" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : colorb	: "_light"		: "Brightness"			: ""
+	def_key : string	: "pattern"		: "Custom Appearance"		: ""
+	$DefOptions [ "style" : "Appearance" ]
+	{
+		def_flg : "Normal"			: 0	: true
+		def_flg : "Fluorescent Flicker"	: 10	: false
+		def_flg : "Slow, Strong Pulse"	: 2	: false
+		def_flg : "Slow Pulse, No Black"	: 11	: false
+		def_flg : "Gentle Pulse"		: 5	: false
+		def_flg : "Flicker A"			: 1	: false
+		def_flg : "Flicker B"			: 6	: false
+		def_flg : "Candle A"			: 3	: false
+		def_flg : "Candle B"			: 7	: false
+		def_flg : "Fast Strobe"			: 4	: false
+		def_flg : "Slow Strobe"			: 9	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Initially Dark"	: 1	: false
+	}
+}
+$DefEnt [ "light_spot" : "Light:Spotlight" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "target"		: "Target Destination"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : integer	: "_cone"		: "Inner Angle"			: 30
+	def_key : integer	: "_cone2"		: "Outer Angle"			: 45
+	def_key : integer	: "pitch"		: "Pitch"				: -90
+	def_key : colorb	: "_light"		: "Brightness"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string	: "pattern"		: "Custom Appearance"		: ""
+	$DefOptions [ "style" : "Appearance" ]
+	{
+		def_flg : "Normal"			: 0	: true
+		def_flg : "Fluorescent Flicker"	: 10	: false
+		def_flg : "Slow, Strong Pulse"	: 2	: false
+		def_flg : "Slow Pulse, No Black"	: 11	: false
+		def_flg : "Gentle Pulse"		: 5	: false
+		def_flg : "Flicker A"			: 1	: false
+		def_flg : "Flicker B"			: 6	: false
+		def_flg : "Candle A"			: 3	: false
+		def_flg : "Candle B"			: 7	: false
+		def_flg : "Fast Strobe"			: 4	: false
+		def_flg : "Slow Strobe"			: 9	: false
+	}
+	$DefOptions [ "_sky" : "Is Sky" ]
+	{
+		def_flg : "No"		: 0	: true
+		def_flg : "Yes"		: 1	: false
+	}
+}
+$DefEnt [ "light_environment" : "Light:Environment" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : integer	: "pitch"		: "Pitch"				: -90
+	def_key : colorb	: "_light"		: "Brightness"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+}
+//
+// Momentary Entities
+//
+$DefEnt [ "momentary_door" : "Momentary Door" ] [ "func_door" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Starts Open"	: 1	: false
+	}
+}
+$DefEnt [ "momentary_rot_button" : "Directional Wheel Control" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : integer	: "speed"			: "Speed"				: 100
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : integer	: "distance"		: "Distance (Degrees)"		: 90
+	def_key : integer	: "returnspeed"		: "Auto-return Speed"		: 0
+	def_key : integer	: "_minlight"		: "Minimum Light Level"		: 0
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags"]
+	{
+		def_flg : "Door Hack"			: 1	: false
+		def_flg : "Not Useable"			: 2	: false
+		def_flg : "Auto Return"			: 16	: false
+		def_flg : "X Axis"			: 64	: false
+		def_flg : "Y Axis"			: 128	: false
+	}
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None"			: 0	: true
+		def_flg : "Big Zap & Warmup"	: 1	: false
+		def_flg : "Access Denied"	: 2	: false
+		def_flg : "Access Granted"	: 3	: false
+		def_flg : "Quick Combolock"	: 4	: false
+		def_flg : "Power Deadbolt 1"	: 5	: false
+		def_flg : "Power Deadbolt 2"	: 6	: false
+		def_flg : "Plunger"		: 7	: false
+		def_flg : "Small Zap"		: 8	: false
+		def_flg : "Keycard Sound"	: 9	: false
+		def_flg : "Squeaky"		: 21	: false
+		def_flg : "Squeaky Pneumatic"	: 22	: false
+		def_flg : "Ratchet Groan"	: 23	: false
+		def_flg : "Clean Ratchet"	: 24	: false
+		def_flg : "Gas Clunk"		: 25	: false
+	}
+}
+//
+// Monsters
+//
+$DefEnt [ "Monster" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string	: "TriggerTarget"		: "Trigger Target"		: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefOptions [ "TriggerCondition" : "Trigger Condition" ]
+	{
+		def_flg : "No Trigger"				: 0	: true
+		def_flg : "See Player, Mad"			: 1	: false
+		def_flg : "Take Damage"				: 2	: false
+		def_flg : "50% Health Left"			: 3	: false
+		def_flg : "Death"					: 4	: false
+		def_flg : "(N/A) Squad Member Dead"		: 5	: false
+		def_flg : "(N/A) Squad Leader Dead"		: 6	: false
+		def_flg : "Hear World"				: 7	: false
+		def_flg : "Hear Player"				: 8	: false
+		def_flg : "Hear Combat"				: 9	: false
+		def_flg : "See Player, Unconditional"	: 10	: false
+		def_flg : "See Player, Noncombat"		: 11	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Wait Til Seen"	: 1	: false
+		def_flg : "Gag"			: 2	: false
+		def_flg : "Monster Clip"	: 4	: false
+		def_flg : "Prisoner"		: 16	: false
+		def_flg : "Wait For Script"	: 128	: false
+		def_flg : "Pre-Disaster"	: 256	: false
+		def_flg : "Fade Corpse"		: 512	: false
+	}
+}
+$DefEnt [ "TalkMonster" : @VIRTUAL : @NULL ] [ "Monster" ] 
+{
+	def_key : string	: "UseSentence"		: "Use Sentence"		: ""
+	def_key : string 	: "UnUseSentence"		: "Un-Use Sentence"	: ""
+}
+$DefEnt [ "monster_alien_controller" : "Monster:Alien Controller" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 72"
+}
+$DefEnt [ "monster_alien_grunt" : "Monster:Alien Grunt" ] [ "Monster" ] 
+{
+	def_att : "size"	: "64 64 64"
+	def_key : string	: "netname"		: "Squad Name"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SquadLeader"		: 32	: false
+	}
+}
+$DefEnt [ "monster_alien_slave" : "Monster:Alien Slave" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "netname"		: "Squad Name"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SquadLeader"		: 32	: false
+		def_flg : "Ignore Player"	: 64	: false
+	}
+}
+$DefEnt [ "monster_apache" : "Monster:Apache" ] [ "Monster" ] 
+{
+	def_att : "size"	: "720 720 180"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "No Wreckage"		: 8	: false
+		def_flg : "Start Inactive"	: 64	: false
+	}
+}
+$DefEnt [ "monster_babycrab" : "Monster:Babycrab" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 36"
+}
+$DefEnt [ "monster_barnacle" : "Monster:Barnacle" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 36"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "monster_barney" : "Monster:Barney" ] [ "TalkMonster" ] 
+{
+	def_att : "size"	: "32 32 72"
+	$DefOptions [ "suspicious" : "Suspicious" ]
+	{
+		def_flg : "No"	: 0	: true
+		def_flg : "Yes"	: 10	: false
+	}
+}
+$DefEnt [ "monster_barney_dead" : "Monster:Barney Dead" ] [ "base_point" ] 
+{
+	def_att : "size" : "32 32 72"
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+	$DefOptions [ "pose" : "Pose" ]
+	{
+		def_flg : "On Back"			: 0		: true
+		def_flg : "On Side"			: 1		: false
+		def_flg : "On Stomach"			: 2		: false
+	}
+}
+$DefEnt [ "monster_bigmomma" : "Monster:Big Momma" ] [ "Monster" ] 
+{
+	def_att : "size"	: "190 190 190"
+	def_key : string	: "netname"	: "First Node"	: ""
+}
+$DefEnt [ "monster_bloater" : "Monster:Bloater" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 72"
+}
+$DefEnt [ "monster_bullchicken" : "Monster:Bullchicken" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "64 64 64"
+}
+$DefEnt [ "monster_cockroach" : "Monster:Cockroach" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "6 6 6"
+}
+$DefEnt [ "monster_flyer-flock" : "Monster:Flyer Flock" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "32 32 16"
+	def_key : integer	: "iFlockSize"		: "Flock Size"	: 8
+	def_key : integer : "flFlockRadius"		: "Flock Radius"	: 128
+}
+$DefEnt [ "monster_furniture" : "Monster:Furniture" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "32 32 72"
+	def_key : string	: "model"		: "Model"	: ""
+}
+$DefEnt [ "monster_gargantua" : "Monster:Gargantua" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "64 64 128"
+}
+$DefEnt [ "monster_generic" : "Monster:Generic" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "32 32 72"
+	def_key : string	: "model"		: "Model"		: ""
+	def_key : integer	: "body"		: "Body"		: 0
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not Solid"		: 4		: false
+	}
+}
+$DefEnt [ "monster_gman" : "Monster:G-Man" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "32 32 72"
+}
+$DefEnt [ "monster_grunt_repel" : "Monster:Grunt Repel" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 72"
+}
+$DefEnt [ "weapon_render" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+}
+$DefEnt [ "monster_handgrenade" : "Monster:Handgrenade" ] [ "weapon_render" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "monster_satchelcharge" : "Monster:Satchel" ] [ "weapon_render" ] 
+{
+	def_att : "size"	: "32 32 32"
+	def_key : string	: "targetname"		: "Target Source"			: ""
+}
+$DefEnt [ "monster_headcrab" : "Monster:Head Crab" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "32 32 36"
+}
+$DefEnt [ "monster_hevsuit_dead" : "Monster:HEV Dead" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+	$DefOptions [ "pose" : "Pose" ] 
+	{
+		def_flg : "On Back"		: 0	: true
+		def_flg : "Seated"		: 1	: false
+		def_flg : "On Stomach"		: 2	: false
+		def_flg : "On Table"		: 3	: false
+	}
+}
+$DefEnt [ "monster_hgrunt_dead" : "Monster:Grunt Dead" ] [ "base_point" ] 
+{
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+	$DefOptions [ "body" : "Body" ]
+	{
+		def_flg : "Grunt With Gun"		: 0		: true
+		def_flg : "Commander With Gun"	: 1		: false
+		def_flg : "Grunt - No Gun"		: 2		: false
+		def_flg : "Commander - No gun"	: 3		: false
+	}
+	$DefOptions [ "pose" : "Pose" ]
+	{
+		def_flg : "On Stomach"			: 0		: true
+		def_flg : "On Side"			: 1		: false
+		def_flg : "Seated"			: 2		: false
+	}
+}
+$DefEnt [ "monster_houndeye" : "Monster:Houndeye" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 36"
+	def_key : string	: "netname"		: "Squad Name"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SquadLeader"		: 32	: false
+	}
+}
+$DefEnt [ "monster_human_assassin" : "Monster:Human Assassin" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 72"
+}
+$DefEnt [ "monster_human_grunt" : "Monster:Human Grunt" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "32 32 72"
+	def_key : string	: "netname"		: "Squad Name"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SquadLeader"		: 32	: false
+	}
+	$DefOptions [ "weapons" : "Weapons" ]
+	{
+		def_flg : "9mmAR"		: 1	: true
+		def_flg : "9mmAR + HG"	: 3	: false
+		def_flg : "9mmAR + GL"	: 5	: false
+		def_flg : "Shotgun"	: 8	: false
+		def_flg : "Shotgun + HG"	: 10	: false
+	}
+}
+$DefEnt [ "monster_ichthyosaur" : "Monster:Ichthyosaur" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "62 62 64"
+}
+$DefEnt [ "monster_leech" : "Monster:Leech" ] [ "Monster" ] 
+{
+	def_att : "size"	: "12 12 6"
+}
+$DefEnt [ "monster_miniturret" : "Monster:Miniturret" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 64"
+	$DefOptions [ "orientation" : "Orientation" ]
+	{
+		def_flg : "Floor Mount"		: 0	: true
+		def_flg : "Ceiling Mount"	: 1	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Autostart"		: 32	: false
+		def_flg : "Start inactive"	: 64	: false
+	}
+}
+$DefEnt [ "monster_nihilanth" : "Monster:Nihilanth" ] [ "Monster" ] 
+{
+	def_att : "size"	: "384 384 384"
+}
+$DefEnt [ "monster_osprey" : "Monster:Osprey" ] [ "Monster" ] 
+{
+	def_att : "size"	: "960 960 136"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start Inactive" 	: 64	: false
+	}
+}
+$DefEnt [ "monster_rat" : "Monster:Rat" ] [ "Monster" ] 
+{
+	def_att : "size"	: "12 12 6"
+}
+$DefEnt [ "monster_scientist" : "Monster:Scientist" ] [ "TalkMonster" ] 
+{
+	$DefOptions [ "body"	: "Body" ]
+	{
+		def_flg : "Random"		: -1	: true
+		def_flg : "Glasses"		: 0	: false
+		def_flg : "Einstein"		: 1	: false
+		def_flg : "Luther"		: 2	: false
+		def_flg : "Slick"			: 3	: false
+	}
+	def_att : "size"	: "32 32 72"
+	$DefOptions [ "suspicious" : "Suspicious" ]
+	{
+		def_flg : "No"			: 0	: true
+		def_flg : "Yes"	: 10	: false
+	}
+}
+$DefEnt [ "monster_scientist_dead" : "Monster:Scientist Dead" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not In Deathmatch"		: 2048	: false
+	}
+	$DefOptions [ "body"	: "Body" ]
+	{
+		def_flg : "Random"		: -1	: true
+		def_flg : "Glasses"		: 0	: false
+		def_flg : "Einstein"		: 1	: false
+		def_flg : "Luther"		: 2	: false
+		def_flg : "Slick"			: 3	: false
+	}
+	$DefOptions [ "pose" : "Pose" ] 
+	{
+		def_flg : "On Back"		: 0	: true
+		def_flg : "On Stomach"		: 1	: false
+		def_flg : "Sitting"		: 2	: false
+		def_flg : "Hanging"		: 3	: false
+		def_flg : "Table 1"		: 4	: false
+		def_flg : "Table 2"		: 5	: false
+		def_flg : "Table 3"		: 6	: false
+	}
+}
+$DefEnt [ "monster_sitting_scientist" : "Monster:Scientist Sit" ] [ "Monster" ] 
+{
+	def_att : "size"	: "28 28 94"
+	$DefOptions [ "body"	: "Body" ]
+	{
+		def_flg : "Random"		: -1	: true
+		def_flg : "Glasses"		: 0	: false
+		def_flg : "Einstein"		: 1	: false
+		def_flg : "Luther"		: 2	: false
+		def_flg : "Slick"			: 3	: false
+	}
+	$DefOptions [ "suspicious" : "Suspicious" ]
+	{
+		def_flg : "No"			: 0	: true
+		def_flg : "Yes"	: 10	: false
+	}
+}
+$DefEnt [ "monster_sentry" : "Monster:Sentry" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 72"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Autostart"	: 32	: false
+		def_flg : "Start Inactive"	: 64	: false
+	}
+}
+$DefEnt [ "monster_snark" : "Monster:Snark" ] [ "Monster" ] 
+{
+	def_att : "size"	: "32 32 36"
+}
+$DefEnt [ "monster_tentacle" : "Monster:Tentacle" ] [ "Monster" ] 
+{
+	def_att : "size"	: "64 64 64 "
+	def_key : integer	: "sweeparc"	: "Sweep Arc"	: 130
+	$DefOptions [ "sound" : "Tap Sound" ]
+	{
+		def_flg : "None"		: -1	: true
+		def_flg : "Silo"		: 0	: false
+		def_flg : "Dirt"		: 1	: false
+		def_flg : "Water"		: 2	: false
+	}
+}
+$DefEnt [ "monster_tripmine" : "Monster:Tripmine" ] [ "Monster" ] 
+{
+	def_att : "size"	: "16 16 16"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Instant On"	: 1	: true
+	}
+}
+$DefEnt [ "monster_turret" : "Monster:Turret" ] [ "Monster" ] 
+{
+	def_att : "size"	: "64 64 64"
+	$DefOptions [ "orientation" : "Orientation" ]
+	{
+		def_flg : "Floor Mount"		: 0	: true
+		def_flg : "Ceiling Mount"	: 1	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Autostart"		: 32	: false
+		def_flg : "Start Inactive"	: 64	: false
+	}
+}
+$DefEnt [ "monster_zombie" : "Monster:Zombie" ] [ "Monster" ] 
+{
+	def_att : "size" 	: "32 32 72"
+}
+$DefEnt [ "monstermaker" : "Monster Maker" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 32"
+	def_key : string	: "target"			: "Target On Release"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string	: "monstertype"		: "Monster Type"			: ""
+	def_key : string	: "netname"			: "Children's Name"		: ""
+	def_key : integer : "monstercount"		: "Number Of Monsters"		: -1
+	def_key : string 	: "delay"			: "Frequency"			: ""
+	def_key : integer : "m_imaxlivechildren"	: "Max Live Children"		: 5
+	$DefFlags [ "spawnflags" : "Spawn Flags" ] 
+	{
+		def_flg : "Start On" 		: 1	: false
+		def_flg : "PVS On/OFF"		: 2	: false
+		def_flg : "Cyclic"		: 4	: false
+		def_flg : "Monster Clip"	: 8	: false
+	}
+}
+//
+// Multi
+//
+$DefEnt [ "multi_manager" : "Multi Target Manager" ] [ "base_point" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Multithreaded"	: 1	: false
+	}
+}
+$DefEnt [ "multisource" : "Multisource" ] [ "base_point" ] 
+{
+	def_key : string	: "target"		: "Target"			: ""
+	def_key : string	: "targetname"	: "Target Source"		: ""
+	def_key : string	: "globalstate"	: "Global State Master"	: ""
+}
+//
+//
+// Path
+//
+$DefEnt [ "path_corner" : "Platform Stop" ] [ "base_point" ] 
+{
+	def_att : "size"	: "16 16 16"
+	def_key : string	: "target"			: "Next Stop Target"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string	: "message"			: "Fire On Pass"			: ""
+	def_key : integer	: "wait"			: "Wait Here (secs)"		: 0
+	def_key : integer	: "speed"			: "New Train Speed"		: 0
+	def_key : integer	: "yaw_speed"		: "New Train Rot. Speed"	: 0
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Wait For Retrigger"	: 1	: false
+		def_flg : "Teleport"			: 2	: false
+		def_flg : "Fire Once"			: 4	: false
+	}
+}
+$DefEnt [ "path_track" : "Train Track Path" ] [ "base_point" ] 
+{
+	def_att : "size"	: "16 16 16"
+	def_key : string	: "target"		: "Next Stop Target"		: ""
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "angles"		: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string	: "message"		: "Fire On Pass"			: ""
+	def_key : string	: "altpath"		: "Branch Path"			: ""
+	def_key : string	: "netname"		: "Fire On Dead End"		: ""
+	def_key : integer	: "speed"		: "New Train Speed"		: 0
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Disabled"		: 1	: false
+		def_flg : "Fire Once"		: 2	: false
+		def_flg : "Branch Reverse"	: 4	: false
+		def_flg : "Disable Train"	: 8	: false
+	}
+}
+//
+//
+// Player Effects
+//
+$DefEnt [ "player_loadsaved" : "Load Auto Save Game" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 32"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	def_key : string	: "duration"	: "Fade Duration"		: 2
+	def_key : string 	: "holdtime"	: "Hold Fade"		: 0
+	def_key : integer	: "renderamt"	: "Fade Alpha"		: 255
+	def_key : color	: "renderolor"	: "Fade Color"		: "0 0 0"
+	def_key : string	: "messagetime"	: "Show Message Delay"	: 0
+	def_key : string	: "message"		: "Message To Display"	: ""
+	def_key : string	: "loadtime"	: "Reload Delay"		: 0
+}
+$DefEnt [ "player_weaponstrip" : "Strips Player Weapons" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "32 32 32"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+}
+$DefEnt [ "speaker" : "Announcement Speaker" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	$DefOptions [ "preset" : "Announcement Presets" ]
+	{
+		def_flg : "None"			: 0	: true
+		def_flg : "C1A0 Announcer"	: 1	: false
+		def_flg : "C1A1 Announcer"	: 2	: false
+		def_flg : "C1A2 Announcer"	: 3	: false
+		def_flg : "C1A3 Announcer"	: 4	: false
+		def_flg : "C1A4 Announcer"	: 5	: false
+		def_flg : "C2A1 Announcer"	: 6	: false
+		def_flg : "C2A2 Announcer"	: 7	: false
+		//def_flg : "C2A3 Announcer"	: 8	: false
+		def_flg : "C2A4 Announcer"	: 9	: false
+		//def_flg : "C1A0 Announcer"	: 10	: false
+		def_flg : "C3A1 Announcer"	: 11	: false
+		def_flg : "C3A2 Announcer"	: 12	: false
+	}
+	def_key : string	: "message"		: "Sentence Group Name"		: ""
+	def_key : integer	: "health"		: "Volume (MAX=10)"		: 5
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start Silent"	: 1	: false
+	}
+}
+$DefEnt [ "target_cdaudio" : "CD Audio Target" ] [ "base_point" ] 
+{
+	def_att : "size" 	: "8 8 8"
+	def_key : string	: "targetname"	: "Target Source"			: ""
+	$DefOptions [ "health" : "Track #" ]
+	{
+		def_flg : "Stop"			: -1	: true
+		def_flg : "Track 01"		: 1	: false
+		def_flg : "Track 02"		: 2	: false
+		def_flg : "Track 03"		: 3	: false
+		def_flg : "Track 04"		: 4	: false
+		def_flg : "Track 05"		: 5	: false
+		def_flg : "Track 06"		: 6	: false
+		def_flg : "Track 07"		: 7	: false
+		def_flg : "Track 08"		: 8	: false
+		def_flg : "Track 09"		: 9	: false
+		def_flg : "Track 10"		: 10	: false
+		def_flg : "Track 11"		: 11	: false
+		def_flg : "Track 12"		: 12	: false
+		def_flg : "Track 13"		: 13	: false
+		def_flg : "Track 14"		: 14	: false
+		def_flg : "Track 15"		: 15	: false
+		def_flg : "Track 16"		: 16	: false
+		def_flg : "Track 17"		: 17	: false
+		def_flg : "Track 18"		: 18	: false
+		def_flg : "Track 19"		: 19	: false
+		def_flg : "Track 20"		: 20	: false
+		def_flg : "Track 21"		: 21	: false
+		def_flg : "Track 22"		: 22	: false
+		def_flg : "Track 23"		: 23	: false
+		def_flg : "Track 24"		: 24	: false
+		def_flg : "Track 25"		: 25	: false
+		def_flg : "Track 26"		: 26	: false
+		def_flg : "Track 27"		: 27	: false
+		def_flg : "Track 28"		: 28	: false
+		def_flg : "Track 29"		: 29	: false
+		def_flg : "Track 30"		: 30	: false
+	}
+	def_key : string	: "radius"		: "Player Radius"	: ""
+}
+//
+//
+// Scripted Sequences
+//
+$DefEnt [ "scripted_sentence" : "Scripted Sentence" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "sentence"	: "Sentence Name"		: ""
+	def_key : string	: "entity"		: "Speaker Type"		: ""
+	def_key : string	: "duration"	: "Sentence Time"		: 3
+	def_key : integer	: "radius"		: "Search Radius"		: 512
+	def_key : string	: "refire"		: "Delay Before Refire"	: 3
+	def_key : string	: "listener"	: "Listener Type"		: ""
+	def_key : string	: "volume"		: "Volume (0-10)"		: 10
+	$DefOptions [ "attenuation" : "Sound Radius" ]
+	{
+		def_flg : "Small Radius"	: 0	: true
+		def_flg : "Medium Radius"	: 1	: false
+		def_flg : "Large Radius"	: 2	: false
+		def_flg : "Play Everywhere"	: 3	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Fire Once"		: 1	: true
+		def_flg : "Followers Only"	: 2	: false
+		def_flg : "Interupt Speech"	: 4	: true
+		def_flg : "Concurrent"		: 8	: false
+	}
+}
+$DefEnt [ "scripted_sequence" : "Scripted Sequence" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 72"
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	def_key : string	: "m_iszEntity"		: "Target Monster"		: ""
+	def_key : string	: "m_iszPlay"		: "Action Animation"		: ""
+	def_key : string 	: "m_iszIdle"		: "Idle Animation"		: ""
+	def_key : integer	: "m_flRadius"		: "Search Radius"			: 512
+	def_key : integer	: "m_flRepeat"		: "Repeat Rate ms"		: 0
+	$DefOptions [ "m_fMoveTo" : "Move To Position" ]
+	{
+		def_flg : "No"			: 0	: true
+		def_flg : "Walk"			: 1	: false
+		def_flg : "Run"			: 2	: false
+		def_flg : "Instantaneous"	: 4	: false
+		def_flg : "No - Turn To Face"	: 5	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Repeatable"			: 4	: false
+		def_flg : "Leave Corpse"		: 8	: false
+		def_flg : "No Interruptions"		: 32	: false
+		def_flg : "Override AI"			: 64	: false
+		def_flg : "No Script Movement"	: 128	: false
+	}
+}
+//
+//
+// Triggers
+//
+$DefEnt [ "trigger_auto" : "Trigger:Auto" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "globalstate"		: "Global State To Read"	: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire"			: 1		: false
+	}
+	$DefOptions [ "triggerstate" : "Trigger State" ]
+	{
+		def_flg : "Off"					: 0		: true
+		def_flg : "On"					: 1		: false
+		def_flg : "Toggle"				: 2		: false
+	}
+}
+$DefEnt [ "trigger_autosave" : "Trigger:AutoSave" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string 	: "master"			: "Master"				: ""
+}
+$DefEnt [ "trigger_camera" : "Trigger:Camera" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "delay"			: "Delay Before Trigger"		: ""
+	def_key : string	: "target"			: "Target Destination"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"				: ""
+	def_key : integer	: "wait"			: "Hold Time"				: 10
+	def_key : string	: "moveto"			: "Path Corner"				: ""
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string	: "speed"			: "Initial Speed"				: ""
+	def_key : string	: "acceleration"		: "Acceleration (units/sec^2)"	: 500
+	def_key : string	: "deceleration"		: "Deceleration (units/sec^2)"	: 500
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start At Player"		: 1	: true
+		def_flg : "Follow Player"		: 2	: true
+		def_flg : "Freeze Player"		: 4	: false
+	}
+}
+$DefEnt [ "trigger_cdaudio" : "Trigger:CD Audio" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	$DefOptions [ "health" : "Track #" ]
+	{
+		def_flg : "Stop"			: -1	: true
+		def_flg : "Track 1"		: 1	: false
+		def_flg : "Track 2"		: 2	: false
+		def_flg : "Track 3"		: 3	: false
+		def_flg : "Track 4"		: 4	: false
+		def_flg : "Track 5"		: 5	: false
+		def_flg : "Track 6"		: 6	: false
+		def_flg : "Track 7"		: 7	: false
+		def_flg : "Track 8"		: 8	: false
+		def_flg : "Track 9"		: 9	: false
+		def_flg : "Track 10"		: 10	: false
+		def_flg : "Track 11"		: 11	: false
+		def_flg : "Track 12"		: 12	: false
+		def_flg : "Track 13"		: 13	: false
+		def_flg : "Track 14"		: 14	: false
+		def_flg : "Track 15"		: 15	: false
+		def_flg : "Track 16"		: 16	: false
+		def_flg : "Track 17"		: 17	: false
+		def_flg : "Track 18"		: 18	: false
+		def_flg : "Track 19"		: 19	: false
+		def_flg : "Track 20"		: 20	: false
+		def_flg : "Track 21"		: 21	: false
+		def_flg : "Track 22"		: 22	: false
+		def_flg : "Track 23"		: 23	: false
+		def_flg : "Track 24"		: 24	: false
+		def_flg : "Track 25"		: 25	: false
+		def_flg : "Track 26"		: 26	: false
+		def_flg : "Track 27"		: 27	: false
+		def_flg : "Track 28"		: 28	: false
+		def_flg : "Track 29"		: 29	: false
+		def_flg : "Track 30"		: 30	: false
+	}
+}
+$DefEnt [ "trigger_changelevel" : "Trigger:Change Level" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"				: ""
+	def_key : string	: "map"			: "New Map Name"				: ""
+	def_key : string	: "landmark"		: "Landmark Name"				: ""
+	def_key : string	: "changetarget"		: "Change Target"				: ""
+	def_key : string	: "changedelay"		: "Change Target Delay"			: 0
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "No Intermission"		: 1	: false
+		def_flg : "Use Only"			: 2	: false
+	}
+}
+$DefEnt [ "trigger_changetarget" : "Trigger:Change Target" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "m_iszNewTarget"	: "New Target"			: ""
+}
+$DefEnt [ "trigger_counter" : "Trigger:Counter" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : integer	: "count"			: "Count Before Activation"	: 2
+	def_key : string	: "netname"			: "Target Path"			: ""
+	def_key : integer	: "style"			: "Style"				: 32
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "message"			: "Message (set sound too!)"	: ""
+	$DefOptions [ "sounds" : "Sound Style" ]
+	{
+		def_flg : "No Sound"		: 0	: true
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "No Clients"			: 2	: false
+		def_flg : "Pushables"			: 4	: false
+		def_flg : "No Message"			: 1	: false
+	}
+}
+$DefEnt [ "trigger_endsection" : "Trigger:Endsection" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "section"			: "Section"				: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Use Only"			: 1	: false
+	}
+}
+$DefEnt [ "trigger_gravity" : "Trigger:Gravity" ] [ "base_solid" ] 
+{
+	def_key : integer	: "gravity"			: "Gravity (0-1)"			: 1
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "netname"			: "Target Path"			: ""
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : string	: "message"			: "Message (set sound too!)"	: ""
+	$DefOptions [ "sounds" : "Sound Style" ]
+	{
+		def_flg : "No Sound"		: 0	: true
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Monsters"			: 1	: false
+		def_flg : "No Clients"			: 2	: false
+		def_flg : "Pushables"			: 4	: false
+	}
+}
+$DefEnt [ "trigger_hurt" : "Trigger:Hurt" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : integer	: "dmg"			: "Damage"				: 10
+	def_key : string	: "delay"			: "Trigger Delay"			: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Target Once"			: 1	: false
+		def_flg : "Start Off"			: 2	: false
+		def_flg : "No Clients"			: 8	: false
+		def_flg : "Fire Client Only"		: 16	: false
+		def_flg : "Touch Client Only"		: 32	: false
+	}
+	$DefOptions [ "damagetype" : "Damage Type" ]
+	{
+		def_flg : "Generic"			: 0		: true
+		def_flg : "Crush"				: 1		: false
+		def_flg : "Bullet"			: 2		: false
+		def_flg : "Slash"				: 4		: false
+		def_flg : "Burn"				: 8		: false
+		def_flg : "Freeze"			: 16		: false
+		def_flg : "Fall"				: 32		: false
+		def_flg : "Blast"				: 64		: false
+		def_flg : "Club"				: 128		: false
+		def_flg : "Shock"				: 256		: false
+		def_flg : "Sonic"				: 512		: false
+		def_flg : "Energybeam"			: 1024	: false
+		def_flg : "Drown"				: 16384	: false
+		def_flg : "Paralyze"			: 32768	: false
+		def_flg : "Nerve Gas"			: 65536	: false
+		def_flg : "Poison"			: 131072	: false
+		def_flg : "Radiation"			: 262144	: false
+		def_flg : "Drown Recover"		: 524288	: false
+		def_flg : "Chemical"			: 1048576	: false
+		def_flg : "Slow Burn"			: 2097152	: false
+		def_flg : "Slow Freeze"			: 4194304	: false
+	}
+}
+$DefEnt [ "trigger_monster_jump" : "Trigger:Monster Jump" ] [ "base_solid" ] 
+{
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : integer	: "speed"			: "Jump Speed"			: 40
+	def_key : integer	: "height"			: "Jump Height"			: 128
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+}
+$DefEnt [ "trigger_multiple" : "Trigger:Multiple" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "netname"			: "Target Path"			: ""
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : string	: "message"			: "Message (set sound too!)"	: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : integer	: "wait"			: "Reset Delay"			: 10
+	$DefOptions [ "sounds" : "Sound Style" ]
+	{
+		def_flg : "No Sound"		: 0	: true
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Monsters"			: 1	: false
+		def_flg : "No Clients"			: 2	: false
+		def_flg : "Pushables"			: 4	: false
+	}
+}
+$DefEnt [ "trigger_once" : "Trigger:Once" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "netname"			: "Target Path"			: ""
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : string	: "message"			: "Message (set sound too!)"	: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	$DefOptions [ "sounds" : "Sound Style" ]
+	{
+		def_flg : "No Sound"		: 0	: true
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Monsters"			: 1	: false
+		def_flg : "No Clients"			: 2	: false
+		def_flg : "Pushables"			: 4	: false
+	}
+}
+$DefEnt [ "trigger_push" : "Trigger:Push" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "netname"			: "Target Path"			: ""
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : string	: "message"			: "Message (set sound too!)"	: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : integer	: "speed"			: "Speed Of Push"			: 40
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "sounds" : "Sound Style" ]
+	{
+		def_flg : "No Sound"		: 0	: true
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Monsters"			: 1	: false
+		def_flg : "No Clients"			: 2	: false
+		def_flg : "Pushables"			: 4	: false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Once Only"			: 1	: false
+		def_flg : "Start Off"			: 2	: false
+	}
+}
+$DefEnt [ "trigger_relay" : "Trigger:Relay" ] [ "base_point" ] 
+{
+	def_att : "size"	: "8 8 8"
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Remove On Fire"		: 1	: false
+	}
+	$DefOptions [ "triggerstate" : "Trigger State" ]
+	{
+		def_flg : "Off"				: 0	: false
+		def_flg : "On"				: 1	: false
+		def_flg : "Toggle"			: 2	: false
+	}
+}
+$DefEnt [ "trigger_teleport" : "Trigger:Teleport" ] [ "base_solid" ] 
+{
+	def_key : string	: "target"			: "Target Destination"		: ""
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "killtarget"		: "Kill Target"			: ""
+	def_key : string	: "netname"			: "Target Path"			: ""
+	def_key : string	: "master"			: "Master"				: ""
+	def_key : string	: "message"			: "Message (set sound too!)"	: ""
+	def_key : string	: "delay"			: "Delay Before Trigger"	: ""
+	$DefOptions [ "sounds" : "Sound Style" ]
+	{
+		def_flg : "No Sound"		: 0	: true
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Monsters"			: 1	: false
+		def_flg : "No Clients"			: 2	: false
+		def_flg : "Pushables"			: 4	: false
+	}
+}
+$DefEnt [ "trigger_transition" : "Trigger:Transition" ] [ "base_solid" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+}
+//
+//
+// Weapons
+//
+$DefEnt [ "weaponbox" : "Weapon Box" ] [ "base_point" ] 
+{
+	def_att : "size"	: "32 32 64"
+}
+$DefEnt [ "weapon_crowbar" : "Weapon:Crowbar" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_9mmhandgun" : "Weapon:9mm" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_357" : "Weapon:357" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_9mmAR" : "Weapon:9mmAR" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_shotgun" : "Weapon:Shotgun" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_rpg" : "Weapon:RPG" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_gauss" : "Weapon:Gauss" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_crossbow" : "Weapon:Crossbow" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+	$DefOptions [ "sequence" : "Placement" ]
+	{
+		def_flg : "Normal (flat)"		: 0	: true
+		def_flg : "Realistic (tilted)"	: 1	: false
+	}
+}
+$DefEnt [ "weapon_egon" : "Weapon:Egon" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_tripmine" : "Weapon:Tripmine" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_satchel" : "Weapon:Satchel" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_handgrenade" : "Weapon:Handgrenade" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_snark" : "Weapon:Snark" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "weapon_hornetgun" : "Weapon:Hornetgun" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+}
+$DefEnt [ "world_items" : "World Items" ] [ "Weapon" ] 
+{
+	def_att : "size"	: "32 32 32"
+	$DefOptions [ "type" : "Types" ] 
+	{
+		def_flg : "Antidote"		: 42	: true
+		def_flg : "Security Card" 	: 43	: false
+		def_flg : "Battery"		: 44	: false
+		def_flg : "Suit"			: 45	: false
+	}
+}
+//
+// Xen
+//
+$DefEnt [ "xen_render" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_key : string	: "targetname"		: "Target Source"			: ""
+	def_key : string	: "angles"			: "Pitch Yaw Roll (Y Z X)"	: "0 0 0"
+	$DefOptions [ "renderfx" : "Render FX" ]
+	{
+		def_flg : "Normal"				: 0  	: true
+		def_flg : "Slow Pulse"				: 1  	: false
+		def_flg : "Fast Pulse"				: 2	: false
+		def_flg : "Slow Wide Pulse"			: 3	: false
+		def_flg : "Fast Wide Pulse"			: 4  	: false
+		def_flg : "Slow Strobe"				: 9	: false
+		def_flg : "Fast Strobe"				: 10	: false
+		def_flg : "Faster Strobe"			: 11	: false
+		def_flg : "Slow Flicker"			: 12 	: false
+		def_flg : "Fast Flicker"			: 13 	: false
+		def_flg : "Slow Fade Away"			: 5	: false
+		def_flg : "Fast Fade Away"			: 6	: false
+		def_flg : "Slow Become Solid"			: 7	: false
+		def_flg : "Fast Become Solid"			: 8	: false
+		def_flg : "Constant Glow"			: 14	: false
+		def_flg : "Distort"				: 15	: false
+		def_flg : "Hologram (Distort + Fade)"	: 16	: false
+	}
+	$DefOptions [ "rendermode" : "Render Mode" ]
+	{
+		def_flg : "Normal"		: 0	: true
+		def_flg : "Color"			: 1	: false
+		def_flg : "Texture"		: 2	: false
+		def_flg : "Glow"			: 3	: false
+		def_flg : "Solid"			: 4	: false
+		def_flg : "Additive"		: 5	: false
+	}
+	def_key : integer : "renderamt"	: "FX Amount (1-255)"	: 1
+	def_key : color 	: "rendercolor"	: "FX Color (R G B)"	: ""
+}
+$DefEnt [ "xen_plantlight" : "Xen:Plantlight" ] [ "xen_render" ] 
+{
+	def_att : "size" 	: "96 96 32"
+	def_key : string	: "target"			: "Target Destination"		: ""
+}
+$DefEnt [ "xen_hair" : "Xen:Hair" ] [ "xen_render" ] 
+{
+	def_att : "size" 	: "16 16 32"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Sync Movement"	: 1	: false
+	}
+}
+$DefEnt [ "xen_tree" : "Xen:Tree" ] [ "xen_render" ] 
+{
+	def_att : "size"	: "48 48 188"
+}
+$DefEnt [ "xen_spore_small" : "Xen:Spore Small" ] [ "xen_render" ] 
+{
+	def_att : "size"	: "32 32 64"
+}
+$DefEnt [ "xen_spore_medium" : "Xen:Spore Medium" ] [ "xen_render" ] 
+{
+	def_att : "size"	: "80 80 120"
+}
+$DefEnt [ "xen_spore_large" : "Xen:Spore Large" ] [ "xen_render" ] 
+{
+	def_att : "size" 	: "180 180 220"
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+

@@ -1,0 +1,29 @@
+[Kingpin]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Kingpin\Glu32.dll
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Kingpin\kpbsp.exe
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Kingpin\kprad.exe
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Kingpin\kpvis.exe
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Kingpin\opengl32.dll
+fulldirectory=
+
+[Models\Kingpin]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Models\Kingpin\Primitives$Cube$brush.tmd2
+fulldirectory=
+
+[Models]
+SubDir0=Models\Kingpin
+fulldirectory=
+
+[TopDir]
+SubDir0=Kingpin
+SubDir1=Palettes
+SubDir2=Models
+
+[General]
+Type=FILELIST
+Version=1.10.000
+
+[Palettes]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Palettes\Kingpin.pal
+fulldirectory=
+

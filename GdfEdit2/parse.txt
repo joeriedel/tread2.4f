@@ -1,0 +1,17 @@
+
+1.	[ "NAME" : @VIRTUAL : @NULL ] 
+2.	[ "NAME" : @VIRTUAL : "CATEGORY" ]
+3.	[ "NAME" : "SMART" : "CATEGORY" ]
+4.	[ "NAME" : "SMART" : @NULL ]
+
+//additions
+5.	[ "NAME" : @VIRTUAL ]	//assume no category
+6.	[ "NAME" : "SMART" ]	//assume no category
+7.	[ "NAME" ]				//assume virtual, no category
+
+
+Case 1
+if an entity is virtual and has not category the category should be set to the name
+
+Case 4
+if an entity does not specify a category then it takes the category of its base class

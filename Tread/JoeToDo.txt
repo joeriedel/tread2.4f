@@ -1,0 +1,53 @@
+Things to do, things with // in front are done:
+
+//-- Add alignment features that nick has done.
+-- .map to .trd2 model converter
+-- Ability to scroll window by dragging mouse
+-- Select via brushes/objects via parameters. (such as texture, number, classtype, surface flags).
+-- SHIFT + selection loads the texture
+-- ClipTool needs some work (i.e. action handlers missing).
+-- Cleanup Q3Shader parsing and use the new Recursive functions of the CFileSearch
+//-- Undo
+//-- Adding cameras
+//-- Fix: blank 3D view when Tread loads a map
+//-- Fix: no visgroups on older maps
+//-- Texture locking
+//-- Draw Targets
+//-- Fix: make delete an action instead of the 'D' key.
+//-- Fix: InvokeAction() should take a void* as a param.
+//-- Leak trace
+//-- Selection box
+(removed) -- Center selection crosshair
+//-- Link and Unlink Entity
+//-- Rotate 90, 180
+//-- Cut, Copy, Paste, Delete
+//-- Center Views On Item
+//-- Drag camera look and base +SHIFT
+//-- need to enable autoscroll in vertex mode.
+//-- auto target generation
+//-- auto path creation (uses readable target names)
+//-- Thoroughly test Undo.
+//-- Fix Clipmode
+//-- Delete entity paths
+//-- Surface selection mask
+//-- Access texture memory size
+//-- Unselected after split
+//-- Fix new models crash
+///-- Fix RenderAPI switch crash
+//-- Side view redraw problem?
+//-- Entity paths aren't drawing in wingdi
+//-- Tex lock isn't working right
+//-- Add delete current camera
+//-- Reverse the entity drawing.
+//-- Texture directory loading
+//-- Unlink entities
+//-- Add a MorphEntity()
+//-- Toolbar actions are not being undone.
+
+
+/*
+** mutual files
+** CHANGED LIST!!!
+*/
+-- TextureView.cpp/TextureView.h
+-- SurfaceDialog.cpp

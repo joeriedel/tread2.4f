@@ -1,0 +1,82 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: shapes - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/shapes.res" /d "NDEBUG" "C:\Projects\Tread\v2.0\plugins\shapes\shapes.rc"" 
+Creating temporary file "C:\DOCUME~1\JOERIE~1\LOCALS~1\Temp\RSP108.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_MBCS" /D "_USRDLL" /Fp"Release/shapes.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Projects\Tread\v2.0\plugins\shapes\ArchDialog.cpp"
+"C:\Projects\Tread\v2.0\plugins\shapes\ConeDialog.cpp"
+"C:\Projects\Tread\v2.0\plugins\shapes\CylinderDialog.cpp"
+"C:\Projects\Tread\v2.0\plugins\shapes\ShapeCreator.cpp"
+"C:\Projects\Tread\v2.0\plugins\shapes\shapeplugin.cpp"
+"C:\Projects\Tread\v2.0\plugins\shapes\shapes.cpp"
+"C:\Projects\Tread\v2.0\plugins\futils.cpp"
+"C:\Projects\Tread\v2.0\plugins\Hooksys.cpp"
+"C:\Projects\Tread\v2.0\plugins\Mathlib.cpp"
+"C:\Projects\Tread\v2.0\plugins\szstring.cpp"
+"C:\Projects\Tread\v2.0\plugins\tokenizer.cpp"
+"C:\Projects\Tread\v2.0\plugins\TreadAPI.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\JOERIE~1\LOCALS~1\Temp\RSP108.tmp" 
+Creating temporary file "C:\DOCUME~1\JOERIE~1\LOCALS~1\Temp\RSP109.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_MBCS" /D "_USRDLL" /Fp"Release/shapes.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Projects\Tread\v2.0\plugins\shapes\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\JOERIE~1\LOCALS~1\Temp\RSP109.tmp" 
+Creating temporary file "C:\DOCUME~1\JOERIE~1\LOCALS~1\Temp\RSP10A.tmp" with contents
+[
+/nologo /subsystem:windows /dll /incremental:no /pdb:"Release/shapes.pdb" /machine:I386 /def:".\shapes.def" /out:"Release/shapes.dll" /implib:"Release/shapes.lib" 
+.\Release\ArchDialog.obj
+.\Release\ConeDialog.obj
+.\Release\CylinderDialog.obj
+.\Release\ShapeCreator.obj
+.\Release\shapeplugin.obj
+.\Release\shapes.obj
+.\Release\StdAfx.obj
+.\Release\futils.obj
+.\Release\Hooksys.obj
+.\Release\Mathlib.obj
+.\Release\szstring.obj
+.\Release\tokenizer.obj
+.\Release\TreadAPI.obj
+.\Release\shapes.res
+..\Tread3D.lib
+]
+Creating command line "link.exe @C:\DOCUME~1\JOERIE~1\LOCALS~1\Temp\RSP10A.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+ArchDialog.cpp
+ConeDialog.cpp
+CylinderDialog.cpp
+ShapeCreator.cpp
+shapeplugin.cpp
+shapes.cpp
+futils.cpp
+Hooksys.cpp
+Mathlib.cpp
+szstring.cpp
+tokenizer.cpp
+TreadAPI.cpp
+Generating Code...
+Linking...
+   Creating library Release/shapes.lib and object Release/shapes.exp
+LINK : warning LNK4089: all references to "SHELL32.dll" discarded by /OPT:REF
+LINK : warning LNK4089: all references to "comdlg32.dll" discarded by /OPT:REF
+
+
+
+<h3>Results</h3>
+shapes.dll - 0 error(s), 2 warning(s)
+</pre>
+</body>
+</html>

@@ -1,0 +1,815 @@
+//
+// Quake (GDF-2) GDF Script for TREAD
+//
+//
+// Revised By: Wayne W. Smith
+//             aka  [21+]Sarge
+//
+// Released : 19th December 1999
+//
+// Version : 1.00
+//
+// References:
+//            GDF editor by Nick Randal
+//            Initial Quake GDF file by Prospect Vector Team
+//            Revised Quake GDF file by DRaX      
+// 
+//
+// Defines global info for Quake
+$DefGlobal [ "Quake" ]
+{
+	def_solid  		: "func_door"
+	def_point  		: "info_player_start"
+	def_palette    	: "quake.pal"
+	def_gamemaptype   : "QUAKE_MAP"
+	def_pakdir 		: "id1"
+	def_namekey		: "targetname"
+	def_targetkey	: "target"
+
+	// Worldspawn keys;
+	def_key : string : "message" : "Text on Entering the World" : NULL
+	def_key : integer : "sounds" : "Cd Track to Play" : 2
+
+	$DefOptions [ "worldtype" : "Ambient Sound" ]
+	{
+		def_flg : "Medieval"      : 0 : false
+		def_flg : "Runic (metal)" : 1 : true
+		def_flg : "Preset (base)" : 2 : false
+	}
+
+	$DefBuild
+	{
+		$DefModule [ @@MapDir : "Map Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@GameDir : "Quake Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@MapFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : @@MapDir : @ALWAYS : false
+				def_param : "" : "\\" : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				def_param : "" : ".map" : @ALWAYS : false
+			}
+			
+			$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@BspSection : "BSP Program" : "BSP Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "No Junctions" : "-nojunc " : 2 : false
+				def_param : "No Fill" : "-nofill " : 4 : false
+				def_param : "Draw" : "-draw " : 8 : false
+				def_param : "Only Ents" : "-onlyents " : 16 : false
+				def_param : "Verbose" : "-verbose " : 32 : false
+ 				
+				def_param : "" : @@MapFile : @ALWAYS : false 
+			}
+			
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Quake BSP..."
+		}
+
+		$DefModule [ @@BspFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : "+map " : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				//def_param : "" : ".bsp" : @ALWAYS : false
+			}
+			
+			//$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@VisSection : "VIS Program" : "VIS Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+			}		
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Quake VIS..."
+		}
+
+		$DefModule [ @@LightSection : "LIGHT Program" : "LIGHT Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+			}
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Quake LIGHT..."
+		}
+
+		$DefModule [ @@Quake : "Quake Exe" : "Quake Options" ] 
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "" : @@BspFile : @ALWAYS : false 
+			}
+
+			$SpawnWait : @THIS : @@GameDir : @CONSOLE : "Running Quake ..."
+		}
+	}
+}
+
+$DefEnt [ "func_group" : "Function Group" ] []
+{
+	def_att : "owner" : true
+}
+
+// Defines a base solid entity.
+$DefEnt [ "base_solid" : @VIRTUAL : @NULL ] []
+{
+	def_att : size   : "32 32 32"
+	def_att : owner  : true
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+}
+
+// Defines a point entity.
+$DefEnt [ "base_point" : @VIRTUAL : @NULL ] [] 
+{
+	def_att : "size" : "8 8 8"
+	def_att : owner  : false
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+
+	// Define switchable flags.
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not in Easy"	      : 256  : false
+		def_flg : "Not in Normal"     : 512  : false
+		def_flg : "Not in Hard"       : 1024 : false
+		def_flg : "Not in Deathmatch" : 2048 : false
+	}
+}
+
+////////////////////////////////////////////////////////////////////////
+//                     QUAKE Entities					    //
+////////////////////////////////////////////////////////////////////////
+$DefEnt [ "base_player" : @VIRTUAL : @NULL  ] [ "base_point" ] 
+{
+	def_att : "size" : "32 32 64"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+
+$DefEnt [ "info_player_start" : "Player: Start" ] [ "base_player" ]  // Inherits from base_solid entity.
+{
+	def_att : "size" : "32 32 56"
+}
+
+$DefEnt [ "info_player_deathmatch" : "Player: Deathmatch" ] [ "base_player" ] 
+{
+	def_att : "size" : "32 32 56"
+}
+
+$DefEnt [ "info_player_coop" : "Player: Coop" ] [ "base_player" ] 
+{
+	def_att : "size" : "32 32 56"
+}
+
+$DefEnt [ "info_player_start2" : "Player: ?episodereturnpoint?" ] [ "base_player" ] 
+{
+	def_att : "size" : "32 32 56"
+}
+
+$DefEnt [ "info_teleport_destination" : "Teleport destination" ] [ "base_player" ] 
+{
+	def_att : "size" : "32 32 56"
+}
+
+
+//---------------------------Light---------------------------
+
+$DefEnt [ "base_light" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_key : integer : "light" : "Brightness" : 200
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Initially dark" : 1 : false
+	}
+	$DefOptions [ "style" : "Appearance" ]
+	{
+		def_flg : "Normal" : 0 : true
+		def_flg : "Flicker A" : 1 : false
+		def_flg : "Slow, strong pulse" : 2 : false
+		def_flg : "Candle A" : 3 : false
+		def_flg : "Fast strobe" : 4 : false
+		def_flg : "Gentle pulse" : 5 : false
+		def_flg : "Flicker B" : 6 : false
+		def_flg : "Candle B" : 7 : false
+		def_flg : "Candle C" : 8 : false
+		def_flg : "Slow strobe" : 9 : false
+		def_flg : "Fluorescent flicker" : 10 : false
+		def_flg : "Slow pulse, noblack" : 11 : false
+	}
+}
+
+$DefEnt [ "light" : "Light: Normal" ] [ "base_light" ] 
+{
+	def_att : "size" : "16 16 16"
+	
+}
+
+$DefEnt [ "light_fluoro" : "Light: Fluorescent" ] [ "base_light" ] 
+{
+	def_att : "size" : "16 16 16"
+	
+}
+
+$DefEnt [ "light_fluorospark" : "Light: Sparking fluorescent" ] [ "base_light" ] 
+{
+	def_att : "size" : "16 16 16"
+	
+}
+
+$DefEnt [ "light_globe" : "Light: Globe" ] [ "base_light" ] 
+{
+	def_att : "size" : "16 16 16"
+
+}
+
+$DefEnt [ "light_flame_large_yellow" : "Light: Flame: Large yellow" ] [ "base_light" ] 
+{
+	def_att : "size" : "22 22 30"
+}
+
+$DefEnt [ "light_flame_small_yellow" : "Light: Flame: Small yellow" ] [ "base_light" ] 
+{
+	def_att : "size" : "22 22 30"
+
+}
+
+$DefEnt [ "light_flame_small_white" : "Light: Flame: Small white" ] [ "base_light" ] 
+{
+	def_att : "size" : "22 22 30"
+
+}
+
+$DefEnt [ "light_torch_small_walltorch" : "Light : Walltorch" ] [ "base_light" ] 
+
+
+
+
+{
+	def_att : "size" : "22 22 30"
+
+
+}
+
+//---------------------------Weapons---------------------------
+
+$DefEnt [ "base_weapon" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "32 16 32"
+}
+
+$DefEnt [ "weapon_shotgun" : "Weapon: Shotgun" ] [ "base_weapon" ]  { }
+$DefEnt [ "weapon_supershotgun" : "Wepaon: DB shotgun" ] [ "base_weapon" ]  { }
+$DefEnt [ "weapon_nailgun" : "Weapon: Nailgun" ] [ "base_weapon" ]  { }
+$DefEnt [ "weapon_supernailgun" : "Weapon: Perforator" ] [ "base_weapon" ]  { }
+$DefEnt [ "weapon_grenadelauncher" : "Weapon: Grenade launcher" ] [ "base_weapon" ]  { }
+$DefEnt [ "weapon_rocketlauncher" : "Weapon: Rocket launcher" ] [ "base_weapon" ]  { }
+$DefEnt [ "weapon_lightning" : "Weapon: Thunderbolt" ] [ "base_weapon" ]  { }
+
+//---------------------------Ammo---------------------------
+
+$DefEnt [ "base_ammo" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "32 32 32"
+	
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Large Box" :	1 : false
+	}
+}
+
+$DefEnt [ "item_cells" : "Ammo: Cells" ] [ "base_ammo" ]  { }
+$DefEnt [ "item_rockets" : "Ammo: Rockets" ] [ "base_ammo" ]  { }
+$DefEnt [ "item_shells" : "Ammo: Shells" ] [ "base_ammo" ]  { }
+$DefEnt [ "item_cells" : "Ammo: Nails" ] [ "base_ammo" ]  { }
+
+//---------------------------PowerUps---------------------------
+$DefEnt [ "base_powerups" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "item_artifact_envirosuit" : "Pickup: Environment Suit" ] [ "base_powerups" ]  { }
+
+$DefEnt [ "item_health" : "Pickup: Health Pack (small)" ] [ "base_powerups" ] 
+{
+	$DefOptions [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Rotten" : 1 : true
+		def_flg : "Mega Health" : 2 : false
+	}
+}
+	
+// A small health pack is just a normal one with the 'rotten' bit set
+$DefEnt [ "item_health" : "Pickup: Health Pack" ] [ "base_powerups" ] 
+{
+	$DefOptions [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Rotten" : 1 : false
+		def_flg : "Mega Health" : 2 : false
+	}
+}
+
+$DefEnt [ "item_artifact_super_damage" : "Pickup: Quad damage" ] [ "base_powerups" ]  { }
+$DefEnt [ "item_artifact_invulnerability" : "Pickup: Pentagram of Protection" ] [ "base_powerups" ]  { }
+$DefEnt [ "item_artifact_invisibility" : "Pickup: Ring of Shadows" ] [ "base_powerups" ]  { }
+$DefEnt [ "item_armorInv" : "Pickup: 200% armor (Red)" ] [ "base_powerups" ]  { }
+$DefEnt [ "item_armor2" : "Pickup: 150% armor (Yellow)" ] [ "base_powerups" ]  { }
+$DefEnt [ "item_armor1" : "Pickup: 100% armor (Green)" ] [ "base_powerups" ]  { }
+$DefEnt [ "item_key1" : "Pickup: Silver key" ] [ "base_powerups" ]  { }
+$DefEnt [ "item_key2" : "Pickup: Gold key" ] [ "base_powerups" ]  { }
+
+$DefEnt [ "item_sigil" : "Pickup: Sigil" ] [ "base_powerups" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Episode 1" : 1 : true
+		def_flg : "Episode 2" : 2 : false
+		def_flg : "Episode 3" : 4 : false
+		def_flg : "Episode 4" : 8 : false
+	}
+}
+
+
+//---------------------------Monsters---------------------------
+
+$DefEnt [ "base_monster" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_key : vector : "angle" : "Angle" : "0"
+	def_att : "size" : "64 64 64"
+}
+
+$DefEnt [ "monster_army" : "Monster: Grunt" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 64"
+}
+
+$DefEnt [ "monster_dog" : "Monster: Puppie" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "64 64 64"
+}
+
+$DefEnt [ "monster_ogre" : "Monster: Ogre" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "64 64 88"
+}
+
+$DefEnt [ "monster_ogre_marksman" : "Monster: Ogre Marksman" ] [ "base_monster" ] 
+
+{ 
+
+	def_att : "size" : "64 64 88"
+}
+
+$DefEnt [ "monster_knight" : "Monster: Knight" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 64"
+}
+
+$DefEnt [ "monster_hell_knight" : "Monster: Hell Knight" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 64"
+}
+
+$DefEnt [ "monster_wizard" : "Monster: Shalrath (wizard)" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 72"
+}
+
+$DefEnt [ "monster_demon1" : "Monster: Fiend" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 64"
+}
+
+$DefEnt [ "monster_shambler" : "Monster: Shambler" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "64 64 88"
+}
+
+$DefEnt [ "monster_boss" : "Monster: Lava Beast" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "256 256 280"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "spawn" : 1  : false
+	}
+}
+
+$DefEnt [ "monster_enforcer" : "Monster: Enforcer" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 64"
+}
+
+$DefEnt [ "monster_tarbaby" : "Monster: Tarbaby" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 48"
+}
+
+$DefEnt [ "monster_fish" : "Monster: Rotfish" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "32 32 48"
+}
+
+$DefEnt [ "monster_oldone" : "Monster: Shub-Niggurath" ] [ "base_monster" ] 
+{ 
+	def_att : "size" : "64 64 96"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "spawn" : 1 : false
+	}
+}
+
+$DefEnt [ "monster_zombie" : "Enviro: Crucified Zombie" ] [ "base_monster"] 
+{
+	def_att : "size" : "32 32 56"
+	$DefOptions [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Crucified" : 1 : true
+		def_flg : "Ambush"    : 2 : false
+	}
+}
+	
+
+$DefEnt [ "monster_zombie" : "Monster: Zombie" ] [ "base_monster" ]  
+{
+	def_att : "size" : "32 32 56"
+	$DefOptions [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Crucified" : 1 : false
+		def_flg : "Ambush"    : 2 : false
+	}
+}
+
+//---------------------------Events---------------------------
+
+$DefEnt [ "base_event" : @VIRTUAL : @NULL ] [ "base_point" ]  { }
+
+$DefEnt [ "air_bubbles" : "Enviro: Air bubbles" ] [ "base_event" ]  { }
+$DefEnt [ "event_lightning" : "Enviro: Lightning" ] [ "base_event" ] 
+{
+}
+$DefEnt [ "misc_fireball" : "Enviro: Fireball" ] [ "base_event" ] 
+{
+	def_key : integer : "speed" : "Speed" : 40
+}
+
+$DefEnt [ "misc_explobox" : "Enviro: Large explosive box" ] [ "base_event" ]  { }
+$DefEnt [ "misc_explobox2" : "Enviro: Small explosive box" ] [ "base_event" ]  { }
+$DefEnt [ "trap_spikeshooter" : "Trap: Spike shooter" ] [ "base_event" ] 
+{
+	$DefOptions [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Super spike" : 1 : false
+		def_flg : "laser" : 2 : false
+	}
+}
+
+$DefEnt [ "trap_shooter" : "Trap: Spike shooter (continuous)" ] [ "base_event" ] 
+{
+	def_key : string : "wait" : "Time between shots" : "1.0"
+	def_key : string : "nextthink" : "Delay" : ""
+}
+
+$DefEnt [ "info_intermission" : "Enviro: Intermission Camera" ] [ "base_event" ] 
+{
+	def_key : string : "mangle" : "mangle (pitch yaw roll)" : " "
+}
+
+//---------------------------Ambient Sounds---------------------------
+
+$DefEnt [ "base_ambient" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "16 16 16"
+}
+
+$DefEnt [ "ambient_drip" : "Enviro-Sound: Dripping" ] [ "base_ambient" ]  { }
+$DefEnt [ "ambient_drone" : "Enviro-Sound: Engine/machinery" ] [ "base_ambient" ]  { }
+$DefEnt [ "ambient_comp_hum" : "Enviro-Sound: Computer" ] [ "base_ambient" ]  { }
+$DefEnt [ "ambient_flouro_buzz" : "Enviro-Sound: Fluorescent buzz" ] [ "base_ambient" ]  { }
+$DefEnt [ "ambient_light_buzz" : "Enviro-Sound: Buzzing from light" ] [ "base_ambient" ]  { }
+$DefEnt [ "ambient_suck_wind" : "Enviro-Sound: Wind" ] [ "base_ambient" ]  { }
+$DefEnt [ "ambient_swamp1" : "Enviro-Sound: Frogs croaking" ] [ "base_ambient" ]  { }
+$DefEnt [ "ambient_swamp2" : "Enviro-Sound: Frogs croaking 2" ] [ "base_ambient" ]  { }
+
+//---------------------------Moving things---------------------------
+
+$DefEnt [ "base_animate" : @VIRTUAL : @NULL ] [ "base_solid" ] 
+{
+	def_att : "owner" : true
+	def_key : integer : "dmg" : "Damage when blocked" : 2
+	def_key : integer : "health" : "Health (shoot open)" : 0
+	def_key : integer : "speed" : "Speed" : 100
+	def_key : vector  : "angle" : "Angle" : 0
+
+	$DefFlags [ "wait" : "Wait before close" ]
+	{
+		def_flg : "Stays open" : -1 : false
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "No Sound" : 0 : false
+		def_flg : "Stone" : 1 : false
+		def_flg : "Base" : 2 : true
+		def_flg : "Stone chain" : 3 : false
+		def_flg : "Screechy metal" : 4 : false
+	}
+}
+
+$DefEnt [ "func_door" : "Mobile: Door" ] [ "base_animate" ] 
+{
+	def_key : string : "message" : "Touch message" : ""
+	def_key : integer : "lip" : "Lip" : 8
+
+	$DefFlags [ "spawnflags" : "Spawn" ] 
+	{
+		def_flg : "Toggle" : 1 : false
+		def_flg : "Starts Open" : 2 : false
+		def_flg : "dont link" : 4 : false
+		def_flg : "gold key" : 8 : false
+		def_flg : "silver key" : 16 : false
+	}	
+}
+
+$DefEnt [ "func_door_secret" : "Mobile: Secret Door" ] [ "base_animate" ] 
+{
+	def_key : integer : "t_width" : "Movement width" : 0
+	def_key : integer : "t_length" : "Movement length" : 0
+	
+	$DefFlags [ "spawnflags" : "Spawn" ] 
+	{
+		def_flg : "Open once" : 1 : false
+		def_flg : "1st left" : 2 : false
+		def_flg : "1st down" : 4 : false
+		def_flg : "No shoot" : 8 : false
+		def_flg : "Always shoot" : 16 : false		
+	}
+}
+
+$DefEnt [ "func_wall" : "Solid Wall" ] [ "base_animate" ] 
+{
+	
+}
+
+$DefEnt [ "func_button" : "Mobile: Button" ] [ "base_animate" ] 
+{
+	def_key : integer : "delay" : "Delay before reset" : "0"
+	def_key : integer : "lip" : "Lip" : "4"
+	
+	$DefOptions [ "spawnflags" : "Spawn" ] 
+	{
+		def_flg : "Stays pressed" : -1 : false
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Steam metal" : 1 : true
+		def_flg : "Wooden clunk" : 2 : false
+		def_flg : "Metallic clink" : 3 : false
+		def_flg : "In-out" : 4 : false
+	}
+}
+
+$DefEnt [ "func_train" : "Mobile: platform" ] [ "base_animate" ] 
+{
+	
+	$DefFlags [ "spawnflags" : "Spawn" ] 
+	{
+		def_flg : "???" : 1 : false
+		
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None" : 0 : false
+		def_flg : "Ratchet metal" : 1 : true
+	}
+}
+
+$DefEnt [ "path_corner" : "Path Corner" ] [ "base_point" ] 
+{
+	def_att : "size" : "16 16 16"
+}
+
+$DefEnt [ "func_plat" : "Mobile: Elevator" ] [ "base_animate" ] 
+{
+	def_key : integer : "height" : "Height" : 150
+	
+	$DefFlags [ "spawnflags" : "Spawn" ] 
+	{
+		def_flg : "low trigger" : 1 : false
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None" : 0 : false
+		def_flg : "Base fast" : 1 : true
+		def_flg : "Chain slow" : 2 : false
+	}
+}
+
+$DefEnt [ "func_illusionary" : "Illusionary Wall" ] [ "base_animate" ] 
+{
+
+}
+
+$DefEnt [ "func_episodegate" : "Episode Gate" ] [ "base_animate" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Episode 1" : 1 : true
+		def_flg : "Episode 2" : 2 : false
+		def_flg : "Episode 3" : 4 : false
+		def_flg : "Episode 4" : 8 : false
+	}
+}
+
+$DefEnt [ "func_bossgate" : "Boss gate" ] [ "base_animate" ] 
+{
+
+}
+
+//---------------------------Triggers---------------------------
+
+$DefEnt [ "base_trigger" : @VIRTUAL : @NULL ] [ "base_solid" ] 
+{
+	def_key : string : "killtarget" : "KillTarget" : ""
+	def_key : string : "message" : "Message" : ""
+	def_key : string : "delay" : "Delay before trigger" : ""
+	def_key : string : "wait" : "Wait before reset" : ""
+	def_key : integer : "health" : "Health" : 0
+	
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "No touch" : 1 : false
+	}
+	
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None" : 0 : false
+		def_flg : "Secret" : 1 : true
+		def_flg : "Beep" : 2 : false
+		def_flg : "Large switch" : 3 : false
+	}
+}
+
+$DefEnt [ "trigger_changelevel" : "Trigger: Level change" ] [ "base_trigger" ] 
+{
+	def_key : string : "map" : "Map name" : ""
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "No Intermission" : 1 : false
+	}
+}
+
+$DefEnt [ "trigger_once" : "Trigger: Single" ] [ "base_trigger" ]  {}
+
+$DefEnt [ "trigger_multiple" : "Trigger: Multiple" ] [ "base_trigger" ]  {}
+
+$DefEnt [ "trigger_secret" : "Trigger: secret" ] [ "base_trigger" ] 
+{
+	def_key : string : "message" : "Message" : ""
+	
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None" : 0 : false
+		def_flg : "Secret" : 1 : true
+		def_flg : "Beep" : 2 : false
+	}
+}
+
+$DefEnt [ "trigger_onlyregistered" : "Trigger: Registered only" ] [ "base_trigger" ]  {}
+
+$DefEnt [ "trigger_teleport" : "Trigger: Telport" ] [ "base_trigger" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "player only" : 1 : false 
+		def_flg : "silent" : 2 : false
+	}
+}
+
+$DefEnt [ "misc_teleporttrain" : "Spiked ball teleporter" ] [ "base_point" ]  {}
+
+$DefEnt [ "trigger_setskill" : "Trigger: Set skill level" ] [ "base_trigger" ] 
+{
+	$DefOptions [ "message" : "Skill Level" ]
+	{
+		def_flg : "Easy" : 0 : false
+		def_flg : "Medium" : 1 : true
+		def_flg : "Hard" : 2 : false
+		def_flg : "Nightmare!" : 3 : false
+	}
+}
+
+$DefEnt [ "trigger_relay" : "Trigger: Relay" ] [ "base_point" ] 
+{
+	def_key : string : "killtarget" : "KillTarget" : ""
+	def_key : string : "message" : "Message" : ""
+	def_key : string : "delay" : "Delay before trigger" : ""
+	def_key : integer : "health" : "Health" : 0
+	
+	//It was like this in the worldcraft file
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "????" : 1 : false
+	}
+	
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None" : 0 : false
+		def_flg : "Secret" : 1 : true
+		def_flg : "Beep" : 2 : false
+		def_flg : "Large switch" : 3 : false
+	}
+}
+
+$DefEnt [ "trigger_monsterjump" : "Area: Mounster trampoline" ] [ "base_trigger" ] 
+{
+	def_key : integer : "speed" : "Speed thrown forward" : 200
+	def_key : integer : "height" : "Speed thrown upwards" : 200
+}
+
+$DefEnt [ "trigger_counter" : "Trigger: Counter" ] [ "base_point" ] 
+{
+	def_key : string : "killtarget" : "KillTarget" : ""
+	def_key : string : "message" : "Message" : ""
+	def_key : string : "delay" : "Delay before trigger" : ""
+	def_key : integer : "health" : "Health" : 0
+	def_key : integer : "count" : "Number of triggers" : 1
+	
+	//It was like this in the worldcraft file
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "No message" : 1 : false
+	}
+	
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "None" : 0 : false
+		def_flg : "Secret" : 1 : true
+		def_flg : "Beep" : 2 : false
+		def_flg : "Large switch" : 3 : false
+	}
+}
+
+$DefEnt [ "trigger_hurt" : "Area: Does damage" ] [ "base_trigger" ]  {
+	def_key : integer : "dmg" : "Damage" : 200
+}
+
+$DefEnt [ "trigger_push" : "Area: Push" ] [ "base_trigger" ] 
+{
+	def_key : vector : "angle" : "Angle" : "-1"
+	def_key : integer : "speed" : "Speed of push" : 40
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Push once" : 1 : false
+	}
+}

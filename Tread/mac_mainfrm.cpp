@@ -1,0 +1,1 @@
+// MAC_MAINFRM.CPP// Copyright (c) 2000 Joe Riedel, Nick Randal.// Author: Joe Riedel.#include "stdafx.h"#include "mac_mainfrm.h"CMainFrame::CMainFrame(){	m_bMapOpen = false;}CMainFrame::~CMainFrame(){}void CMainFrame::SetTimer(int nId, int nInterval, void* x){}void CMainFrame::KillTimer(int nId){}void CMainFrame::BuildPluginMenu(bool bBuild){}

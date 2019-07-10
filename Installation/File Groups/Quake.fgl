@@ -1,0 +1,27 @@
+[Quake]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Quake\Light.exe
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Quake\Qbsp.exe
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Quake\Vis.exe
+fulldirectory=
+
+[Models]
+SubDir0=Models\Quake
+fulldirectory=
+
+[TopDir]
+SubDir0=Quake
+SubDir1=Models
+SubDir2=Palettes
+
+[Models\Quake]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Models\Quake\Primitives$Cube$brush.tmd2
+fulldirectory=
+
+[General]
+Type=FILELIST
+Version=1.10.000
+
+[Palettes]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Palettes\Quake.pal
+fulldirectory=
+

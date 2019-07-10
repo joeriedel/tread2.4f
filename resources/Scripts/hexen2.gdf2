@@ -1,0 +1,821 @@
+//
+// Hexen2 (GDF-2) GDF Script for TREAD
+//
+//
+// Revised By: Wayne W. Smith
+//             aka  [21+]Sarge
+//
+// Released : 19th December 1999
+//
+// Version : 1.00
+//
+// References:
+//            GDF editor by Nick Randal
+//            Initial Hexen2 GDF file by Nick Randal
+//            Revised Quake GDF file by DRaX      
+// 
+//
+// Defines global info for Hexen2
+$DefGlobal [ "Hexen2" ]
+{
+	def_solid		: "func_door"
+	def_point		: "info_player_start"
+	def_palette		: "hexen2.pal"
+	def_gamemaptype	: "HEXEN2_MAP"
+	def_pakdir		: "data1"
+
+	def_key : integer : "CD" : "CD track to play" : "1"
+	def_key : string : "MIDI" : "Midi file to play" : ""
+	def_key : string : "message" : "Level name" : ""
+
+	$DefOptions [ "worldtype" : "Ambience" ]
+	{
+		def_flg : "castle" : 0 : true
+		def_flg : "egypt" : 1 : false
+		def_flg : "meso" : 2 : false
+		def_flg : "roman" : 3 : false
+	}
+}
+
+$DefEnt [ "info_group" : "Function : Group" ] [] 
+{
+	def_att : "owner" : true
+}
+
+$DefEnt [ "base_point" : @VIRTUAL : @NULL ] [] 
+{
+	def_att : "size" : "8 8 8"
+	def_att : owner  : false
+
+	// Define switchable flags.
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not in Easy"	      : 256  : false
+		def_flg : "Not in Normal"     : 512  : false
+		def_flg : "Not in Hard"       : 1024 : false
+		def_flg : "Not in Deathmatch" : 2048 : false
+	}
+}
+
+$DefEnt [ "base_solid" : @VIRTUAL : @NULL ] [] 
+{
+	def_att : size : "32 32 32"
+	def_att : owner  : true
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not in Easy"	      : 256  : false
+		def_flg : "Not in Normal"     : 512  : false
+		def_flg : "Not in Hard"       : 1024 : false
+		def_flg : "Not in Deathmatch" : 2048 : false
+	}
+}
+
+//----------------------------Player----------------------------
+$DefEnt [ "base_player" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "32 32 64"
+}
+
+$DefEnt [ "info_player_start" : "Player 1 Start #1" ] [ "base_player" ] 
+{
+	def_key : string : "target_source" : "Name" : ""
+}
+
+$DefEnt [ "info_player_start2" : "Player 1 Start #2" ] [ "base_player" ] 
+{
+	def_key : string : "target_source" : "Name" : ""
+}
+
+$DefEnt [ "info_player_deathmatch" : "Deathmatch start" ] [ "base_player" ] 
+{
+}
+
+$DefEnt [ "info_player_coop" : "Player cooperative start" ] [ "base_player" ] 
+{
+}
+
+$DefEnt [ "info_teleport_destination" : "Teleport destination" ] [ "base_player" ] 
+{
+	def_key : string : "target_source" : "Name" : ""
+}
+
+//----------------------------Artifact----------------------------
+$DefEnt [ "base_artifact" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "16 16 64"
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Floating" : 1 : false
+	}
+}
+
+$DefEnt [ "art_blastradius" : "Blast Radius" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_cubeofforce" : "Cube of Force" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_glyph" : "Glyph" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_haste" : "Haste" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_HealthBoost" : "Health Boost" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_invincibility" : "Invincibility" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_invisibility" : "Invisibility" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_manaboost" : "Mana Boost" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_polymorph" : "Polymorph" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_summon" : "Summoning" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_SuperHBoost" : "Super Health Boost" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_sword_and_crown" : "Sword and Crown" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_teleport" : "Teleport" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_tomeofpower" : "Tome of Power" ] [ "base_artifact" ] 
+{}
+
+$DefEnt [ "art_torch" : "Torch" ] [ "base_artifact" ] 
+{}
+
+//----------------------------Brush----------------------------
+$DefEnt [ "base_brush" : @VIRTUAL : @NULL ] [ "base_solid" ] 
+{
+}
+
+$DefEnt [ "breakable_brush" : "Breakable brush" ] [ "base_brush" ] 
+{
+	def_key : integer : "flags" : "Hierarchial order" : ""
+	def_key : integer : "abslight" : "Absolute light level" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Kill all" : 1 : false
+		def_flg : "Hierarchy" : 2 : false
+		def_flg : "No Link" : 4 : false
+		def_flg : "Check Name" : 8 : false
+		def_flg : "Ordered" : 16 : false
+		def_flg : "Translucent" : 32 : false
+		def_flg : "Invincible" : 64 : false
+		def_flg : "Invisible" : 128 : false
+	}
+
+	$DefOptions [ "thingtype" : "Material type" ]
+	{
+		def_flg : "glass (default)" : 0 : false
+		def_flg : "grey stone" : 1 : false
+		def_flg : "wood" : 2 : false
+		def_flg : "metal" : 3 : false
+		def_flg : "flesh" : 4 : false
+		def_flg : "fire" : 5 : false
+		def_flg : "clay" : 6 : false
+		def_flg : "leaves" : 7 : false
+		def_flg : "hay" : 8 : false
+		def_flg : "brown stone" : 9 : false
+		def_flg : "cloth" : 10 : false
+		def_flg : "wood & leaf" : 11 : false
+		def_flg : "wood & metal" : 12 : false
+		def_flg : "wood & stone" : 13 : false
+		def_flg : "metal & stone" : 14 : false
+		def_flg : "metal & cloth" : 15 : false
+		def_flg : "spider web" : 16 : false
+		def_flg : "clear glass" : 19 : false
+		def_flg : "red glass" : 20 : false
+	}
+
+	$DefOptions [ "health" : "Health" ]
+	{
+		def_flg : "Based on material" : 0 : false
+	}
+}
+
+$DefEnt [ "brush_pushable" : "Pushable brush" ] [ "base_brush" ] 
+{
+	def_key : integer : "mass" : "Mass" : "5"
+}
+
+$DefEnt [ "func_angletrigger" : "rotating trigger" ] [ "base_brush" ] 
+{
+	def_key : string : "target_source" : "Name" : ""
+	def_key : string : "target_destination" : "Target" : ""
+	def_key : string : "mangle" : "Mangle" : ""
+	def_key : integer : "cnt" : "Degrees per move" : ""
+	def_key : integer : "dmg" : "Damage when blocked" : ""
+}
+
+$DefEnt [ "func_button" : "Button" ] [ "base_brush" ] 
+{
+	def_key : string : "target_source" : "Name" : ""
+	def_key : string : "target_destination" : "Target" : ""
+	def_key : integer : "speed" : "Speed" : "40"
+	def_key : integer : "lip" : "Lip" : "4"
+	def_key : integer : "health" : "Health" : ""
+	def_key : integer : "abslight" : "Absolute light value" : ""	
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Deactivated" : 1 : false
+		def_flg : "Fired only" : 2 : false
+		def_flg : "Fire multiple" : 4 : false
+	}
+
+	$DefOptions [ "wait" : "Wait" ]
+	{
+		def_flg : "Stay pressed" : -1 : false
+	}
+
+	$DefOptions [ "soundtype" : "Sounds" ]
+	{
+		def_flg : "steam metal" : 0 : true
+		def_flg : "wooden clunk" : 1 : false
+		def_flg : "metallic click" : 2 : false
+		def_flg : "in-out" : 3 : false
+	}
+}
+
+$DefEnt [ "func_crusher" : "Crusher" ] [ "base_brush" ] 
+{
+	def_key : integer : "speed" : "Speed" : "150"
+	def_key : integer : "dmg" : "Damage" : "10"
+	def_key : integer : "lip" : "Lip" : "4"
+	def_key : integer : "wait" : "Wait" : "1"
+
+	$DefOptions [ "soundtype" : "Sounds" ]
+	{
+		def_flg : "Base fast" : 1 : false
+		def_flg : "Chain slow" : 2 : false
+		def_flg : "Guillotine" : 3 : false
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Multiple" : 1 : false
+		def_flg : "Slide" : 2 : false
+		def_flg : "Start open" : 4 : false
+		def_flg : "End open" : 8 : false
+	}
+}
+
+$DefEnt [ "func_newplat" : "Brush : New platform" ] [ "base_brush" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "speed" : "Speed" : "150"
+	def_key : integer : "height" : "Height" : ""
+	def_key : integer : "wait" : "Wait before moving" : "3"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Bottom start" : 1 : false
+		def_flg : "Return to start" : 2 : false
+		def_flg : "Conituous" : 4 : false
+	}
+
+	$DefOptions [ "soundtype" : "Sounds" ]
+	{
+		def_flg : "Base fast" : 1 : true
+		def_flg : "Chain slow" : 2 : false
+	}
+}
+
+$DefEnt [ "func_plat" : "Brush : Platform" ] [ "base_brush" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "speed" : "Speed" : "150"
+	def_key : integer : "height" : "Height" : ""
+	def_key : integer : "wait" : "Wait before moving" : "3"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Trigger low" : 1 : false
+	}
+
+	$DefOptions [ "soundtype" : "Sounds" ]
+	{
+		def_flg : "Pully" : 1 : true
+		def_flg : "Chain" : 2 : false
+	}
+}
+
+$DefEnt [ "func_pressure" : "Brush : Pressure plate" ] [ "func_button" ] 
+{
+	def_key : integer : "mass" : "Mass required" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Activate" : 1 : false
+	}
+}
+
+$DefEnt [ "func_reflect" : "Brush : Missilie relector" ] [ "base_brush" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Return" : 1 : false
+		def_flg : "Toggle" : 2 : false
+		def_flg : "Start open" : 4 : false
+	}
+}
+
+$DefEnt [ "func_rotating" : "Brush : Rotating" ] [ "base_brush" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "dmg" : "Damage when blocked" : "2"
+	def_key : integer : "speed" : "Speed" : "100"
+	def_key : integer : "wait" : "Time between lifetimes" : ""
+	def_key : integer : "abslight" : "Absolute light level" : ""
+	def_key : integer : "anglespeed" : "Accel/decell time" : "10"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Start on" : 1 : false
+		def_flg : "Reverse" : 2 : false
+		def_flg : "X axis" : 4 : false
+		def_flg : "Y axis" : 8 : false
+		def_flg : "Break" : 16 : false
+		def_flg : "Gradual" : 32 : false
+		def_flg : "Toggle reverse" : 64 : false
+		def_flg : "Keep start" : 128 : false
+	}
+
+	$DefOptions [ "lifetime" : "Lifetime" ]
+	{
+		def_flg : "Continuous" : 0 : true
+	}
+
+	$DefOptions [ "thingtype" : "Material type" ]
+	{
+		def_flg : "Glass" : 0 : false
+		def_flg : "Gray stone" : 1 : false
+		def_flg : "Wood" : 2 : false
+		def_flg : "Metal" : 3 : false
+		def_flg : "Flesh" : 4 : false
+	}
+
+	$DefOptions [ "health" : "Health" ]
+	{
+		def_flg : "Base on meterial" : 0 : true
+	}
+}
+
+$DefEnt [ "func_rotating_movechain" : "Moving chain" ] [ "base_brush" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "netname" : "Net name" : ""
+	def_key : string : "noise" : "Noise" : ""
+	def_key : string : "noise1" : "Ipact noise" : ""
+	def_key : string : "avelocity" : "Pitch/Yaw/Roll" : "0 0 0"
+	def_key : integer : "dmg" : "Damage on touch" : ""
+	def_key : integer : "wait" : "Lenght of sound" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "No angle chain" : 1 : false
+	}
+}
+
+//----------------------------Door----------------------------
+$DefEnt [ "base_door" : @VIRTUAL : @NULL ] [ "base_solid" ] 
+{
+	def_key : string : "target_source" : "Name" : ""
+	def_key : string : "message" : "Message" : ""
+	def_key : integer : "health" : "Health (shootable)" : ""
+	def_key : integer : "speed" : "Speed" : "100"
+	def_key : integer : "strength" : "Strength" : "1"
+	def_key : integer : "puzzle_piece_1" : "Puzzle Piece 1" : ""
+	def_key : integer : "puzzle_piece_2" : "Puzzle Piece 2" : ""
+	def_key : integer : "puzzle_piece_3" : "Puzzle Piece 3" : ""
+	def_key : integer : "puzzle_piece_4" : "Puzzle Piece 4" : ""
+	def_key : integer : "no_puzzle_msg" : "Puzzle message" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Start open" : 1 : false
+		def_flg : "Reverse" : 2 : false
+		def_flg : "Don't link" : 4 : false
+	}
+
+	$DefOptions [ "wait" : "Wait" ]
+	{
+		def_flg : "Never return" : -1 : false
+		def_flg : "Default (3)" : 3 : true
+	}
+
+	$DefOptions [ "dmg" : "Damage" ]
+	{
+		def_flg : "Default" : 2 : true
+		def_flg : "Instant kill" : 666 : false
+	}
+
+	$DefOptions [ "soundtype" : "Sounds" ]
+	{
+		def_flg : "No sound" : 0 : false
+		def_flg : "Big metal door, swinging" : 1 : false
+		def_flg : "Big stone door, swinging" : 2 : false
+		def_flg : "Big wood door, swinging" : 3 : false
+		def_flg : "Normal wood door, swinging" : 4 : true
+		def_flg : "big wood door, sliding" : 5 : false
+		def_flg : "drawbridge" : 6 : false
+		def_flg : "rotating walkway" : 7 : false
+		def_flg : "big metal door, sliding" : 8 : false
+		def_flg : "pendulum swinging" : 9 : false
+	}
+}
+
+$DefEnt [ "func_door" : "Door" ] [ "base_door" ] 
+{
+	def_key : integer : "level" : "Movement length" : ""
+	def_key : integer : "lip" : "Lip" : "8"
+	def_key : string : "v_angle" : "Angle to turn" : "0 0 0"
+	def_key : integer : "anglespeed" : "Turnign speed" : "0"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Toggle" : 8 : false
+		def_flg : "Slide" : 16 : false
+		def_flg : "Normal move" : 32 : false
+		def_flg : "Remove puzzle" : 64 : false
+		def_flg : "No puzzle" : 128 : false
+	}
+}
+
+$DefEnt [ "func_door_rotating" : "Rotating door" ] [ "base_door" ] 
+{
+	def_key : integer : "flags" : "Degree(s) of rotation" : ""
+	def_key : integer : "flags2" : "Damage when touched" : ""
+	def_key : integer : "abslight" : "Absolute light value" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Remove puzzle" : 8 : false
+		def_flg : "No puzzle" : 16 : false
+		def_flg : "Toggle" : 32 : false
+		def_flg : "X axis" : 64 : false
+		def_flg : "Y axis" : 128 : false
+	}
+}
+
+$DefEnt [ "func_door_secret" : "Secret door" ] [ "base_door" ] 
+{
+	def_key : integer : "t_width" : "Override width" : ""
+	def_key : integer : "t_length" : "Override lenght" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Open once" : 1 : false
+		def_flg : "1st left" : 2 : false
+		def_flg : "1st down" : 4 : false
+		def_flg : "No shoot" : 8 : false
+		def_flg : "Always shoot" : 16 : false
+		def_flg : "Remove puzzle" : 64 : false
+		def_flg : "No puzzle" : 128 : false
+	}
+}
+
+$DefEnt [ "func_door_smashing" : "Smashing door" ] [ "base_door" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Toggle" : 8 : false
+		def_flg : "Slide" : 16 : false
+		def_flg : "Normal move" : 32 : false
+		def_flg : "Remove puzzle" : 64 : false
+		def_flg : "No puzzle" : 128 : false
+	}
+}
+
+$DefEnt [ "func_illusionary" : "Illusionary brush" ] [ "base_door" ] 
+{
+	def_key : string : "abslight" : "Absolute light value" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Translucent" : 1 : false
+		def_flg : "Light" : 2 : false
+	}
+}
+
+//$DefEnt [ "" : "" ] [ "base_door" ] 
+//{}
+
+//$DefEnt [ "" : "" ] [ "base_door" ] 
+//{}
+
+//----------------------------Weapons----------------------------
+$DefEnt [ "base_weapon" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+}
+
+//----------------------------Monsters----------------------------
+$DefEnt [ "base_monster" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Ambush" : 1 : false
+		def_flg : "Stuck" : 2 : false
+		def_flg : "Jump" : 4 : false
+		def_flg : "Play dead" : 8 : false
+		def_flg : "Dormant" : 16 : false
+		def_flg : "No drop" : 32 : false
+		def_flg : "Frozen" : 64 : false
+	}
+}
+
+$DefEnt [ "monster_archer" : "Archer" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_archer_lord" : "Archer lord" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_eidolon" : "Eidolon" ] [ "base_monster" ] 
+{
+	def_att : "size" : "200 200 666"
+}
+
+$DefEnt [ "monster_fallen_angel" : "Fallen angel" ] [ "base_monster" ] 
+{
+	def_att : "size" : "28 28 54"
+}
+
+$DefEnt [ "monster_fallen_angel_lord" : "Fallen angel lord" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_fish " : "Fish" ] [ "base_monster" ] 
+{
+	def_att : "size" : "32 32 16"
+
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Bright colored" : 0 : true
+		def_flg : "Darker colored" : 1 : false
+	}
+}
+
+$DefEnt [ "monster_golem_bronze" : "Bronze golem" ] [ "base_monster" ] 
+{
+	def_att : "size" : "128 128 194"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Ambush" : 1 : false
+	}
+}
+
+$DefEnt [ "monster_golem_crystal" : "Crystal golem" ] [ "monster_golem_bronze" ] 
+{
+	def_att : "size" : "64 64 88"
+}
+
+$DefEnt [ "monster_golem_iron" : "Iron golem" ] [ "monster_golem_bronze" ] 
+{
+	def_att : "size" : "110 110 120"
+}
+
+$DefEnt [ "monster_golem_stone" : "Stone golem" ] [ "monster_golem_bronze" ] 
+{
+	def_att : "size" : "64 64 88"
+}
+
+$DefEnt [ "monster_hydra" : "Hydra" ] [ "base_monster" ] 
+{
+	def_att : "size" : "32 32 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Stand" : 1 : false
+		def_flg : "Hover" : 2 : false
+		def_flg : "Jump" : 4 : false
+		def_flg : "Play dead" : 8 : false
+		def_flg : "Dormant" : 16 : false
+	}
+}
+
+$DefEnt [ "monster_imp_fire" : "Fire imp" ] [ "base_monster" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Stand" : 1 : false
+		def_flg : "Hover" : 2 : false
+		def_flg : "Gargoyle" : 16 : false
+	}
+}
+
+$DefEnt [ "monster_imp_ice" : "Ice imp" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_imp_lord" : "Lord imp" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_medusa_green" : "Green medusa" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_medusa_red" : "Red medusa" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_mummy" : "Mummy" ] [ "base_monster" ] 
+{
+	def_att : "size" : "32 32 55"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Ambush" : 1 : false
+	}
+}
+
+$DefEnt [ "monster_ogre" : "Ogre" ] [ "base_monster" ] 
+{
+	def_att : "size" : "64 64 88"
+}
+
+$DefEnt [ "monster_rat" : "Rat" ] [ "base_monster" ] 
+{
+	def_att : "size" : "6 6 7"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Ambush" : 1 : false
+	}
+}
+
+$DefEnt [ "monster_skull_wizard" : "Skull wizard" ] [ "base_monster" ] 
+{}
+
+$DefEnt [ "monster_skull_wizard_lord" : "Skull wizard lord" ] [ "monster_skull_wizard" ] 
+{}
+
+$DefEnt [ "monster_snake" : "Snake" ] [ "base_monster" ] 
+{
+	def_att : "size" : "160 160 200"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Ambush" : 1 : false
+	}
+}
+
+$DefEnt [ "base_spider" : @VIRTUAL : @NULL ] [ "base_monster" ] 
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Ambush" : 1 : false
+		def_flg : "Stuck" : 2 : false
+		def_flg : "Jump" : 4 : false
+		def_flg : "Play dead" : 8 : false
+		def_flg : "Dormant" : 16 : false
+		def_flg : "On wall" : 32 : false
+	}
+}
+
+$DefEnt [ "monster_spider_red_large" : "Red bug - L" ] [ "base_spider" ] 
+{
+	def_att : "size" : "32 32 26"
+}
+
+$DefEnt [ "monster_spider_red_small" : "Red bug - S" ] [ "base_spider" ] 
+{
+	def_att : "size" : "24 24 16"
+}
+
+$DefEnt [ "monster_spider_yellow_large" : "Yellow bug - L" ] [ "base_spider" ] 
+{
+	def_att : "size" : "32 32 26"
+}
+
+$DefEnt [ "monster_spider_yellow_small" : "Yellow bug - S" ] [ "base_spider" ] 
+{
+	def_att : "size" : "24 24 16"
+}
+
+
+//----------------------------Item----------------------------
+
+$DefEnt [ "base_item" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "16 16 65"
+	
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Floating" : 1 : false
+	}
+}
+
+$DefEnt [ "item_armor_amulet" : "Item : Armor amulet" ] [ "base_item" ] 
+{}
+$DefEnt [ "item_armor_bracer" : "Item : Armor bracer" ] [ "base_item" ] 
+{}
+$DefEnt [ "item_armor_breastplate" : "Item : Breastplate" ] [ "base_item" ] 
+{}
+$DefEnt [ "item_armor_helmet" : "Item : Helmet" ] [ "base_item" ] 
+{}
+$DefEnt [ "item_health" : "Item : 10 health" ] [ "base_item" ] 
+{}
+$DefEnt [ "item_mana_both" : "Item : Mana" ] [ "base_item" ] 
+{
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Big (30)" : 2 : false
+	}
+}
+$DefEnt [ "item_mana_blue" : "Item : Blue mana" ] [ "item_mana_both" ] 
+{}
+$DefEnt [ "item_mana_green" : "Item : Greem mana" ] [ "item_mana_both" ] 
+{}
+$DefEnt [ "item_mirage " : "Item : Mirage" ] [ "base_item" ] 
+{
+	def_att : "size" : "16 16 16"
+}
+$DefEnt [ "item_spawner" : "Item : Spawner" ] [ "base_item" ] 
+{}
+
+//----------------------------Props----------------------------
+
+//----------------------------Lights----------------------------
+$DefEnt [ "base_light" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+}
+
+$DefEnt [ "light" : "Light : Normal" ] [ "base_light" ] 
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "light" : "Brightness" : "300"
+	def_key : integer : "style" : "Style" : "0"
+	def_key : integer : "lightvalue1" : "Lowest light level" : "0"
+	def_key : integer : "lightvalue2" : "Highest light level" : "11"
+	def_key : integer : "fadespeed" : "Fade speed" : "1"
+
+	$DefFlags [ "spawnflags" : "Spawn" ]
+	{
+		def_flg : "Start low" : 1 : false
+	}
+}
+
+$DefEnt [ "light_flame_large_yellow" : "Light : Yelllow flame - L" ] [ "light" ] 
+{
+	def_att : "size" : "20 20 80"
+}
+
+$DefEnt [ "light_flame_small_white" : "Light : White flame" ] [ "light" ] 
+{
+	def_att : "size" : "22 22 30"
+}
+
+$DefEnt [ "light_flame_small_yellow" : "Light : Yellow flame - S" ] [ "light" ] 
+{
+	def_att : "size" : "22 22 30"
+}
+
+$DefEnt [ "light_gem" : "Light : Gem" ] [ "light" ] 
+{
+	def_att : "size" : "16 16 16"
+}
+
+$DefEnt [ "light_globe" : "Light : Globe" ] [ "light" ] 
+{
+	def_att : "size" : "16 16 16"
+}
+
+
+
+//----------------------------
+
+//----------------------------
+
+//----------------------------
+
+//----------------------------
+
+//----------------------------

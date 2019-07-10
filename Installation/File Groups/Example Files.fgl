@@ -1,0 +1,102 @@
+[Examples\Plugins\lightpreview]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\GL3DBrushRenderer.cpp
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\GL3DBrushRenderer.h
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\GL3DFaceRenderer.cpp
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\GL3DFaceRenderer.h
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\LightPreview.cpp
+file5=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\lightpreview.dsp
+file6=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\lightpreview.dsw
+file7=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\LightPreview.h
+file8=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\lightpreview.ncb
+file9=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\lightpreview.opt
+file10=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\lightpreview.plg
+fulldirectory=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview
+file11=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\litface.cpp
+file12=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\litface.h
+file13=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\StdAfx.cpp
+file14=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\lightpreview\StdAfx.h
+
+[Examples\Plugins\quakemap]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMap.plg
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMap.dsw
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMap.ncb
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMap.opt
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMap.dsp
+file5=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMapFile.cpp
+file6=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMapFile.h
+file7=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMapPlugin.cpp
+file8=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\QuakeMapPlugin.h
+file9=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\StdAfx.cpp
+file10=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap\StdAfx.h
+fulldirectory=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\quakemap
+
+[Examples\Plugins\q2pakreader]
+file15=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\StdAfx.cpp
+file16=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\StdAfx.h
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\targareader.h
+file17=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\targareader.cpp
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\gentexdir.h
+file18=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\gentexdir.cpp
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakfile.cpp
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakfile.h
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakreader.cpp
+file5=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakreader.dsp
+file6=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakreader.dsw
+file7=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakreader.h
+file8=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakreader.ncb
+file9=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakreader.opt
+file10=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2pakreader.plg
+fulldirectory=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader
+file11=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2texdir.cpp
+file12=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2texdir.h
+file13=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2walreader.cpp
+file14=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\q2pakreader\q2walreader.h
+
+[TopDir]
+SubDir0=Examples
+
+[Examples\Plugins\leaktrace]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\StdAfx.cpp
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\leaktrace.dsw
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\leaktrace.ncb
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\leaktrace.opt
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\leaktrace.plg
+file5=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\LeakTracePlugin.cpp
+file6=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\LeakTracePlugin.h
+file7=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\leaktrace.dsp
+file8=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace\StdAfx.h
+fulldirectory=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\leaktrace
+
+[General]
+Type=FILELIST
+Version=1.10.000
+
+[Examples\Plugins]
+file15=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\TreadAPI.cpp
+file16=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\TreadAPI.h
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\StdAfx.cpp
+file17=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\wogl.h
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\futils.h
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\Hooksys.cpp
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\Hooksys.h
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\linkedlist.h
+file5=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\MATHLIB.CPP
+file6=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\MATHLIB.H
+file7=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\futils.cpp
+SubDir0=Examples\Plugins\lightpreview
+file8=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\StdAfx.h
+SubDir1=Examples\Plugins\leaktrace
+file9=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\szstring.cpp
+SubDir2=Examples\Plugins\q2pakreader
+SubDir3=Examples\Plugins\quakemap
+file10=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\szstring.h
+fulldirectory=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins
+file11=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\TEXPORT.H
+file12=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\tokenizer.cpp
+file13=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\tokenizer.h
+file14=E:\Development\Projects\My Installations\Tread3D\Files\Examples\Plugins\Tread3D.lib
+
+[Examples]
+SubDir0=Examples\Plugins
+fulldirectory=
+

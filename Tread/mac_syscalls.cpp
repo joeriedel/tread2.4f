@@ -1,0 +1,1 @@
+// MAC_SYSCALLS.CPP// Copyright (c) 2000 Joe Riedel, Nick Randal.// Author: Joe Riedel.#include "stdafx.h"#include <string.h>#include <stdlib.h>#include "mac_syscalls.h"char* itoa(int value, char* string, int radix){	sprintf(string, "%d", value);	return string;}

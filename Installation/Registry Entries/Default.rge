@@ -1,0 +1,50 @@
+[Tread3D Registry Set:HKCU:Software\\Prospect Vector\\Tread3D\\Recent File List]
+(Default)=S,
+---Comment---=
+File1=S,
+
+[Tread3D Registry Set:HKCU:Software\\Prospect Vector\\Tread3D\\Settings]
+Debug=N,0
+(Default)=S,
+---Comment---=
+SelectionMask=N,1
+Gamma=N,250
+CurveSubDepth=N,3
+Path=S,
+User=S,
+MaxMap=N,4
+BackPlane=N,500
+VisgroupApply=N,1
+TextureMemory=N,16
+FaceAutoApply=N,0
+SmartName=N,1
+
+[Tread3D Registry Set:HKCU:Software\\Prospect Vector\\Tread3D\\Games\\Quake]
+(Default)=S,
+---Comment---=
+
+[Data]
+Set0=Tread3D Registry Set
+
+[Tread3D Registry Set]
+---Comment---=
+---FileGroup---=Program Executable Files
+HKCU0=Software\\Prospect Vector\\Tread3D\\Recent File List
+HKCU1=Software\\Prospect Vector\\Tread3D\\Settings
+HKCU2=Software\\Prospect Vector\\Tread3D\\tip
+HKCU3=Software\\Prospect Vector\\Tread3D\\Games
+HKCU4=Software\\Prospect Vector\\Tread3D\\Games\\Quake
+
+[General]
+Type=REGISTRYDATA
+Version=1.00.000
+
+[Tread3D Registry Set:HKCU:Software\\Prospect Vector\\Tread3D\\tip]
+(Default)=S,
+---Comment---=
+StartUp=N,1
+
+[Tread3D Registry Set:HKCU:Software\\Prospect Vector\\Tread3D\\Games]
+(Default)=S,
+---Comment---=
+

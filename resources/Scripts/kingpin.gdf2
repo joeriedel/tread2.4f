@@ -1,0 +1,2358 @@
+//Kingpin script
+//Written by Nick Randal
+//Last modified : 8/4/99
+
+$DefGlobal [ "Kingpin" ]
+{
+	def_author		: "Nicholas Randal"
+	def_version		: "1.00"
+	def_solid		: "func_door"
+	def_point		: "info_player_start"
+	def_gamemaptype	: "QUAKE2_MAP"
+	def_targetkey	: "target"
+	def_namekey		: "targetname"
+	def_textype		: "@TARGA"
+
+	def_key : integer : "episode" : "Episode number" : ""
+	def_key : string : "sky" : "Environment map" : ""
+	def_key : integer : "sounds" : "CD track to play" : ""
+	def_key : integer : "gravity" : "Gravity (800)" : "800"
+	def_key : string : "message" : "Message" : ""
+	def_key : integer : "fogdensity" : "Fog density (OpenGL)" : ""
+	def_key : integer : "fogdensity2" : "Fog density (3DFX)" : ""
+	def_key : color : "fogval" : "Fog RGB (OpenGL)" : ""
+	def_key : color : "fogval2" : "Fog RGB (3DFX)" : ""
+
+	$DefBuild
+	{
+		$DefModule [ @@MapDir : "Map Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@GameDir : "Kingpin Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@MapFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : @@MapDir : @ALWAYS : false
+				def_param : "" : "\\" : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				def_param : "" : ".map" : @ALWAYS : false
+			}
+			
+			$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@BspSection : "BSP Program" : "BSP Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "No Junctions" : "-nojunc " : 2 : false
+				def_param : "No Fill" : "-nofill " : 4 : false
+				def_param : "Draw" : "-draw " : 8 : false
+				def_param : "Only Ents" : "-onlyents " : 16 : false
+				def_param : "Verbose" : "-verbose " : 32 : false
+ 				
+				def_param : "" : @@MapFile : @ALWAYS : false 
+			}
+			
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Kingpin BSP..."
+		}
+
+		$DefModule [ @@BspFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : "+map " : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				//def_param : "" : ".bsp" : @ALWAYS : false
+			}
+			
+			//$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@VisSection : "VIS Program" : "VIS Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+			}		
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Kingpin VIS..."
+		}
+
+		$DefModule [ @@RadSection : "RAD Program" : "RAD Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "" : @@FILENAME : @ALWAYS : false
+			}
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Kingpin RAD..."
+		}
+
+		$DefModule [ @@Quake2 : "Kingpin Exe" : "Kingpin Options" ] 
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "" : @@BspFile : @ALWAYS : false 
+			}
+
+			$SpawnWait : @THIS : @@GameDir : @CONSOLE : "Running Kingpin ..."
+		}
+	}
+
+}
+
+$DefEnt [ "func_group" : "Function : Group" ] []
+{
+	def_att : "owner" : true
+}
+
+$DefEnt [ "func_areaportal" : "Function : Areaportal" ] []
+{
+	def_att : "owner" : true
+}
+
+$DefEnt [ "base_point" : @VIRTUAL : @NULL ] []
+{
+	def_att : "size" : "8 8 8"
+	def_att : owner  : false
+
+	// Define switchable flags.
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Not in Easy"	      : 256  : false
+		def_flg : "Not in Normal"     : 512  : false
+		def_flg : "Not in Hard"       : 1024 : false
+		def_flg : "Not in Deathmatch" : 2048 : false
+	}
+}
+
+$DefEnt [ "base_solid" : @VIRTUAL : @NULL ] []
+{
+	def_att : "size" : "32 32 32"
+	def_att : "owner"  : true
+}
+
+//---------------------------Player---------------------------
+$DefEnt [ "base_player" : @VIRTUAL : "Player" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 72"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "info_player_start" : "Player 1 Start" ] [ "base_player" ] {}
+$DefEnt [ "info_player_deathmatch" : "Deathmatch start" ] [ "base_player" ] {}
+$DefEnt [ "info_player_coop" : "Cooperative start" ] [ "base_player" ] {}
+
+$DefEnt [ "info_player_intermission" : "Deathmatch intermission" ] [ "base_player" ]
+{
+	def_key : string : "angles" : "pitch yaw roll" : ""
+}
+
+////---------------------------Deathmatch---------------------------
+$DefEnt [ "base_deathmatch" : @VIRTUAL : "Deathmatch" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+
+//Spawn location for cash during "Grab da Loot" games
+$DefEnt [ "dm_cashspawn" : "Cash spawn" ] [ "base_deathmatch" ]
+{
+	$DefOptions [ "type" : "Type" ]
+	{
+		def_flg : "Cash roll" : 1 : false
+		def_flg : "Cash bag (longer delay)" : 2 : false
+	}
+}
+
+$DefEnt [ "dm_safebag" : "Safe bag" ] [ "base_deathmatch" ]
+{
+	def_att : "size" : "24 24 28"
+	
+	$DefOptions [ "style" : "Team" ]
+	{
+		def_flg : "Team1" : 1 : false
+		def_flg : "Team2" : 2 : false
+	}
+}
+
+$DefEnt [ "dm_props_banner" : "Team banner" ] [ "base_deathmatch" ]
+{
+	def_att : "size" : "94 12 200"
+	def_key : integer : "scale" : "Scale size" : "1"
+
+	$DefOptions [ "style" : "Team" ]
+	{
+		def_flg : "Team1" : 1 : false
+		def_flg : "Team2" : 2 : false
+	}
+}
+
+//---------------------------Cutscene---------------------------
+$DefEnt [ "base_cutscene" : @VIRTUAL : "Cutscene" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+
+$DefEnt [ "misc_cutscene_camera" : "Camera" ] [ "base_cutscene" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "cameraangle" : "Camera angle" : "0 0 0"
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "wait" : "Wait" : "0"
+	def_key : string : "cameraorigin" : "Camera Origin" : "0 0 0"
+	def_key : string : "cameravelrel" : "Camera Velrel" : "0 0 0"
+	def_key : integer : "reactdelay" : "Delay" : ""
+	def_key : string : "cameravel" : "Camera Vel" : "0 0 0"
+	def_key : integer : "count" : "Count" : ""
+	def_key : integer : "delay" : "Delay" : ""
+	def_key : integer : "accel" : "Acceleration" : ""
+	def_key : integer : "decel" : "Deceleration" : ""
+	def_key : string : "target2" : "Target 2" : ""
+}
+
+//$DefEnt [ "" : "Cutscene : " ] : [ "base_cutscene" ]
+//{
+//}
+
+//---------------------------Light---------------------------
+
+$DefEnt [ "base_light" : @VIRTUAL : "Light" ] [ "base_point" ]
+{
+	def_key : integer : "light" : "Brightness" : 200
+}
+
+$DefEnt [ "light" : "Light" ] [ "base_light" ]
+{
+	def_att : "size" : "8 8 8"
+	def_key : integer : "light" : "Brightness" : "300"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_cone" : "Size of spotlight" : "10"
+	def_key : color : "_color" : "Color" : "1.0 1.0 1.0"
+	def_key : integer : "health" : "Size of flare" : ""
+
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Flare" : 2 : false
+		def_flg : "No resize" : 4 : false
+		def_flg : "Dynamic" : 8 : false
+	}
+
+	$DefOptions [ "dmg" : "Type" ]
+	{
+		def_flg : "White" : 0 : false
+		def_flg : "Sun" : 1 : false
+		def_flg : "Amber" : 2 : false
+		def_flg : "Red" : 3 : false
+		def_flg : "Blue" : 4 : false
+		def_flg : "Green" : 5 : false
+	}
+}
+
+$DefEnt [ "junior" : "Character lighting" ] [ "base_light" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "info_null" : "Target spotlight" ] [ "base_light" ]
+{
+	def_att : "size" : "8 8 8"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "info_notnull" : "Target lighting" ] [ "base_light" ]
+{
+	def_att : "size" : "8 8 8"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "lightflare" : "Light flare" ] [ "base_light" ]
+{
+	def_att : "size" : "8 8 8"
+	def_key : integer : "light" : "Brightness" : "300"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_cone" : "Size of spotlight" : "10"
+	def_key : color : "_color" : "Color" : "1.0 1.0 1.0"
+	def_key : integer : "health" : "Size of flare" : ""
+
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Flare" : 2 : false
+		def_flg : "No resize" : 4 : false
+		def_flg : "Dynamic" : 8 : false
+	}
+
+	$DefOptions [ "dmg" : "Type" ]
+	{
+		def_flg : "White" : 0 : false
+		def_flg : "Sun" : 1 : false
+		def_flg : "Amber" : 2 : false
+		def_flg : "Red" : 3 : false
+		def_flg : "Blue" : 4 : false
+		def_flg : "Green" : 5 : false
+	}
+}
+
+$DefEnt [ "light_deco_sconce" : "Deco Sconce" ] [ "base_light" ]
+{
+	def_att : "size" : "16 16 24"
+	def_key : integer : "light" : "Brightness" : "300"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_cone" : "Size of spotlight" : "10"
+	def_key : color : "_color" : "Color" : "1.0 1.0 1.0"
+	def_key : integer : "health" : "Size of flare" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Flare" : 2 : false
+		def_flg : "No resize" : 4 : false
+		def_flg : "Dynamic" : 8 : false
+	}
+
+	$DefOptions [ "dmg" : "Type" ]
+	{
+		def_flg : "White" : 0 : false
+		def_flg : "Sun" : 1 : false
+		def_flg : "Amber" : 2 : false
+		def_flg : "Red" : 3 : false
+		def_flg : "Blue" : 4 : false
+		def_flg : "Green" : 5 : false
+	}
+}
+
+$DefEnt [ "light_sconce" : "Sconce" ] [ "base_light" ]
+{
+	def_att : "size" : "16 16 24"
+	def_key : integer : "light" : "Brightness" : "300"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_cone" : "Size of spotlight" : "10"
+	def_key : color : "_color" : "Color" : "1.0 1.0 1.0"
+	def_key : integer : "health" : "Size of flare" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Flare" : 2 : false
+		def_flg : "No resize" : 4 : false
+		def_flg : "Dynamic" : 8 : false
+	}
+
+	$DefOptions [ "dmg" : "Type" ]
+	{
+		def_flg : "White" : 0 : false
+		def_flg : "Sun" : 1 : false
+		def_flg : "Amber" : 2 : false
+		def_flg : "Red" : 3 : false
+		def_flg : "Blue" : 4 : false
+		def_flg : "Green" : 5 : false
+	}
+}
+
+$DefEnt [ "light_bulb" : "Bulb" ] [ "base_light" ]
+{
+	def_att : "size" : "16 16 24"
+	def_key : integer : "light" : "Brightness" : "300"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_cone" : "Size of spotlight" : "10"
+	def_key : color : "_color" : "Color" : "1.0 1.0 1.0"
+	def_key : integer : "health" : "Size of flare" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Flare" : 2 : false
+		def_flg : "No resize" : 4 : false
+		def_flg : "Dynamic" : 8 : false
+	}
+
+	$DefOptions [ "dmg" : "Type" ]
+	{
+		def_flg : "White" : 0 : false
+		def_flg : "Sun" : 1 : false
+		def_flg : "Amber" : 2 : false
+		def_flg : "Red" : 3 : false
+		def_flg : "Blue" : 4 : false
+		def_flg : "Green" : 5 : false
+	}
+}
+
+$DefEnt [ "light_pendant" : "Pendant" ] [ "base_light" ]
+{
+	def_att : "size" : "16 16 24"
+	def_key : integer : "light" : "Brightness" : "300"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_cone" : "Size of spotlight" : "10"
+	def_key : color : "_color" : "Color" : "1.0 1.0 1.0"
+	def_key : integer : "health" : "Size of flare" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Flare" : 2 : false
+		def_flg : "No resize" : 4 : false
+		def_flg : "Dynamic" : 8 : false
+	}
+
+	$DefOptions [ "dmg" : "Type" ]
+	{
+		def_flg : "White" : 0 : false
+		def_flg : "Sun" : 1 : false
+		def_flg : "Amber" : 2 : false
+		def_flg : "Red" : 3 : false
+		def_flg : "Blue" : 4 : false
+		def_flg : "Green" : 5 : false
+	}
+}
+
+//---------------------------Cast---------------------------
+$DefEnt [ "base_cast" : @VIRTUAL : "Cast" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 72"
+	def_key : vector : "angle" : "Direction" : "0"
+	def_key : integer : "moral" : "Morale" : ""
+	def_key : string : "item" : "Item to drop" : ""
+	def_key : string : "art_skins" : "Skin" : ""
+	def_key : string : "localteam" : "Team" : ""
+	def_key : integer : "currentcash" : "Cash" : ""
+	def_key : string : "flee_target" : "Escape target" : ""
+	def_key : string : "guard_target" : "Guard target" : ""
+}
+
+$DefEnt [ "cast_bitch" : "1 handed chick" ] [ "base_cast" ]
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+		//def_flg : "" : 4 : false
+		//def_flg : "" : 8 : false
+		//def_flg : "" : 16 : false
+		def_flg : "Imediate follow path" : 32 : false
+		def_flg : "Melee" : 64 : false
+		def_flg : "No Shadow" : 128 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+$DefEnt [ "cast_whore" : "2 handed chick" ] [ "base_cast" ]
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Flash light" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+		def_flg : "Flame Thrower" : 4 : false
+		def_flg : "Bazooka" : 8 : false
+		def_flg : "HM Gun" : 16 : false
+		def_flg : "Immediate follow path" : 32 : false
+		def_flg : "Tommy gun" : 64 : false
+		def_flg : "Grenade Launcher" : 128 : false
+	}
+	
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+$DefEnt [ "cast_bum_sit" : "Bum (sitting)" ] [ "base_cast" ]
+{
+	def_att : "size" : "48 48 72"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+	}
+}
+
+$DefEnt [ "cast_buma" : "Bum A" ] [ "base_cast" ]
+{
+	def_att : "size" : "61 59 38"
+}
+
+$DefEnt [ "cast_bumb" : "Bum B" ] [ "base_cast" ]
+{
+	def_att : "size" : "61 59 38"
+}
+
+$DefEnt [ "cast_dog" : "Dog" ] [ "base_cast" ]
+{
+	def_att : "size" : "32 32 38"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+$DefEnt [ "cast_punk" : "2 handed thug" ] [ "base_cast" ]
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Flash light" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+		def_flg : "Flame Thrower" : 4 : false
+		def_flg : "Bazooka" : 8 : false
+		def_flg : "HM Gun" : 16 : false
+		def_flg : "Immediate follow path" : 32 : false
+		def_flg : "Tommy gun" : 64 : false
+		def_flg : "Grenade launcher" : 128 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+$DefEnt [ "cast_runt" : "1 handed runt" ] [ "base_cast" ]
+{
+	def_key : string : "art_skins" : "Skin" : "029 019 017"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "Flash light" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+		//def_flg : "Flame Thrower" : 4 : false
+		//def_flg : "Bazooka" : 8 : false
+		//def_flg : "HM Gun" : 16 : false
+		def_flg : "Immediate follow path" : 32 : false
+		def_flg : "Melee" : 64 : false
+		def_flg : "No shadow" : 128 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+$DefEnt [ "cast_shorty" : "2 handed runt" ] [ "base_cast" ]
+{
+	def_key : string : "art_skins" : "Skin" : "011 011 005"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Flash light" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+		def_flg : "Flame Thrower" : 4 : false
+		def_flg : "Bazooka" : 8 : false
+		def_flg : "HM Gun" : 16 : false
+		def_flg : "Immediate follow path" : 32 : false
+		def_flg : "Tommy gun" : 64 : false
+		def_flg : "Grenade launcher" : 128 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+$DefEnt [ "cast_thug" : "1 handed thug" ] [ "base_cast" ]
+{
+	def_key : string : "art_skins" : "Skin" : "041 026 010"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "Flash light" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+		//def_flg : "Flame Thrower" : 4 : false
+		//def_flg : "Bazooka" : 8 : false
+		//def_flg : "HM Gun" : 16 : false
+		def_flg : "Immediate follow path" : 32 : false
+		def_flg : "Melle" : 64 : false
+		def_flg : "No shadow" : 128 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+$DefEnt [ "cast_thug_sit" : "Thug (sitting)" ] [ "base_cast" ]
+{
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "Flash light" : 1 : false
+		def_flg : "Triggered start" : 2 : false
+		//def_flg : "Flame Thrower" : 4 : false
+		//def_flg : "Bazooka" : 8 : false
+		//def_flg : "HM Gun" : 16 : false
+		def_flg : "Immediate follow path" : 32 : false
+		def_flg : "Melee" : 64 : false
+		def_flg : "No shadow" : 128 : false
+	}
+
+	$DefOptions [ "cast_group" : "Group" ]
+	{
+		def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+//---------------------------Ammo---------------------------
+
+$DefEnt [ "base_ammo" : @VIRTUAL : "Ammo" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 32"
+	//def_key : vector : "angle" : "Angle" : "0"
+}
+
+$DefEnt [ "ammo_shells"	: "Shotgun shells" ] [ "base_ammo" ] {}
+$DefEnt [ "ammo_bullets" : "Machine/Chain bullets" ] [ "base_ammo" ] {}
+$DefEnt [ "ammo_grenades" : "Grenades" ] [ "base_ammo" ] {}
+$DefEnt [ "ammo_rockets" : "Rockets" ] [ "base_ammo" ] {}
+$DefEnt [ "ammo_308" : "308" ] [ "base_ammo" ] {}
+$DefEnt [ "ammo_cylinder" : "Cylinder" ] [ "base_ammo" ] {}
+$DefEnt [ "ammo_flametank" : "Flame tank" ] [ "base_ammo" ] {}
+
+//---------------------------Wepons---------------------------
+$DefEnt [ "base_weapons" : @VIRTUAL : "Weapons" ] [ "base_point" ]
+{
+	def_att : size : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+
+$DefEnt [ "weapon_crowbar" : "Crowbar" ] [ "base_weapons" ] {}
+$DefEnt [ "weapon_pistol" : "Pistol" ] [ "base_weapons" ] {}
+$DefEnt [ "weapon_tommygun" : "Tommygun" ] [ "base_weapons" ] {}
+$DefEnt [ "weapon_shotgun" : "Shotgun" ] [ "base_weapons" ] {}
+$DefEnt [ "weapon_flamethrower" : "Flame thrower" ] [ "base_weapons" ] {}
+$DefEnt [ "weapon_grenadelauncher" : "Grenade launcher" ] [ "base_weapons" ] {}
+$DefEnt [ "weapon_bazooka" : "Bazooka" ] [ "base_weapons" ] {}
+$DefEnt [ "weapon_heavymachinegun" : "Heavy machine gun" ] [ "base_weapons" ] {}
+$DefEnt [ "pistol_mod_rof" : "Rate of fire" ] [ "base_weapons" ] {}
+$DefEnt [ "pistol_mod_reload" : "Fast Reload" ] [ "base_weapons" ] {}
+$DefEnt [ "pistol_mod_damage" : "Extra Damage" ] [ "base_weapons" ] {}
+$DefEnt [ "hmg_mod_colling" : "Recoil" ] [ "base_weapons" ] {}
+
+//---------------------------Power Ups---------------------------
+$DefEnt [ "base_item" : @VIRTUAL : "Power-Ups" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : integer : "lightit" : "Object lighting" : ""
+}
+
+$DefEnt [ "item_armor_jacket" : "Armor jacket" ] [ "base_item" ] {}
+$DefEnt [ "item_armor_legs" : "Armor legs" ] [ "base_item" ] {}
+$DefEnt [ "item_armor_helmet_heavy" : "Armor heavy helmet" ] [ "base_item" ] {}
+$DefEnt [ "item_armor_jacket_heavy" : "Armor heavy jacket" ] [ "base_item" ] {}
+$DefEnt [ "item_armor_legs_heavy" : "Armor heavy legs" ] [ "base_item" ] {}
+$DefEnt [ "item_coil" : "Condensor coil" ] [ "base_item" ] {}
+$DefEnt [ "item_cashroll" : "Cash roll" ] [ "base_item" ]
+{
+	def_key : integer : "currentcash" : "Amount $" : "10"
+}
+
+$DefEnt [ "item_cashbaglarge" : "Cash bag (large)" ] [ "base_item" ]
+{
+	def_key : integer : "currentcash" : "Amount $" : "25"
+}
+
+$DefEnt [ "item_cashbagsmall" : "Cash bag (small)" ] [ "base_item" ]
+{
+	def_key : integer : "currentcash" : "Amount $" : "15"
+}
+
+$DefEnt [ "item_battery" : "Battery" ] [ "base_item" ] {}
+$DefEnt [ "item_health_sm" : "Health (small)" ] [ "base_item" ] {}
+$DefEnt [ "item_health_lg" : "Health (large)" ] [ "base_item" ] {}
+$DefEnt [ "item_flashlight" : "Flashlight" ] [ "base_item" ] {}
+$DefEnt [ "item_watch" : "Lenny's watch" ] [ "base_item" ] {}
+$DefEnt [ "item_whiskey" : "Whiskey" ] [ "base_item" ] {}
+$DefEnt [ "key_key1" : "Key 1" ] [ "base_item" ] {}
+$DefEnt [ "key_key2" : "Key 2" ] [ "base_item" ] {}
+$DefEnt [ "key_key3" : "Key 3" ] [ "base_item" ] {}
+$DefEnt [ "key_key4" : "Key 4" ] [ "base_item" ] {}
+$DefEnt [ "key_key5" : "Key 5" ] [ "base_item" ] {}
+
+//---------------------------Props---------------------------
+$DefEnt [ "base_props" : @VIRTUAL : "Props" ] [ "base_point" ]
+{
+	def_key : vector : "angle" : "Angle" : "0"
+	def_att : "size" : "32 32 32"
+}
+
+//Bernie and the guys will listen to this. After the radio has stopped,
+//they'll discuss the game for some time.
+$DefEnt [ "misc_skidrow_radio" : "Misc : Skid row radio" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 72"
+	def_key : integer : "delay" : "Wait to start" : ""
+	def_key : integer : "wait" : "Time listening" : ""
+	def_key : integer : "speed" : "Time discussing" : ""
+}
+
+//Use to tag the speaker inside the warehouse
+$DefEnt [ "misc_skidrow_radio_repeater" : "Wherehouse speaker" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 72"
+}
+
+//Used to set ambush location for the 3 guards when the
+//player goes into the 2nd door.
+$DefEnt [ "misc_skidrow_ambush" : "Skid row ambush" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 72"
+}
+
+//used by actors to pick location where it is safer to run away from the player
+$DefEnt [ "misc_skidrow_afraid" : "Misc : Skid row safe place" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 72"
+}
+
+$DefEnt [ "light_fire_sm" : "Fire (small)" ] [ "base_props" ]
+{
+	def_key : integer : "alphalevel" : "Alpha Level (1-10)" : "5"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "" : 0 : false
+		//def_flg : "" : 1 : false
+		//def_flg : "" : 2 : false
+		def_flg : "Dynamic" : 4 : false
+	}
+}
+
+$DefEnt [ "light_fire_med" : "Fire (medium)" ] [ "base_props" ]
+{
+	def_att : "size" : "48 48 48"
+	def_key : integer : "alphalevel" : "Alpha Level (1-10)" : "5"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "" : 0 : false
+		//def_flg : "" : 1 : false
+		//def_flg : "" : 2 : false
+		def_flg : "Dynamic" : 4 : false
+	}
+}
+
+$DefEnt [ "light_fire_lg" : "Prop : Fire (large)" ] [ "base_props" ]
+{
+	def_att : "size" : "64 64 64"
+	def_key : integer : "alphalevel" : "Alpha Level (1-10)" : "5"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "" : 0 : false
+		//def_flg : "" : 1 : false
+		//def_flg : "" : 2 : false
+		def_flg : "Dynamic" : 4 : false
+	}
+}
+
+$DefEnt [ "smoke_esm" : "Prop : Smoke (extra small)" ] [ "base_props" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : integer : "alphalevel" : "Alpha Level (1-10)" : "4"
+}
+
+$DefEnt [ "smoke_sm" : "Prop : Smoke (small)" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : integer : "alphalevel" : "Alpha Level (1-10)" : "4"
+}
+
+$DefEnt [ "smoke_med" : "Prop : Smoke (medium)" ] [ "base_props" ]
+{
+	def_att : "size" : "48 48 48"
+	def_key : integer : "alphalevel" : "Alpha Level (1-10)" : "4"
+}
+
+$DefEnt [ "smoke_lg" : "Prop : Smoke (large)" ] [ "base_props" ]
+{
+	def_att : "size" : "64 64 64"
+	def_key : integer : "alphalevel" : "Alpha Level (1-10)" : "4"
+}
+
+//A chair (with no bounding box)
+$DefEnt [ "props_chair" : "Prop : Chair" ] [ "base_props" ]
+{
+	def_att : "size" : "22 26 52"
+}
+
+$DefEnt [ "pawn_o_matic" : "Prop : Pawn-o-matic" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props2_chair_push" : "Prop : Pushable chair" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 52"
+	def_key : integer : "health" : "Health" : "25"
+}
+
+$DefEnt [ "props_extinguisherA" : "Prop : Extinguisher A" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : integer : "dmg" : "Damage (explosion)" : "25"
+}
+
+$DefEnt [ "props_extinguisherB" : "Prop : Extinguisher B" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : integer : "dmg" : "Damage (explosion)" : "25"
+}
+
+$DefEnt [ "props_motorcycle" : "Prop : Motorcycle" ] [ "base_props" ]
+{
+	def_att : "size" : "120 40 52"
+}
+
+$DefEnt [ "props_motorcycle_run" : "Prop : Motorcycle Run" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props_motorcycle_runaway" : "Prop : Motorcycle running" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props_shelf" : "Prop : Pawn shop shelf" ] [ "base_props" ]
+{
+	def_att : "size" : "80 170 102"
+	def_key : integer : "lightit" : "Light object" : ""
+}
+
+$DefEnt [ "props_mattressA" : "Prop : Mattress A" ] [ "base_props" ]
+{
+	def_att : "size" : "72 52 76"
+}
+
+$DefEnt [ "props_mattressB" : "Prop : Mattress B" ] [ "base_props" ]
+{
+	def_att : "size" : "16 68 76"
+}
+
+$DefEnt [ "props_mattressC" : "Prop : Mattress C" ] [ "base_props" ]
+{
+	def_att : "size" : "68 76 16"
+}
+
+$DefEnt [ "props_tv" : "Prop : TV" ] [ "base_props" ]
+{
+	def_att : "size" : "16 32 44"
+}
+
+$DefEnt [ "props_steam_machine" : "Prop : Steam producer" ] [ "base_props" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : integer : "alphalevel" : "Alpha (1-10)" : "2"
+	def_key : integer : "firetype" : "Length (1-100)" : "15"
+	def_key : integer : "thudsurf" : "Start size (1-10)" : "5"
+	def_key : integer : "thudsnd" : "End size (1-10)" : "5"
+	def_key : integer : "deadticks" : "Steam puffs" : "2"
+}
+
+$DefEnt [ "props_trash" : "Prop : Trash" ] [ "base_props" ]
+{
+	def_att : "size" : "128 128 8"
+	$DefOptions [ "option" : "Options" ]
+	{
+		def_flg : "Prop On" : 0 : true
+		def_flg : "Props Off" : 1 : false
+	}
+}
+
+$DefEnt [ "props_trashcan_fall" : "Prop : Trashcan fall" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 42"
+	def_key : integer : "mass" : "Mass" : "100"
+	def_key : integer : "health" : "Health" : "10"
+	def_key : string : "item" : "Item to spawn" : ""
+}
+
+$DefEnt [ "props_trashbottle" : "Prop : Trash bottle" ] [ "base_props" ]
+{
+	def_att : "size" : "16 4 4"
+}
+
+$DefEnt [ "props_trashpaper" : "Prop : Trash paper" ] [ "base_props" ]
+{
+	def_att : "size" : "36 36 4"
+}
+
+//A wall that falls when trigered  
+$DefEnt [ "props_wall_fall" : "Prop : Falling wall" ] [ "base_props" ]
+{
+	def_att : "size" : "128 52 96"
+}
+
+$DefEnt [ "props_trashwall" : "Prop : Trash wall" ] [ "base_props" ]
+{
+	def_att : "size" : "140 50 20"
+	def_key : integer : "lightit" : "Object lighting" : ""
+
+	$DefOptions [ "option" : "Option???" ]
+	{
+		def_flg : "flag1" : 0 : false
+	}
+}
+
+$DefEnt [ "props_trashcorner" : "Prop : Trash corner" ] [ "base_props" ]
+{
+	def_att : "size" : "80 80 16"
+	def_key : integer : "lightit" : "Object lighting" : ""
+
+	$DefOptions [ "option" : "Option???" ]
+	{
+		def_flg : "flag1" : 0 : false
+	}
+}
+
+$DefEnt [ "props_trashbottle_vert" : "Prop : Trash bottle (Vert)" ] [ "base_props" ]
+{
+	def_att : "size" : "4 4 16"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props_shelf_fall" : "Falling shelf A" ] [ "base_props" ]
+{
+	def_att : "size" : "130 26 102"
+}
+
+$DefEnt [ "props_shelfB_fall" : "Falling shelf B" ] [ "base_props" ]
+{
+	def_att : "size" : "130 26 102"
+}
+
+$DefEnt [ "props_rat" : "Rat" ] [ "base_props" ]
+{
+	def_att : "size" : "24 24 10"
+	def_key : integer : "dmg" : "Damage (bite)" : "2"
+	def_key : integer : "health" : "Health (hit pts)" : "10"
+}
+
+$DefEnt [ "props_rat_trigger" : "Spawned rat" ] [ "base_props" ]
+{
+	def_att : "size" : "24 24 10"
+	def_key : integer : "dmg" : "Damage (bite)" : "2"
+	def_key : integer : "health" : "Health (hit pts)" : "10"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "props_rat_spawner" : "Rat spawner" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : integer : "dmg" : "Damage (bite)" : "2"
+	def_key : integer : "health" : "Health (hit pts)" : "10"
+	def_key : integer : "deadticks" : "Spawn quantity" : "5"
+	def_key : string : "target" : "Target points" : ""
+}
+
+$DefEnt [ "props_rat_spawner_node" : "Prop : Rat spawn node" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+//A path corner blimp - trigger to make visable and start moving
+$DefEnt [ "props_blimp" : "Prop : " ] [ "base_props" ]
+{
+	def_att : "size" : "280 80 116"
+	def_key : integer : "speed" : "Speed" : "20"
+	def_key : string : "target" : "Target" : ""
+}
+
+$DefEnt [ "props_roof_vent" : "Prop : Roof vent" ] [ "base_props" ]
+{
+	def_att : "size" : "64 72 96"
+	def_key : integer : "health" : "Health (hit pts)" : "25"
+}
+
+$DefEnt [ "props2_truck_die" : "Prop : Exploding truck" ] [ "base_props" ]
+{
+	def_att : "size" : "122 296 156"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props_cola_machine" : "Prop : Cola machine" ] [ "base_props" ]
+{
+	def_att : "size" : "40 56 64"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props_cig_machine" : "Prop : Cigarette machine" ] [ "base_props" ]
+{
+	def_att : "size" : "32 48 64"
+}
+
+$DefEnt [ "props2_barrels_fallA" : "Prop : Falling barrels A" ] [ "base_props" ]
+{
+	def_att : "size" : "138 66 118"
+}
+
+$DefEnt [ "props2_barrels_fallB" : "Prop : Falling barrels B" ] [ "base_props" ]
+{
+	def_att : "size" : "66 162 118"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_clubcouch" : "Prop : Couch" ] [ "base_props" ]
+{
+	def_att : "size" : "64 128 48"
+}
+
+$DefEnt [ "props2_clubchair" : "Prop : Pushable Chair2" ] [ "base_props" ]
+{
+	def_att : "size" : "64 64 48"
+}
+
+$DefEnt [ "props2_vaseA" : "Prop : Vase A" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 48"
+}
+
+$DefEnt [ "props2_vaseB" : "Prop : Vase B" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 48"
+}
+
+$DefEnt [ "props2_chair_conf" : "Prop : Pushable chair 3" ] [ "base_props" ]
+{
+	def_att : "size" : "48 48 64"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_shelf_metal_A_fall" : "Prop : Falling metal shelf A" ] [ "base_props" ]
+{
+	def_att : "size" : "120 40 112"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_shelf_metal_B_fall" : "Prop : Falling metal shelf B" ] [ "base_props" ]
+{
+	def_att : "size" : "120 40 112"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_deadguy" : "Prop : Dead body" ] [ "base_props" ]
+{
+	def_att : "size" : "80 54 18"
+	def_key : integer : "health" : "Health (hit pts)" : "50"
+}
+
+$DefEnt [ "props2_deadguy_underwater" : "Prop : Dead body (water)" ] [ "base_props" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : integer : "health" : "Health (hit pts)" : "50"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_deadgal_headless" : "Prop : Headless female body" ] [ "base_props" ]
+{
+	def_att : "size" : "64 52 14"
+	def_key : integer : "health" : "Health (hit pts)" : "50"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_flag" : "Prop : Flag" ] [ "base_props" ]
+{
+	def_att : "size" : "16 16 16"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Flag 1" : 0 : false
+		def_flg : "Flag 2" : 1 : false
+		def_flg : "Flag 3" : 2 : false
+	}
+}
+
+$DefEnt [ "props2_fish" : "Prop : Fish" ] [ "base_props" ]
+{
+	def_att : "size" : "24 24 10"
+	def_key : integer : "health" : "Health (hit pts)" : "10"
+	def_key : integer : "dmg" : "Damage (bite)" : "2"
+}
+
+$DefEnt [ "props2_fish_trigger" : "Prop : Fish spawned" ] [ "base_props" ]
+{
+	def_att : "size" : "24 24 10"
+	def_key : integer : "health" : "Health (hit pts)" : "10"
+	def_key : integer : "dmg" : "Damage (bite)" : "2"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "props2_fish_spawner" : "Prop : Fish spawner" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : integer : "dmg" : "Damage (bite)" : "2"
+	def_key : integer : "health" : "Health (hit pts)" : "10"
+	def_key : integer : "deadticks" : "Spawn quantity" : "5"
+	def_key : string : "target" : "Target points" : ""
+}
+
+$DefEnt [ "props2_fish_spawner_node" : "Prop : Fish spawn point" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_wall_fish" : "Prop : Fish on wall" ] [ "base_props" ]
+{
+	def_att : "size" : "4 80 24"
+}
+
+//A set of barrels that you can trigger to fall
+$DefEnt [ "props2_barrels_fall_ST" : "Prop : Falling barrels" ] [ "base_props" ]
+{
+	def_att : "size" : "178 96 112"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_sign" : "Sign" ] [ "base_props" ]
+{
+	def_att : "size" : "8 88 88"
+}
+
+//-482 -25 -88, -85 25 -40
+$DefEnt [ "props2_lighthouse_beam" : "Light house beam" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 128"
+	def_key : integer : "reactdelay" : "Distance" : "40"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_boat" : "Boat" ] [ "base_props" ]
+{
+	def_att : "size" : "160 320 72"
+}
+
+$DefEnt [ "props2_buoy" : "Prop : Buoy" ] [ "base_props" ]
+{
+	def_att : "size" : "82 82 150"
+}
+
+$DefEnt [ "props2_buoy_side" : "Prop : Buoy on side" ] [ "base_props" ]
+{
+	def_att : "size" : "162 110 128"
+}
+
+$DefEnt [ "props2_buoy_animate" : "Prop : Buoy animated" ] [ "base_props" ]
+{
+	def_att : "size" : "82 82 150"
+}
+
+$DefEnt [ "props2_gargoyle" : "Prop : Gargoyle" ] [ "base_props" ]
+{
+	def_att : "size" : "94 44 100"
+}
+
+$DefEnt [ "props2_clothesline" : "Prop : Clothes line" ] [ "base_props" ]
+{
+	def_att : "size" : "8 170 50"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Do not move" : 0 : false
+	}
+}
+
+$DefEnt [ "props2_plant_XL" : "Prop : Plant (large)" ] [ "base_props" ]
+{
+	def_att : "size" : "100 92 106"
+}
+
+$DefEnt [ "props2_plant_SM" : "Prop : Plant (small)" ] [ "base_props" ]
+{
+	def_att : "size" : "24 18 40"
+}
+
+$DefEnt [ "props2_lunch" : "Prop : Lunch" ] [ "base_props" ]
+{
+	def_att : "size" : "20 14 10"
+}
+
+$DefEnt [ "props2_ashtray" : "Ashtray" ] [ "base_props" ]
+{
+	def_att : "size" : "24 36 8"
+}
+
+$DefEnt [ "props2_boatphone" : "Boat phone" ] [ "base_props" ]
+{
+	def_att : "size" : "10 18 24"
+}
+
+$DefEnt [ "props2_plant_bush" : "Bush" ] [ "base_props" ]
+{
+	def_att : "size" : "18 22 64"
+}
+
+$DefEnt [ "props2_boat_animate" : "Boat animated" ] [ "base_props" ]
+{
+	def_att : "size" : "160 320 72"
+}
+
+//A helicopter and actor that animate when trigered
+$DefEnt [ "props2_helicopter_animate" : "Helicopter" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+//A car and actors that animate when trigered
+$DefEnt [ "props2_car_animate" : "Prop : Car" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_car_topup" : "Prop : Car (top up)" ] [ "base_props" ]
+{
+	def_att : "size" : "100 204 70"
+}
+
+$DefEnt [ "props2_car_topdown" : "Prop : Car (top down)" ] [ "base_props" ]
+{
+	def_att : "size" : "100 204 66"
+}
+
+$DefEnt [ "props2_plant_fern" : "Prop : Fern" ] [ "base_props" ]
+{
+	def_att : "size" : "100 92 80"
+}
+
+//The bounding box can be rotated in angles of 90 deg and block properly
+$DefEnt [ "props2_pinball_machine" : "Prop : Pinball machine" ] [ "base_props" ]
+{
+	def_att : "size" : "84 36 76"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Pinball 1" : 0 : false
+		def_flg : "Pinball 2" : 1 : false
+		def_flg : "Pinball 3" : 2 : false
+	}
+}
+
+$DefEnt [ "props3_dead_louie" : "Dead Louie" ] [ "base_props" ]
+{
+	def_att : "size" : "80 96 28"
+	def_key : integer : "health" : "Health" : "50"
+}
+
+$DefEnt [ "props3_cut_boss_player_animate" : "Boss cut scene" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "props3_deco_fixture" : "Deco fixture" ] [ "base_props" ]
+{
+	def_att : "size" : "64 16 116"
+}
+
+$DefEnt [ "props3_cut_boss_chick_animate" : "Boss chick" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props3_cut_train_run_animate" : "Train guy" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props3_cut_A_animate" : "Guy on chair" ] [ "base_props" ]
+{
+	def_att : "size" : "16 16 16"
+}
+
+$DefEnt [ "props3_cut_B_animate" : "B animate" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props3_cut_C_animate" : "C animate" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props3_cut_D_animate" : "D animate" ] [ "base_props" ]
+{
+	def_att : "size" : "16 16 16"
+}
+
+$DefEnt [ "props3_cash_counter_animate" : "Cash counter" ] [ "base_props" ]
+{
+	def_att : "size" : "24 32 16"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "props3_decanter" : "Decanter" ] [ "base_props" ]
+{
+	def_att : "size" : "6 10 12"
+}
+
+$DefEnt [ "props3_whiskey_glass" : "Whiskey glass" ] [ "base_props" ]
+{
+	def_att : "size" : "4 4 4"
+}
+
+$DefEnt [ "props3_barrels_fall_nikki" : "Barrels falling A" ] [ "base_props" ]
+{
+	def_att : "size" : "88 120 96"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "props3_barrels_fall_nikki_B" : "Prop : Barrels falling B" ] [ "base_props" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "props3_cut_run_to_car_animate" : "Prop : Guy runs to car" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props3_cut_final_animate" : "Prop : Final cut scene" ] [ "base_props" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+$DefEnt [ "props3_cash" : "Prop : Cash" ] [ "base_props" ]
+{
+	def_att : "size" : "24 24 10"
+}
+
+$DefEnt [ "props3_cut_truck_driver" : "Prop : Truck driver" ] [ "base_props" ]
+{
+	def_att : "size" : "64 32 64"
+}
+
+//---------------------------AI---------------------------
+$DefEnt [ "base_ai" : @VIRTUAL : "AI Objects" ] [ "base_solid" ]
+{
+	def_att : "owner" : true
+}
+
+$DefEnt [ "base_ai_point" : @VIRTUAL : "AI Items" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 32"
+}
+
+//Character will abort pursuing player when touching this brush. Will 
+//take cover until the player is out of view, then return to guarding position (if 
+//character has been assigned one).
+//Only characters with an equal or lower moral level will be effected by this brush.
+$DefEnt [ "ai_boundary" : "AI : Boundary" ] [ "base_ai" ]
+{
+	def_key : integer : "moral" : "Moral (Coward 1-7 Psychotic)" : ""
+}
+
+//Character touching this brush will become a hostile enemy to all other characters
+//in LOS, that have the same "cast_group" as the brush.
+$DefEnt [ "ai_event_hostile" : "AI : Hostile" ] [ "base_ai" ]
+{
+	$DefOptions [ "cast_group" : "Group (>0)" ]
+	{
+		//def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+//Client touching this brush will become a leader to all other characters
+//in LOS, that have the same "cast_group" as the brush.
+$DefEnt [ "ai_event_follow" : "AI : Leader" ] [ "base_ai" ]
+{
+	$DefOptions [ "cast_group" : "Group (>0)" ]
+	{
+		//def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+//Set a cast's "guard_target" to the "targetname" of this entity.
+//That character will then guard this location.
+$DefEnt [ "ai_guard" : "AI : Guard" ] [ "base_ai" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "guard_radius" : "Guarding radius" : "512"
+}
+
+//A character touching this will be deemed inside the gang's
+//territory. This means war if sighted.
+
+//!!NOTE!!: Point the "angles" in the direction of the territory. This lets
+//the AI know if the character is walking into or out of the territory.
+$DefEnt [ "ai_territory" : "AI : Gang territory" ] [ "base_ai" ]
+{
+	def_key : vector : "angles" : "Entry direction" : ""
+	def_key : integer : "radius" : "Distance before attack" : "512"
+
+	$DefOptions [ "cast_group" : "Group (>0)" ]
+	{
+		//def_flg : "Neutral" : 0 : true
+		def_flg : "Friendly" : 1 : false
+		def_flg : "Enemy" : 2 : false
+	}
+}
+
+//Set a cast's "flee_target" to the "targetname" of this entity.
+//That character will then flee to this location.
+$DefEnt [ "ai_safespot" : "AI : Safe place" ] [ "base_ai_point" ]
+{
+	def_att : "size" : "32 32 72"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+//This is a brush that will reset a cast location to his 
+//startup location
+////FIXME: Is this implemented yet?
+$DefEnt [ "ai_reset" : "AI : Reset location" ] [ "base_ai" ]
+{
+}
+
+//A good place to go to get a vantage point during fighting.
+$DefEnt [ "ai_combat_spot" : "AI : Fighting vantage point" ] [ "base_ai_point" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+}
+
+//When the player touches this brush, the targetted character will start
+//following it's path_corner.
+$DefEnt [ "ai_trigger_character" : "AI : Trigger cast" ] [ "base_ai" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+
+//A character touching this brush will check the targetted door to see if it is closed.
+//If so, the character will head towards the specified path_corner_cast.
+//Example use: guiding AI characters away from a locked door
+$DefEnt [ "ai_locked_door" : "AI : Check door closed" ] [ "base_ai" ]
+{
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "pathtarget" : "Path target" : ""
+}
+
+//---------------------------Moving Things---------------------------
+
+$DefEnt [ "base_object" : @VIRTUAL : "Object" ] [ "base_solid" ]
+{
+	def_key : vector  : "angle" : "Angle" : 0
+	def_att : "owner" : true
+}
+
+$DefEnt [ "func_button" : "Button" ] [ "base_object" ]
+{
+	def_key : color : "_color" : "Color" : "76 76 255"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "killtarget" : "Kill target" : ""
+	def_key : string : "pathtarget" : "Elevator level target" : ""
+	def_key : string : "message" : "Activation message" : ""
+	def_key : integer : "speed" : "Speed" : 40
+	def_key : integer : "lip" : "Lip remaining after move" : 4
+	def_key : integer : "health" : "Health (shootable)" : 4
+	def_key : integer : "_minlight" : "Minimum light (optional)" : 4
+
+	$DefOptions [ "wait" : "Wait before reset" ]
+	{
+		def_flg : "Never return" : -1 : true
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Silent" : 1 : true
+		def_flg : "Steam metal" : 2 : false
+		def_flg : "Wooden clunk" : 3 : false
+		def_flg : "Metallic click" : 4 : false
+		def_flg : "In-out" : 5 : false
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Auto open" : 1 : false
+		def_flg : "Toggle" : 2 : false
+	}
+}
+
+//Conveyors are stationary brushes that move what's on them.
+//The brush should have a surface with at least one current content enabled.
+$DefEnt [ "func_conveyor" : "Object : Conveyor belt" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name ???" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start On" : 1 : false
+		def_flg : "Toggle" : 2 : false
+	}
+
+	def_key : integer : "speed" : "Speed" : 100
+	def_key : integer : "_minlight" : "Minimum light (optional)" : 0
+}
+
+$DefEnt [ "func_door" : "Object : Door" ] [ "base_object" ]
+{
+	def_key : string : killtarget : "Kill Target" : ""
+	def_key : string : team : "Team" : ""
+	def_key : string : message : "Trigger message" : ""
+	def_key : integer : health : "Health (shootable)" : 0
+	def_key : integer : speed : "Speed" : 100
+	def_key : integer : lip : "Lip remaining after move" : 8
+	def_key : integer : dmg : "Damage when blocked" : 2
+	def_key : integer : _minlight : "Minimum light (optional)" : 0
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start open" : 1 : false
+		def_flg : "Auto open" : 4 : false
+		def_flg : "Crusher" : 8 : false
+		def_flg : "No monster" : 16 : false
+		def_flg : "Animated" : 32 : false
+		def_flg : "Toggle" : 64 : false
+		def_flg : "Animated fast" : 128 : false
+		def_flg : "Surphace alpha" : 256 : false
+	}
+
+	$DefOptions [ "wait" : "Wait before close" ]
+	{
+		def_flg : "Stay open" : -1 : false
+		def_flg : "Default (3)" : 3 : true
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Silent" : 1 : false
+		def_flg : "Metal roll up" : 2 : true
+		def_flg : "Wooden swinging" : 3 : false
+		def_flg : "Metal swinging" : 4 : false
+		def_flg : "Metal sliding train" : 5 : false
+		def_flg : "Large metal rolling" : 6 : false
+		def_flg : "Metal swing up" : 7 : false
+	}
+}
+
+//You need to have an origin brush as part of this entity.  The center of that brush will be
+//the point around which it is rotated. It will rotate around the Z axis by default.  You can
+//check either the X_AXIS or Y_AXIS box to change that.
+$DefEnt [ "func_door_rotating" : "Object : Door -Rotating " ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "message" : "Trigger message" : ""
+	def_key : string : "team" : "Team" : ""
+	def_key : integer : "speed" : "Speed" : 100
+	def_key : integer : "health" : "Health (shootable)" : -1
+	def_key : integer : "_minlight" : "Minimum light (optional)" : -1
+	def_key : integer : "dmg" : "Damage when blocked" : 2
+	def_key : integer : "distance" : "Degrees of rotation" : 90
+
+	$DefOptions [ "style" : "Style" ]
+	{
+		def_flg : "Away from activator" : 0 : true
+		def_flg : "Fixed" : 1 : false
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Silent" : 1 : false
+		def_flg : "Metal roll up" : 2 : true
+		def_flg : "Wooden swinging" : 3 : false
+		def_flg : "Metal swinging" : 4 : false
+		def_flg : "Metal sliding train" : 5 : false
+		def_flg : "Large metal rolling" : 6 : false
+		def_flg : "Metal swing up" : 7 : false
+	}
+
+	$DefOptions [ "wait" : "Wait before close" ]
+	{
+		def_flg : "Stay open" : -1 : false
+		def_flg : "Default (3)" : 3 : true
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start Open" : 1 : false
+		def_flg : "Reverse" : 2 : false
+		def_flg : "Surface alpha" : 4 : false
+		def_flg : "No Monsters" : 8 : false
+		def_flg : "Animated" : 16 : false
+		def_flg : "Toggle" : 32 : false
+		def_flg : "X Axis" : 64 : false
+		def_flg : "Y Axis" : 128 : false
+	}
+}
+
+//A secret door.  Slide back and then to the side.
+$DefEnt [ "func_door_secret" : "Object : Door -Secret" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "dmg" : "Damage when blocked" : "2"
+
+	$DefOptions [ "wait" : "Wait" ]
+	{
+		def_flg : "Hold" : -1 : false
+		def_flg : "Default (5)" : 5 : false
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Open once" : 1 : false
+		def_flg : "1st Left" : 2 : false
+		def_flg : "1st Down" : 4 : false
+		def_flg : "Always shoot" : 8 : false
+	}
+
+}
+
+//The func_subdoor_handle1 will rotate 90 deg then the door will open with func_subdoor_handle2.
+//You need to have an origin brush as part of this entity.  The center of that brush will be
+//the point around which it is rotated. It will rotate around the Z axis by default. You can
+//check either the X_AXIS or Y_AXIS box to change that.
+//func_subdoor_handle1 - Handle with origin in the center
+//func_subdoor_handle2 - Handle with origin at the door origin
+$DefEnt [ "func_subdoor_base" : "Function : Door -w/Handle" ] [ "base_object" ]
+{
+	def_key : string : "message" : "Message" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "health" : "Health (shootable)" : "0"
+	def_key : integer : "speed" : "Speed" : "100"
+	def_key : integer : "dmg" : "Damage" : "2"
+
+	$DefFlags [ "spawnflags" : "Spawn flags" ]
+	{
+		//def_flg : "" : 1 : false
+		def_flg : "Reverse" : 2 : false
+		def_flg : "Crusher" : 4 : false
+		def_flg : "No monster" : 8 : false
+		def_flg : "Animated" : 16 : false
+		def_flg : "Toggle" : 32 : false
+		def_flg : "X Axis" : 64 : false
+		def_flg : "Y Axis" : 128 : false
+		def_flg : "Auto open" : 256 : false
+	}
+
+	$DefOptions [ "wait" : "Wait" ]
+	{
+		def_flg : "No return" : -1 : false
+		def_flg : "Default (3)" : 3 : true
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Silent" : 1 : false
+		def_flg : "Light" : 2 : false
+		def_flg : "Medium" : 3 : false
+		def_flg : "Heavy" : 4 : false
+	}
+}
+
+//You need to have an origin brush in the center of this entity. The center of that brush will be
+//the point around which it is rotated. It will rotate around the Z axis by default. You can
+//check either the X_AXIS or Y_AXIS box to change that.
+$DefEnt [ "func_subdoor_handle1" : "Function : Door Handle1" ] [ "base_object" ]
+{
+	def_key : integer : "duration" : "Duration" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		//def_flg : "" : 1 : false
+		def_flg : "Reverse" : 2 : false
+		//def_flg : "" : 4 : false
+		//def_flg : "" : 8 : false
+		//def_flg : "" : 16 : false
+		//def_flg : "" : 32 : false
+		def_flg : "X Axis" : 64 : false
+		def_flg : "Y Axis" : 128 : false
+	}
+}
+
+//Will rotate with door
+//It's origin should be the door's origin
+$DefEnt [ "func_subdoor_handle2" : "Object : Door Handle2" ] [ "base_object" ]
+{
+}
+
+$DefEnt [ "func_explosive" : "Object : Exploding/Breakable" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "health" : "Health (shootable)" : 100
+	def_key : integer : "_minlight" : "Minimum light (optional)" : 0
+	def_key : integer : "dmg" : "Damage (radius)" : 0
+	def_key : integer : "mass" : "Debris amount (800 max)" : 75
+	def_key : integer : "fxdensity" : "Explosion size (1-100)" : "10"
+
+	$DefOptions [ "type" : "Debris type" ]
+	{
+		def_flg : "Glass" : 1 : true
+		def_flg : "Wood" : 2 : false
+		def_flg : "Metal" : 3 : false
+	}
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Trigger spawn" : 1 : false
+		def_flg : "Animated" : 2 : false
+		def_flg : "Animated Fast" : 4 : false
+		def_flg : "Surface alpha" : 8 : false
+	}
+}
+
+$DefEnt [ "func_killbox" : "Object : Instant death" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "func_object" : "Object : Supported Object" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_minlight" : "Minimum light (optional)" : -1
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Trigger spawn" : 1 : false
+		def_flg : "Animated" : 2 : false
+		def_flg : "Animated Fast" : 4 : false
+	}
+}
+
+//Plats are always drawn in the extended position, so they will light correctly.
+//If the plat is the target of another trigger or button, 
+//it will start out disabled in the extended position until it is triggered,
+//when it will lower and become a normal plat.
+$DefEnt [ "func_lift" : "Function : Platform" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "speed" : "Speed" : 150
+	def_key : integer : "_minlight" : "Minimum light (optional)" : -1
+	def_key : string : "noise" : "Sound to play" : ""
+	
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start on" : 1 : false
+		def_flg : "Toggle" : 2 : false
+		def_flg : "Block stops" : 4 : false
+	}
+
+	$DefOptions [ "sounds" : "Sound" ]
+	{
+		def_flg : "Base fast" : 1 : false
+		def_flg : "chain slow" : 2 : false
+	}
+}
+
+$DefEnt [ "func_train_rotating" : "Function : " ] [ "base_object" ]
+{
+	def_key : integer : "duration" : "Duration for angle change" : ""
+	def_key : string : "noise" : "Sound to play" : ""
+	def_key : integer : "dmg" : "Damage when blocked" : "2"
+	def_key : integer : "speed" : "Speed" : ""
+	def_key : vector : "rotate" : "Angle change" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start on" : 1 : false
+		def_flg : "Toggle" : 2 : false
+		def_flg : "Block stops" : 4 : false
+	}
+}
+
+//You need to have an origin brush as part of this entity.  The center of that brush will be
+//the point around which it is rotated. It will rotate around the Z axis by default.  You can
+//check either the X_AXIS or Y_AXIS box to change that.
+$DefEnt [ "func_rotating" : "Function : Rotating brush" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	//def_key : string : "team" : "Team" : ""
+	def_key : integer : "speed" : "Speed" : 100
+	def_key : integer : "dmg" : "Damage when blocked" : 2
+	def_key : integer : "_minlight" : "Minimum light (optional)" : 2
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start on" : 1 : false
+		def_flg : "Reverse" : 2 : false
+		def_flg : "X axis" : 4 : false
+		def_flg : "Y Axis" : 8 : false
+		def_flg : "Pain on touch" : 16 : false
+		def_flg : "Block stops" : 32 : false
+		def_flg : "Animated" : 64 : false
+		def_flg : "Animated fast" : 128 : false
+	}
+}
+
+//func_water is a moveable water brush.  It must be targeted to operate.  Use a non-water texture at your own risk.
+$DefEnt [ "func_water" : "Function : Moveable water" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "team" : "Team" : ""
+	def_key : integer : "speed" : "Speed" : 25
+	def_key : integer : "lip" : "Lip remaining after move" : 0
+	def_key : integer : "_minlight" : "Minimum light (optional)" : 2
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start open" : 1 : false
+	}
+
+	$DefOptions [ "wait" : "Wait before return" ]
+	{
+		def_flg : "Toggle" : -1 : true
+	}
+
+	$DefOptions [ "sounds" : "Sounds ???" ]
+	{
+		def_flg : "No Sounds" : 0 : false
+		def_flg : "Water" : 1 : true
+		def_flg : "Lava" : 2 : false
+	}
+}
+
+$DefEnt [ "func_wall" : "Function : Solid Wall" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "_minlight" : "Minimum light (optional)" : 2
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Trigger Spawn Flags" : 1 : false
+		def_flg : "Toggle" : 2 : false
+		def_flg : "Start On" : 4 : false
+		def_flg : "Animated" : 8 : false
+		def_flg : "Animated Fast" : 16 : false
+		def_flg : "Surface alpha" : 32 : false
+	}
+}
+
+//Trains are moving platforms that players can ride.
+//The targets origin specifies the min point of the train at each corner.
+//The train spawns at the first target it is pointing at.
+//If the train is the target of a button or trigger, it will not begin moving until activated.
+$DefEnt [ "func_train" : "Function : Path train" ] [ "base_object" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "First stop target" : ""
+	def_key : integer : "speed" : "Speed" : 100
+	def_key : integer : "_minlight" : "Minimum light (optional)" : -1
+	def_key : integer : "dmg" : "Damage when blocked" : 2
+	def_key : string : "noise" : "Sound (path/file.wav)" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start On" : 1 : false
+		def_flg : "Toggle" : 2 : false
+		def_flg : "Block Stops" : 4 : false
+	}
+}
+
+//Snow falls from this invisable cloud at random points   
+//center of cloud to ground trace determines the drop fall distance
+//cloud can be any recatangle size
+$DefEnt [ "elements_raincloud" : "Function : Rain cloud" ] [ "base_object" ]
+{
+	def_key : integer : "fxdensity" : "Quantity (1-1000)" : "400"
+	$DefOptions [ "firetype" : "Type" ]
+	{
+		def_flg : "rain" : 0 : true
+		def_flg : "drip" : 1 : false
+	}
+}
+
+//Snow falls from this invisable cloud at random points   
+//center of cloud to ground trace determines the drop fall distance
+//cloud can be any recatangle size
+$DefEnt [ "elements_snowcloud" : "Function : Snow cloud" ] [ "base_object" ]
+{
+	def_key : integer : "fxdensity" : "Quantity (1-1000)" : "400"
+}
+
+//---------------------------Target---------------------------
+
+$DefEnt [ "base_target" : @VIRTUAL : "Target" ] [ "base_point" ]
+{
+}
+
+// using a "wait" value of -1 on a path corner causes a func_train to go silent between
+// itself and the next path corner when the train is restarted. The train's sound will
+// resume as soon as it reaches a path corner with a "wait" value other than -1
+
+$DefEnt [ "path_corner_cast" : "Cast path marker" ] [ "base_target" ]
+{
+	def_att : "size" : "32 32 64"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Next path target" : ""
+	def_key : string : "pathtarget" : "Event to trigger" : ""
+	def_key : string : "sciptname" : "Script name" : ""
+	def_key : string : "combattarget" : "Combat target" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Teleport" : 1 : false
+	}
+}
+
+$DefEnt [ "path_corner" : "Path marker" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Next path target" : ""
+	def_key : string : "pathtarget" : "Event to trigger" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Teleport" : 1 : false
+	}
+}
+
+$DefEnt [ "trigger_elevator" : "Elevator" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+}
+
+$DefEnt [ "func_timer" : "Timer" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : integer : "wait" : "Wait" : "1"
+	def_key : integer : "random" : "Wait variance" : "1"
+	def_key : integer : "delay" : "Delay" : "0"
+	def_key : integer : "pausetime" : "Pause time" : "0"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start on" : 1 : false
+	}
+}
+
+$DefEnt [ "target_string" : "Target : String" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+}
+
+//target a target_string with this
+$DefEnt [ "func_clock" : "Clock" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : integer : "count" : "Count" : ""
+	def_key : string : "pathtarget" : "Target" : ""
+
+	$DefOptions [ "style" : "Style" ]
+	{
+		def_flg : "xx" : 0 : false
+		def_flg : "xx:xx" : 1 : false
+		def_flg : "xx:xx:xx" : 2 : false
+	}
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Count up" : 1 : false
+		def_flg : "Count down" : 2 : false
+		def_flg : "Start off" : 4 : false
+		def_flg : "Multi use" : 8 : false
+	}
+}
+
+$DefEnt [ "misc_teleporter" : "Target : Teleporter" ] [ "base_target" ]
+{
+	def_att : "size" : "64 64 40"
+	def_key : string : "target" : "Target destination" : ""
+}
+
+$DefEnt [ "misc_teleporter_dest" : "Target : Teleporter destination" ] [ "base_target" ]
+{
+	def_att : "size" : "64 64 40"
+	def_key : string : "targetname" : "Name" : ""
+}
+
+//all fire gets scaled down 50 percent
+$DefEnt [ "misc_fire" : "Target : Fire" ] [ "base_target" ]
+{
+	def_att : "size" : "32 32 32"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Alpha 1" : 1 : false
+		def_flg : "Alpha 2" : 2 : false
+		def_flg : "Alpha 4" : 4 : false
+		def_flg : "Alpha 6" : 8 : false
+		def_flg : "Alpha 8" : 16 : false
+	}
+}
+
+$DefEnt [ "misc_alarm" : "Target : Alarm" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "count" : "Count (secs)" : "60"
+}
+
+$DefEnt [ "path_attractor" : "Target : " ] [ "base_target" ]
+{
+	def_att : "size" : "32 32 72"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "delay" : "Delay (secs)" : "10"
+}
+
+$DefEnt [ "target_speaker" : "Target : Speaker" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "noise" : "Sound to play" : ""
+	def_key : integer : "volume" : "Volume (0.0 - 1.0)" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags " ]
+	{
+		def_flg : "???" : 1 : false
+		def_flg : "???" : 2 : false
+		def_flg : "???" : 4 : false
+	}
+
+	$DefOptions [ "attenuation" : "Attenuation" ]
+	{
+		def_flg : "Whole level" : -1 : false
+		def_flg : "Normal fighting" : 1 : false
+		def_flg : "Idle" : 2 : false
+		def_flg : "Ambient" : 3 : false
+	}
+}
+
+$DefEnt [ "target_explosion" : "Target : Explosion" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "delay" : "Delay explosion" : ""
+	def_key : integer : "dmg" : "Radius damage" : "0"
+	def_key : integer : "fxdensity" : "Size (1-100)" : "10"
+}
+
+$DefEnt [ "target_changelevel" : "Target : Change level" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "map" : "Target map" : ""
+}
+
+//Creates a particle splash effect when used.
+$DefEnt [ "target_splash" : "Target : Splash" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "alphlevel" : "Alpha (1-10)" : "4"
+	def_key : integer : "firetype" : "Smoke size (5-32)" : "24"
+	def_key : integer : "deadticks" : "Life (secs)" : "6"
+	def_key : integer : "fxdensity" : "Speed (1-100)" : "24"
+	def_key : integer : "dmg" : "Radius damage" : ""
+	def_key : integer : "count" : "Puffs of smoke" : "3"
+	def_key : vector : "rotate" : "Rotate" : ""
+
+	$DefOptions [ "sounds" : "Sound" ]
+	{
+		def_flg : "Sparks" : 1 : false
+		def_flg : "Blue water" : 2 : false
+		def_flg : "Brown water" : 3 : false
+		def_flg : "Slime" : 4 : false
+		def_flg : "Lava" : 5 : false
+		def_flg : "Blood" : 6 : false
+		def_flg : "Fireworks" : 7 : false
+		def_flg : "Smoke" : 8 : false
+	}
+}
+
+//Set target to the type of entity you want spawned.
+//Useful for spawning monsters and gibs in the factory levels.
+$DefEnt [ "target_spawner" : "Target : Spawner" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : vector : "angle" : "Angle" : ""
+	def_key : integer : "speed" : "Speed" : ""
+}
+
+$DefEnt [ "target_crosslevel_trigger" : "Target : Cross-level trigger" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "killtarget" : "Kill target" : ""
+	def_key : string : "message" : "Message" : ""
+	def_key : integer : "delay" : "Trigger delay" : 0
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Trigger 1" : 1 : false
+		def_flg : "Trigger 2" : 2 : false
+		def_flg : "Trigger 3" : 4 : false
+		def_flg : "Trigger 4" : 8 : false
+		def_flg : "Trigger 5" : 16 : false
+		def_flg : "Trigger 6" : 32 : false
+		def_flg : "Trigger 7" : 64 : false
+		def_flg : "Trigger 8" : 128 : false
+	}
+}
+
+$DefEnt [ "target_crosslevel_target" : "Target : Cross-level target" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "killtarget" : "Kill target" : ""
+	def_key : integer : "delay" : "Trigger delay" : 1
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Trigger 1" : 1 : false
+		def_flg : "Trigger 2" : 2 : false
+		def_flg : "Trigger 3" : 4 : false
+		def_flg : "Trigger 4" : 8 : false
+		def_flg : "Trigger 5" : 16 : false
+		def_flg : "Trigger 6" : 32 : false
+		def_flg : "Trigger 7" : 64 : false
+		def_flg : "Trigger 8" : 128 : false
+	}
+}
+
+$DefEnt [ "target_earthquake" : "Target : Level wide earthquake" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "speed" : "Severity of quake" : 200
+	def_key : integer : "count" : "Duration" : 5
+}
+
+$DefEnt [ "target_lightramp" : "Target : Light ramp" ] [ "base_target" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "message" : "start-end light level" : ""
+	def_key : integer : "speed" : "Speed" : 0
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Toggle" : 1 : false
+	}
+}
+
+
+//---------------------------Trigger---------------------------
+$DefEnt [ "base_trigger" : @VIRTUAL : "Trigger" ] [ "base_solid" ]
+{
+	def_att : "owner" : "true"
+}
+
+$DefEnt [ "trigger_relay" : "Trigger : Relay" ] [ "base_trigger" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+}
+
+$DefEnt [ "trigger_always" : "Trigger : Always" ] [ "base_trigger" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "delay" : "Time before triggering" : 0
+}
+
+//Acts as an intermediary for an action that takes multiple inputs.
+$DefEnt [ "trigger_counter" : "Trigger : Counter" ] [ "base_trigger" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "count" : "Count before trigger" : 2
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ] 
+	{
+		def_flg : "No message" : 1 : false
+	}
+}
+
+$DefEnt [ "trigger_unlock" : "Trigger : Unlock door" ] [ "base_trigger" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "target" : "Target" : ""
+}
+
+$DefEnt [ "trigger_hurt" : "Trigger : Hurt" ] [ "base_trigger" ]
+{
+	def_key : integer : "dmg" : "Damage" : "5"
+	def_key : string : "targetname" : "Name" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Toggle" : 2 : false
+		def_flg : "Silent" : 4 : false
+		def_flg : "No protection" : 8 : false
+		def_flg : "Slow hurt" : 16 : false
+	}
+}
+
+$DefEnt [ "trigger_hurt_fire" : "Trigger : Hurt - fire" ] [ "base_trigger" ]
+{
+	def_key : integer : "dmg" : "Damage" : "5"
+	def_key : string : "targetname" : "Name" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Start off" : 1 : false
+		def_flg : "Toggle" : 2 : false
+		def_flg : "Silent" : 4 : false
+		def_flg : "No protection" : 8 : false
+		def_flg : "Slow hurt" : 16 : false
+	}
+}
+
+$DefEnt [ "trigger_once" : "Trigger : Single fire" ] [ "base_trigger" ]
+{
+	def_key : string : "delay" : "Time before triggering" : "0"
+	def_key : string : "message" : "Trigger message" : ""
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "wait" : "Seconds between triggers" : "0"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Triggered" : 4 : false
+		def_flg : "Sceneric" : 8 : false
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Secret" : 0 : false
+		def_flg : "Beep beep" : 1 : false
+		def_flg : "Large switch" : 2 : false
+		def_flg : "Silent" : 3 : false
+	}
+}
+
+$DefEnt [ "trigger_multiple" : "Trigger : Multiple fire" ] [ "base_trigger" ]
+{
+	def_key : string : "delay" : "Time before triggering" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "wait" : "Seconds between triggers" : "0"
+	def_key : string : "message" : "Trigger message" : ""
+
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Monster" : 1 : false
+		def_flg : "Not Player" : 2 : false
+		def_flg : "Triggered" : 4 : false
+	}
+
+	$DefOptions [ "sounds" : "Sounds" ]
+	{
+		def_flg : "Secret" : 1 : false
+		def_flg : "Beep beep" : 2 : false
+		def_flg : "Large switch" : 3 : false
+		def_flg : "Silent" : 3 : false
+	}
+}
+
+$DefEnt [ "trigger_push" : "Trigger : Push" ] [ "base_trigger" ]
+{
+	def_key : integer : "speed" : "Speed of push" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : integer : "wait" : "Wait" : "10"
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Push once" : 1 : false
+		def_flg : "Push plus" : 2 : false
+		def_flg : "Push ramp" : 4 : false
+	}
+}
+
+$DefEnt [ "trigger_monsterjump" : "Trigger : Monster jump" ] [ "base_trigger" ]
+{
+	def_key : vector : "angle" : "Angle" : ""
+	def_key : integer : "speed" : "Speed thrown forward" : 200
+	def_key : integer : "height" : "Height thrown upward" : 200
+}
+
+$DefEnt [ "trigger_motorcycle" : "Trigger : Motorcycle" ] [ "base_trigger" ]
+{
+	def_key : string : "target" : "Target" : ""
+}

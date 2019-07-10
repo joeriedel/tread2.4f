@@ -1,0 +1,1 @@
+// MAC_TIME.CPP// Copyright (c) 2000 Joe Riedel, Nick Randal.// Author: Joe Riedel.#include "stdafx.h"#include "mac_time.h"#include <time.h>unsigned int timeGetTime(){	time_t t;	time(&t);	return (t*1000);}

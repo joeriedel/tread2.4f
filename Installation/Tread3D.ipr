@@ -1,0 +1,57 @@
+[Language]
+LanguageSupport0=0009
+
+[OperatingSystem]
+OSSupport=0000000000011050
+
+[Data]
+CurrentMedia=Default
+set_mifserial=
+ProductName=Tread3D
+CurrentComponentDef=Default.cdf
+set_dlldebug=No
+AppExe=E:\Development\Projects\Tread3D\Release\Tread3D.exe
+DevEnvironment=Microsoft Visual C++
+FreshBits=FALSE
+set_mif=No
+set_testmode=No
+Instructions=Instructions.txt
+EmailAddresss=
+SummaryText=
+Department=
+Type=Software Development Application
+Author=Joe Riedel & Nicholas Randal
+HomeURL=www.planetquake.com/tread
+InstallRoot=E:\Development\Projects\My Installations\Tread3D
+UpdateURL=http://
+set_level=Level 3
+InstallationGUID=f21429c6-68f5-4518-b281-13aa95962303
+Version=2.00.2000
+set_miffile=Status.mif
+set_args=
+set_maxerr=50
+Notes=Notes.txt
+CurrentFileGroupDef=Default.fdf
+set_dllcmdline=
+set_warnaserr=No
+Copyright=Joe Riedel & Nicholas Randal
+set_preproc=
+Category=Graphic Tool
+CurrentPlatform=
+set_compileb4build=Yes
+set_crc=Yes
+set_maxwarn=50
+Description=Description.txt
+CompanyName=Prospect Vector
+CurrentLanguage=English
+
+[MediaInfo]
+mediadata0=Default/Media\Default
+
+[General]
+PassData=
+ReadOnly=N
+Type=INSTALLMAIN
+Version=1.20.000
+PassOn=N
+

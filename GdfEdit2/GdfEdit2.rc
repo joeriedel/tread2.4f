@@ -1,0 +1,797 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\GdfEdit2.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#include ""afxolecl.rc""       // OLE container resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\GdfEdit.ico"
+IDR_GDFEDITYPE          ICON    DISCARDABLE     "res\\GdfEditDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP_CLASS        BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+IDB_SPLASH              BITMAP  DISCARDABLE     "Splash.bmp"
+IDB_BITMAP_ERROR        BITMAP  DISCARDABLE     "res\\error.bmp"
+IDB_BITMAP_SIGN         BITMAP  DISCARDABLE     "res\\Sign.bmp"
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+IDR_TOOLBAR_TOOLS       BITMAP  DISCARDABLE     "res\\tools.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About GdfEdit2...",          ID_APP_ABOUT
+    END
+END
+
+IDR_GDFEDITYPE MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM "Select A&ll\tCtrl+A",         ID_EDIT_SELECT_ALL
+        MENUITEM SEPARATOR
+        MENUITEM "&Find...\tCtrl+F",            ID_EDIT_FIND
+        MENUITEM "F&ind Next\tF3",              ID_EDIT_REPEAT
+        MENUITEM "R&eplace\tCtrl+H",            ID_EDIT_REPLACE
+    END
+    POPUP "Insert"
+    BEGIN
+        MENUITEM "Entity Wi&zard...",           IDT_WIZARD_ENTITY
+        MENUITEM "&Modifier Wizard...",         IDT_WIZARD_KEY
+        POPUP "Insert Blank Entry"
+        BEGIN
+            MENUITEM "&Entity",                     IDT_INSERT_ENTITY
+            MENUITEM "&Derived Class",              IDT_INSERT_CLASS_DERIVED
+            MENUITEM "&Base Class",                 IDT_INSERT_CLASS
+            MENUITEM "&Global",                     IDT_INSERT_GLOBAL
+        END
+        POPUP "Insert Blank Statement"
+        BEGIN
+            MENUITEM "&Attribute",                  IDT_INSERT_ATTRIBUTE
+            MENUITEM "&Key",                        IDT_INSERT_KEY
+            MENUITEM SEPARATOR
+            MENUITEM "&Flags",                      IDT_INSERT_FLAG
+            MENUITEM "&Options",                    IDM_FONT
+            MENUITEM "fla&g / option",              IDT_INSERT_FLAGKEY
+        END
+    END
+    POPUP "Options"
+    BEGIN
+        MENUITEM "Font...",                     IDM_FONT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About GdfEdit2...",          ID_APP_ABOUT
+    END
+END
+
+IDR_GDFEDITYPE_CNTR_IP MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+END
+
+IDR_POPUP_TEXTVIEW MENU DISCARDABLE 
+BEGIN
+    POPUP "POPUP"
+    BEGIN
+        MENUITEM "Entity Wi&zard...",           IDT_WIZARD_ENTITY
+        MENUITEM "&Modifier Wizard...",         IDT_WIZARD_KEY
+        POPUP "Insert Blank Entry"
+        BEGIN
+            MENUITEM "&Entity",                     IDT_INSERT_ENTITY
+            MENUITEM "&Derived Class",              IDT_INSERT_CLASS_DERIVED
+            MENUITEM "&Base Class",                 IDT_INSERT_CLASS
+            MENUITEM "&Name",                       IDT_INSERT_CLASS
+        END
+        POPUP "Insert Blank Statement"
+        BEGIN
+            MENUITEM "&Attribute",                  IDT_INSERT_ATTRIBUTE
+            MENUITEM "&Key",                        IDT_INSERT_KEY
+            MENUITEM SEPARATOR
+            MENUITEM "&Flags",                      IDT_INSERT_FLAG
+            MENUITEM "&Options",                    IDT_INSERT_OPTION
+            MENUITEM "fla&g / option",              IDT_INSERT_FLAGKEY
+        END
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    "A",            ID_EDIT_SELECT_ALL,     VIRTKEY, CONTROL
+    "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL
+    VK_F3,          ID_EDIT_REPEAT,         VIRTKEY 
+    "H",            ID_EDIT_REPLACE,        VIRTKEY, CONTROL
+    VK_RETURN,      ID_OLE_EDIT_PROPERTIES, VIRTKEY, ALT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+    VK_ESCAPE,      ID_CANCEL_EDIT_CNTR,    VIRTKEY, NOINVERT
+END
+
+IDR_GDFEDITYPE_CNTR_IP ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+    VK_ESCAPE,      ID_CANCEL_EDIT_CNTR,    VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 262, 86
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About GdfEdit"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,10,10,20,20
+    LTEXT           "GdfEdit 2.0 Version 1.06",IDC_STATIC,40,5,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 1999-2000, Nicholas Randal, All rights reserved",
+                    IDC_STATIC,40,25,175,8
+    LTEXT           "Written By : Nicholas Randal     For: Tread3D",
+                    IDC_STATIC,40,15,160,8
+    CTEXT           "Warning: This program is protected by copyright law and international treaties.",
+                    IDC_STATIC,10,45,245,10
+    DEFPUSHBUTTON   "OK",IDOK,220,5,35,30
+    CTEXT           "Unauthorized reproduction or distribution, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
+                    IDC_STATIC,5,55,245,25
+END
+
+IDD_DIALOGBAR_TREE DIALOG DISCARDABLE  0, 0, 125, 236
+STYLE WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Tree1",IDC_TREE_SCRIPT,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | WS_BORDER | WS_TABSTOP,0,0,125,180
+    CTEXT           "Select an item and Right+Click to jump to that line.",
+                    IDC_STATIC,5,185,115,20
+    CONTROL         133,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN,10,210,100,
+                    20
+END
+
+IDD_DIALOG_ENTITY DIALOG DISCARDABLE  0, 0, 297, 108
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION
+CAPTION "Entity Wizard"
+FONT 8, "Arial"
+BEGIN
+    LISTBOX         IDC_LIST_SELECT,10,15,110,40,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_PARAM1,195,20,80,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PARAM2,195,40,80,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PARAM3,195,60,80,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PARAM4,195,80,80,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "&Finish",IDC_BUTTON_FINISH,15,90,45,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,75,90,40,14
+    LTEXT           "Static",IDC_STATIC_DESCRIPTION,10,60,110,25
+    LTEXT           "Please choose an item to create",IDC_STATIC,10,5,110,8
+    GROUPBOX        "Parameters",IDC_STATIC,130,5,165,95
+    RTEXT           "Static",IDC_STATIC_NAME1,135,25,55,8
+    RTEXT           "Static",IDC_STATIC_NAME2,135,45,55,8
+    RTEXT           "Static",IDC_STATIC_NAME3,135,65,55,8
+    RTEXT           "Static",IDC_STATIC_NAME4,135,85,55,8
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT1,275,20,15,12
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT2,275,40,15,12
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT3,275,60,15,12
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT4,275,80,15,12
+END
+
+IDD_DIALOG_REPORT DIALOG DISCARDABLE  0, 0, 132, 111
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Script Verification"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,45,95,40,14
+    EDITTEXT        IDC_EDIT_COUNT,85,50,35,10,ES_AUTOHSCROLL | ES_READONLY | 
+                    NOT WS_BORDER
+    RTEXT           "Symbols parsed :",IDC_STATIC,25,50,55,8
+    CTEXT           "",IDC_STATIC_MESSAGE,10,5,120,20
+    EDITTEXT        IDC_EDIT_CLASSES,85,30,35,10,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER
+    RTEXT           "Base Class Entities :",IDC_STATIC,10,30,70,8
+    EDITTEXT        IDC_EDIT_ENTITIES,85,40,35,10,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER
+    RTEXT           "Entities :",IDC_STATIC,25,40,55,8
+    RTEXT           "Seconds elapsed :",IDC_STATIC,10,80,70,10
+    EDITTEXT        IDC_EDIT_SECONDS,85,80,35,10,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_EDIT_UNIQUE,85,60,35,10,ES_AUTOHSCROLL | ES_READONLY | 
+                    NOT WS_BORDER
+    RTEXT           "Unique Symbols :",IDC_STATIC,10,60,70,8
+    GROUPBOX        "",IDC_STATIC,5,70,120,5,BS_BITMAP | BS_CENTER
+END
+
+IDD_DIALOG_MODIFIER DIALOG DISCARDABLE  0, 0, 292, 108
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION
+CAPTION "Modifier Wizard"
+FONT 8, "Arial"
+BEGIN
+    LISTBOX         IDC_LIST_SELECT,5,15,110,40,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_PARAM1,191,20,80,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PARAM2,191,40,80,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PARAM3,191,60,80,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PARAM4,191,80,80,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "&Finish",IDC_BUTTON_FINISH,11,90,45,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,71,90,40,14
+    LTEXT           "Static",IDC_STATIC_DESCRIPTION,5,60,110,25
+    LTEXT           "Please choose an item to create",IDC_STATIC,5,5,110,8
+    GROUPBOX        "Parameters",IDC_STATIC,125,5,165,95
+    RTEXT           "Static",IDC_STATIC_NAME1,131,25,55,8
+    RTEXT           "Static",IDC_STATIC_NAME2,131,45,55,8
+    RTEXT           "Static",IDC_STATIC_NAME3,131,65,55,8
+    RTEXT           "Static",IDC_STATIC_NAME4,131,85,55,8
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT1,271,20,15,12
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT2,271,40,15,12
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT3,271,60,15,12
+    PUSHBUTTON      "D",IDC_BUTTON_DEFUALT4,271,80,15,12
+END
+
+IDD_DIALOG_OPTIONS DIALOG DISCARDABLE  0, 0, 157, 46
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,21,30,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,86,30,50,14
+    LTEXT           "Font",IDC_STATIC,10,9,20,8
+    COMBOBOX        IDC_COMBO_FONT,35,5,85,12,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_SIZE,120,5,35,15,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOG_POPUP DIALOGEX 0, 0, 101, 90
+STYLE DS_3DLOOK | DS_CENTERMOUSE | WS_POPUP
+EXSTYLE WS_EX_TOOLWINDOW
+FONT 8, "MS Sans Serif"
+BEGIN
+    LISTBOX         IDC_LIST_POPUP,0,0,100,90,LBS_SORT | LBS_OWNERDRAWFIXED | 
+                    LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | 
+                    LBS_WANTKEYBOARDINPUT | NOT WS_BORDER | WS_VSCROLL | 
+                    WS_TABSTOP,WS_EX_DLGMODALFRAME
+    DEFPUSHBUTTON   "",IDC_BUTTON_CAPTURE,83,83,18,6,NOT WS_VISIBLE
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,6,2000
+ PRODUCTVERSION 2,0,0,2000
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "Prospect Vector\0"
+            VALUE "FileDescription", "GdfEdit2 MFC Application\0"
+            VALUE "FileVersion", "1, 0, 6, 2000\0"
+            VALUE "InternalName", "GdfEdit2\0"
+            VALUE "LegalCopyright", "Copyright (C) 1999-2000, Nicholas Randal, All Rights Reserved\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "GdfEdit2.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "GdfEdit2 Application\0"
+            VALUE "ProductVersion", "2, 0, 0, 2000\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 255
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 79
+    END
+
+    IDD_DIALOGBAR_TREE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 118
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 229
+    END
+
+    IDD_DIALOG_ENTITY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 290
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 101
+    END
+
+    IDD_DIALOG_REPORT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 125
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 104
+    END
+
+    IDD_DIALOG_MODIFIER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 285
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 101
+    END
+
+    IDD_DIALOG_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 150
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 39
+    END
+
+    IDD_DIALOG_POPUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 94
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_DIALOG_OPTIONS DLGINIT
+BEGIN
+    IDC_COMBO_FONT, 0x403, 8, 0
+0x6f43, 0x7275, 0x6569, 0x0072, 
+    IDC_COMBO_FONT, 0x403, 9, 0
+0x6946, 0x6578, 0x7364, 0x7379, "\000" 
+    IDC_COMBO_FONT, 0x403, 9, 0
+0x6554, 0x6d72, 0x6e69, 0x6c61, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 16
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_TOOLBAR_TOOLS TOOLBAR DISCARDABLE  16, 16
+BEGIN
+    BUTTON      IDT_WIZARD_ENTITY
+    BUTTON      IDT_WIZARD_KEY
+    SEPARATOR
+    BUTTON      IDT_INSERT_ENTITY
+    BUTTON      IDT_INSERT_CLASS_DERIVED
+    BUTTON      IDT_INSERT_CLASS
+    BUTTON      IDT_INSERT_GLOBAL
+    SEPARATOR
+    BUTTON      IDT_INSERT_ATTRIBUTE
+    BUTTON      IDT_INSERT_KEY
+    SEPARATOR
+    BUTTON      IDT_INSERT_FLAG
+    BUTTON      IDT_INSERT_OPTION
+    SEPARATOR
+    BUTTON      IDT_INSERT_FLAGKEY
+    SEPARATOR
+    BUTTON      IDT_VERIFY_SCRIPT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDP_FAILED_TO_CREATE    "Failed to create object.  Make sure the object is entered in the system registry."
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "GDF File Editor 2.0"
+    IDR_GDFEDITYPE          "\nGdfEdi\nGdfEdit\nGdfEdit2 Files (*.gdf2)Gdf Edit Files;\n.gdf2;.gdf\nGdfEdit2.Document\nGdfEdit Document"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "GdfEdit2"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
+    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
+    ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade Windows"
+    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_PASTE_LINK      "Insert Clipboard contents and a link to its source\nPaste Link"
+    ID_EDIT_PASTE_SPECIAL   "Insert Clipboard contents with options\nPaste Special"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OLE_INSERT_NEW       "Insert new embedded object\nNew Object"
+    ID_OLE_EDIT_LINKS       "Edit linked objects\nEdit Links"
+    ID_OLE_EDIT_CONVERT     "Convert object to different type\nConvert Object"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OLE_VERB_FIRST       "Activate embedded or linked object"
+    57873                   "Activate embedded or linked object"
+    57874                   "Activate embedded or linked object"
+    57875                   "Activate embedded or linked object"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+    AFX_IDS_MDICHILD        "Activate this window"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDT_INSERT_KEY          "Insert a blank key definition\nInsert Key"
+    IDT_INSERT_ATTRIBUTE    "Insert a blank attribute\nInsert Attribute"
+    IDT_INSERT_GLOBAL       "Insert a blank global defintion\nInsert Global"
+    IDT_INSERT_CLASS        "Insert a blank base class definition\nInsert Base Class"
+    IDT_INSERT_ENTITY       "Insert a blank entity definition\nInsert Entity"
+    IDT_WIZARD_KEY          "Use the key defintion wizard\nKey Wizard"
+    IDT_INSERT_CLASS_DERIVED 
+                            "Insert a blank derived class definition\nInsert Derived Class"
+    IDT_WIZARD_ENTITY       "Use the entity definition wizard\nEntity Wizard"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TBAR_CONTROLS_WIZARD2   "\nKey Wizard"
+    TBAR_CONTROLS_ENTITY    "Insert a blank entity defintion\nInsert Entity"
+    TBAR_CONTROLS_CLASS     "Insert a blank class definition\nInsert Class"
+    TBAR_CONTROLS_GLOBAL    "Insert a blank global defintion\nInsert Global"
+    TBAR_CONTROLS_ATTRIBUTE "Insert a blank attribute\nInsert Attribute"
+    TBAR_CONTROLS_KEY       "Insert a blank key\nInsert Key"
+    IDT_INSERT_FLAG         "Insert a blank flag structure\nInsert Flags"
+    IDT_INSERT_OPTION       "Insert a blank option structure\nInsert Option"
+    IDT_INSERT_FLAGKEY      "Insert a blank flag key\nInsert Flag"
+    IDT_VERIFY_SCRIPT       "Verify the script\nVerify"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDT_GOTO_LINE           "Go to a specified line number\nGo To Line"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\GdfEdit2.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#include "afxolecl.rc"       // OLE container resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

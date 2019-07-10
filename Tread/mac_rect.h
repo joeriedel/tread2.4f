@@ -1,0 +1,1 @@
+// MAC_RECT.H// Copyright (c) 2000 Joe Riedel, Nick Randal.// Author: Joe Riedel.#ifndef MAC_RECT_H#define MAC_RECT_H// Replacement for the windows CRect.typedef struct{			int top, bottom, left, right;	} RECT;class CRect : public RECT{public:	CRect();	CRect(const CRect&);	CRect(long num);	virtual ~CRect();		int operator = (int);};#endif

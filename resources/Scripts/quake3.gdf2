@@ -1,0 +1,901 @@
+//
+// Quake3 (GDF-2) GDF Script for TREAD
+//
+//
+// Written By: Wayne W. Smith
+//
+//
+// Released : 16 June 2000
+//
+//
+// 2.0 Released : 16 June 2000
+// 1.2 Revision : 19th March 2000
+// 1.0 Released : 24th December 1999
+//
+//
+// References:
+//            GDF-2 Editor by Nick Randal
+//            Initial Quake3 GDF-2 file by Nick Randal
+//            Coordinator - Joe Riedel
+//            Revised Quake3 GDF-2 file by Wayne W. Smith      
+//            Q3Radiant Definition File by Eutectic
+//
+//
+// Note:
+//      The executable "q3map.exe" now contains the BSP, VIS and RAD compilers. 
+// 
+//
+$DefGlobal [ "Quake3" ]							// Basic game defaults
+{
+	def_author			: "Wayne W. Smith"
+	def_version			: "2.0"
+	def_solid  			: "base_solid"			// Solid entity
+	def_point  			: "base_point"			// Point entity
+	def_gamemaptype    	: "QUAKE3_MAP"			// Type of MAP file to generate
+	def_textype			: "@Q3"                    // Texture Format
+	def_worldspawn		: "worldspawn"
+	def_targetkey		: "target"
+	def_namekey			: "targetname"
+	def_cap			: "q3_quad_patch" : true
+
+	$DefBuild
+	{
+		$DefModule [ @@MapDir : "Map Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@GameDir : "Quake3 Directory" : "" ] 
+		{
+			def_pathtype : @DIR
+			def_type : @NOT_RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+		}
+
+		$DefModule [ @@MapFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : @@MapDir : @ALWAYS : false
+				def_param : "" : "\\" : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				def_param : "" : ".map" : @ALWAYS : false
+			}
+			
+			$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@BspSection : "BSP Program" : "Bsp Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Fake Map" : "-fakemap " : 2 : false
+				def_param : "Temp Out" : "-tmpout " : 4 : false
+				def_param : "Expanded Map" : "-expand " : 8 : false
+				def_param : "No Junction Fixing" : "-notjunc " : 16 : false
+				def_param : "No Curves" : "-notcurves " : 32 : false
+				def_param : "Verbose Entities Only" : "-verboseeentities " : 64 : false
+				def_param : "Leak Test" : "-leaktest " : 128 : false
+				def_param : "No Subdivision" : "-nosubdivide " : 256 : false
+				def_param : "No Fog" : "-nofog " : 512 : false
+				def_param : "Textures Only" : "-onlytextures " : 1024 : false
+				def_param : "Only Entities" : "-onlyents " : 2048 : false
+				def_param : "Full Detail" : "-fulldetail " : 4096 : false
+				def_param : "No Detail" : "-nodetail " : 8129 : false
+				def_param : "No Fill" : "-nofill " : 16384 : false
+				def_param : "No Optimize" : "-noopt " : 32768 : false
+				def_param : "No Water" : "-nowater " : 65536 : false
+				def_param : "No Draw" : "-nodraw " : 131072 : false
+				def_param : "Verbose" : "-v " : 262144 : false
+				def_param : "Glview" : "-glview " : 524288 : false
+//
+// Need a (-threads n) input where n = a number "Used for number of Processors"
+// Need a (-tempname name) input where name = temporary name "Names a Temporary Map"
+//
+				def_param : "" : "\"" : @ALWAYS : false
+				def_param : "" : @@MapFile : @ALWAYS : false 
+				def_param : "" : "\"" : @ALWAYS : false
+			}
+			
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Quake3 BSP..."
+		}
+
+		$DefModule [ @@BspFile : "" : "" ]
+		{
+			def_type : @RUNNABLE
+
+			$DefParams
+			{
+				def_param : "" : "+map " : @ALWAYS : false
+				def_param : "" : @FILENAME : @ALWAYS : false
+				//def_param : "" : ".bsp" : @ALWAYS : false
+			}
+			
+			//$ExportMap : @@MapFile : "X-porting map..."
+		}
+
+		$DefModule [ @@VisSection : "VIS Program" : "VIS Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+//
+// Need a (-threads n) input where n = a number "Used for number of Processors"
+// Need a (-level 0-4) input where input is a number 0-4 "Used as designator"
+//
+				def_param : "Fast" : "-fast " : 2 : false
+				def_param : "Verbose" : "-v " : 4 : false
+				def_param : "" : "\"" : @ALWAYS : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+				def_param : "" : "\"" : @ALWAYS : false
+			}		
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing Q3 VIS..."
+
+		}
+		$DefModule [ @@RadSection : "RAD Program" : "RAD Options" ]
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "Dump Occlusion Maps" : "-dump " : 2 : false
+				def_param : "No Tracing Against Surfaces" : "-nosurf " : 4 : false
+				def_param : "Adding Debug Border to Lightmaps" : "-border " : 8 : false
+				def_param : "Extrawide Detail Tracing" : "-extrawide " : 16 : false
+				def_param : "Extra Detail Tracing" : "-extra " : 32 : false
+				def_param : "No Occlusion Tracing" : "-notrace " : 64 : false
+//
+// Need a (-point n) input where n = a number "Used for Point Light Scaling"
+// Need a (-area n) input where n = a number "Used for Area Light Scaling"
+//
+				def_param : "Verbose" : "-v " : 128 : false
+//
+// Need a (-threads n) input where n = a number "Used for number of Processors"
+//
+				def_param : "" : "\"" : @ALWAYS : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+				def_param : "" : "\"" : @ALWAYS : false
+			}
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing  Q3 RAD..."
+		}
+
+		$DefModule [ @@AASSection : "AAS Program" : "Aas Options" ]
+		{
+
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "" : "\"" : @ALWAYS : false
+				def_param : "" : @@BspFile : @ALWAYS : false
+				def_param : "" : "\"" : @ALWAYS : false
+			}
+
+			$SpawnWait : @THIS : @@MapDir : @CONSOLE : "Execing  Q3 AAS(Bot) Builder..."
+
+		}
+
+		$DefModule [ @@Quake3 : "Quake3 Exe" : "Quake3 Options" ] 
+		{
+			def_pathtype : @FILE
+			def_type : @RUNNABLE
+			def_path : "[ENTER PATH HERE]"
+
+			$DefParams
+			{
+				def_param : "None" : @ABORT : 1 : false
+				def_param : "" : @@BspFile : @ALWAYS : false 
+			}
+
+			$SpawnWait : @THIS : @@GameDir : @CONSOLE : "Running Quake3 ..."
+		}
+	}
+
+//
+//
+// Worldspawn Entries
+//
+	def_key : string 	: "message" 	: "Map Description / Title" 		: ""
+	def_key : integer : "music" 		: "World Sound" 				: ""
+	def_key : integer : "ambient" 	: "Default Light Level" 		: "0"
+	def_key : color 	: "_color" 		: "Default Ambient Color" 		: "0 0 0"
+	def_key : integer : "gravity" 	: "Gravity Level" 			: "800"
+}
+//
+// Base Entities
+//
+// Defines A Point Entity
+$DefEnt [ "base_point" : @VIRTUAL : @NULL ] []
+{
+	def_att : owner  : false
+}
+$DefEnt [ "base_gamep" : @VIRTUAL : @NULL ] [ "base_point" ]
+{
+	$DefOptions [ "noteam" : "Spawn in Team Games" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+	$DefOptions [ "notfree" : "Spawn in FFA" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+	$DefOptions [ "notsingle" : "Spawn in Single Player" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+}
+// Defines A Solid Entity
+$DefEnt [ "base_solid" : @VIRTUAL : @NULL ] []
+{
+	def_att : owner  : true
+}
+$DefEnt [ "base_games" : @VIRTUAL : @NULL ] [ "base_solid" ]
+{
+	$DefOptions [ "noteam" : "Spawn in Team Games" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+	$DefOptions [ "notfree" : "Spawn in FFA" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+	$DefOptions [ "notsingle" : "Spawn in Single Player" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+}
+//
+// Ammo
+//
+$DefEnt [ "base_ammo" : @VIRTUAL : @NULL ] [ "base_gamep" ] 
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : integer : "random" : "Random" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "team" : "Team" : ""
+	def_key : integer : "wait" : "Wait before respawn" : "40"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUSPENDED" : 1 : false
+	}
+}
+$DefEnt [ "ammo_bfg" : "Ammo: BFG Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "15"
+}
+$DefEnt [ "ammo_bullets" : "Ammo: Machine Gun Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "50"
+}
+$DefEnt [ "ammo_cells" : "Ammo: Plasma Gun Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "30"
+}
+$DefEnt [ "ammo_grenades" : "Ammo: Grenade Launcher Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "5"
+}
+$DefEnt [ "ammo_lightning" : "Ammo: Lightning Gun Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "60"
+}
+$DefEnt [ "ammo_rockets" : "Ammo: Rocket Launcher Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "5"
+}
+$DefEnt [ "ammo_shells" : "Ammo: Shotgun Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "10"
+}
+$DefEnt [ "ammo_slugs" : "Ammo: Railgun Ammo" ] [ "base_ammo" ]
+{
+	def_key : integer : "count" : "Count" : "10"
+}
+//
+// Functional Entities
+//
+$DefEnt [ "func_bobbing" : "Func: Bobbing Entity" ] [ "base_games" ]
+{
+	def_key : integer : "speed" : "Speed" : "4"
+	def_key : integer : "height" : "Height" : "32"
+	def_key : integer : "phase" : "Phase" : "0"
+	def_key : string : "noise" : "Noise" : "sound/world/drone6.wav"
+	def_key : string : "model2" : "Model" : "models/mapobjects/jets/jets01.md3"
+	def_key : string : "origin" : "Origin" : "0 0 0"
+	def_key : integer : "_minlight" : "Glow Lighting" : "0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "X_AXIS" : 1 : false
+		def_flg : "Y_AXIS" : 1 : false
+	}
+}
+$DefEnt [ "func_button" : "Func: Switch" ] [ "base_games" ]
+{
+	def_key : integer : "angle" : "Direction" : "-1"
+	def_key : integer : "speed" : "Speed" : "40"
+	def_key : integer : "wait" : "Wait" : "2"
+	def_key : integer : "lip" : "Lip" : "8"
+	def_key : string : "targetname" : "Targetname" : ""
+	def_key : integer : "health" : "Health" : "0"
+	def_key : integer : "dmg" : "Damage" : "4"
+	def_key : integer : "_minlight" : "Glow Lighting" : "0"
+	def_key : integer : "light" : "Light Radius" : ""
+	def_key : color : "color" : "Light Color" : ""
+	def_key : string : "model2" : "Model" : "models/mapobjects/pipe/pipe02.md3"
+	def_key : string : "origin" : "Origin" : "0 0 0"
+}
+$DefEnt [ "func_door" : "Func: Sliding Door" ] [ "base_games" ]
+{
+	def_key : integer : "angle" : "Opening Direction" : "-1"
+	def_key : integer : "speed" : "Speed" : "100"
+	def_key : integer : "wait" : "Wait" : "2"
+	def_key : integer : "lip" : "Lip" : "8"
+	def_key : string : "targetname" : "Targetname" : ""
+	def_key : integer : "health" : "Health" : "0"
+	def_key : integer : "dmg" : "Damage" : "4"
+	def_key : integer : "_minlight" : "Glow Lighting" : "0"
+	def_key : integer : "light" : "Light Radius" : ""
+	def_key : color : "color" : "Light Color" : ""
+	def_key : string : "model2" : "Model" : "models/mapobjects/pipe/pipe02.md3"
+	def_key : string : "origin" : "Origin" : "0 0 0"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_OPEN" : 1 : false
+		def_flg : "CRUSHER" : 1 : false
+	}
+}
+$DefEnt [ "func_pendulum" : "Func: Pendulum" ] [ "base_games" ]
+{
+	def_key : integer : "angle" : "Angle offset" : "0"
+	def_key : integer : "speed" : "Angle of swing arc" : "30"
+	def_key : integer : "phase" : "Start offset" : "0"
+	def_key : string : "noise" : "Noise" : "sound/world/drone6.wav"
+	def_key : string : "model2" : "Model" : "models/mapobjects/jets/jets01.md3"
+	def_key : string : "origin" : "Origin" : "0 0 0"
+	def_key : integer : "_minlight" : "Glow Lighting" : "0"
+	def_key : integer : "light" : "Light Radius" : ""
+	def_key : color : "color" : "Light Color" : ""
+}
+$DefEnt [ "func_rotating" : "Func: Rotating Entity" ] [ "base_games" ]
+{
+	def_key : integer : "speed" : "Speed" : "100"
+	def_key : string : "noise" : "Noise" : "sound/world/drone6.wav"
+	def_key : string : "model2" : "Model" : "models/mapobjects/bitch/fembotbig.md3"
+	def_key : string : "origin" : "Origin" : "0 0 0"
+	def_key : integer : "_minlight" : "Glow Lighting" : "0"
+	def_key : integer : "light" : "Light Radius" : ""
+	def_key : color : "color" : "Light Color" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "X_AXIS" : 1 : false
+		def_flg : "Y_AXIS" : 1 : false
+	}
+}
+$DefEnt [ "func_static" : "Func: Conditional" ] [ "base_games" ]
+{
+	def_key : string : "model2" : "Model" : "models/mapobjects/bitch/fembotbig.md3"
+	def_key : integer : "_minlight" : "Glow Lighting" : "0"
+	def_key : integer : "light" : "Light Radius" : ""
+	def_key : color : "color" : "Light Color" : ""
+	def_key : string : "targetname" : "Targetname" : ""
+}
+$DefEnt [ "func_timer" : "Func: Event Timer" ] [ "base_gamep" ]
+{
+	def_att : "size" : "8 8 8"
+	def_key : integer : "random" : "Random" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "wait" : "Wait before respawn" : "1"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" : 1 : false
+	}
+}
+$DefEnt [ "func_train" : "Func: Movable Entity" ] [ "base_games" ]
+{
+	def_key : integer : "speed" : "Speed" : "100"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "model2" : "Model" : "models/mapobjects/pipe/pipe02.md3"
+	def_key : string : "origin" : "Origin" : "0 0 0"
+	def_key : integer : "_minlight" : "Glow Lighting" : "0"
+	def_key : integer : "light" : "Light Radius" : ""
+	def_key : color : "color" : "Light Color" : ""
+}
+//
+// Holdable Objects
+//
+$DefEnt [ "base_hold" : @VIRTUAL : @NULL ] [ "base_gamep" ] 
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : integer : "random" : "Random" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "team" : "Team" : ""
+	def_key : integer : "wait" : "Wait before respawn" : "60"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUSPENDED" : 1 : false
+	}
+}
+$DefEnt [ "holdable_medkit" : "Holdable: Medical Kit" ] [ "base_hold" ] {}
+$DefEnt [ "holdable_teleporter" : "Holdable: Teleporter" ] [ "base_hold" ] {}
+//
+// Info Entities
+//
+$DefEnt [ "base_info" : @VIRTUAL : @NULL ] [ "base_point" ] {}
+$DefEnt [ "info_firstplace" : "Info: 1st Place Marker" ] [ "base_info" ]
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+$DefEnt [ "info_notnull" : "Info: Positional Target Alt." ] [ "base_gamep" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string : "targetname" : "Name" : ""
+}
+$DefEnt [ "info_null" : "Info: Positional Target" ] [ "base_gamep" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string : "targetname" : "Name" : ""
+}
+$DefEnt [ "info_player_deathmatch" : "Info: Deathmatch Start" ] [ "base_gamep" ]
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string : "target" : "Target" : ""
+	$DefOptions [ "nobots" : "No Bots Spawn" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+	$DefOptions [ "nohumans" : "No Humans Spawn" ]
+	{
+		def_flg : "Yes" : 0 : true
+		def_flg : "No" : 1 : false
+	}
+}
+$DefEnt [ "info_player_intermission" : "Info: Camera Location" ] [ "base_info" ]
+{
+	def_att : "size" : "32 32 56"
+	def_key : string : "angles" : "Pitch Yaw Roll" : "0 0 0"
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "info_player_start" : "Info: Single Player Start" ] [ "base_info" ]
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "info_secondplace" : "Info: 2nd Place Marker" ] [ "base_info" ]
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+$DefEnt [ "info_spectator_start" : "Info: Spectators Start Position" ] [ "base_gamep" ]
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+$DefEnt [ "info_thirdplace" : "Info: 3rd Place Marker" ] [ "base_info" ]
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+//
+// Items
+//
+$DefEnt [ "base_item" : @VIRTUAL : @NULL ] [ "base_gamep" ] 
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : integer : "random" : "Random" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "team" : "Team" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUSPENDED" : 1 : false
+	}
+}
+$DefEnt [ "item_armor_body" : "Item: Red Armor" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "25"
+}
+$DefEnt [ "item_armor_combat" : "Item: Yellow Armor" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "25"
+}
+$DefEnt [ "item_armor_shard" : "Item: Armor Shard" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "25"
+}
+$DefEnt [ "item_enviro" : "Item: Battle Suit" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "120"
+	def_key : integer : "count" : "Count" : "30"
+}
+$DefEnt [ "item_flight" : "Item: Flight Pack" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "120"
+	def_key : integer : "count" : "Count" : "60"
+}
+$DefEnt [ "item_haste" : "Item: Increase Speed" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "120"
+	def_key : integer : "count" : "Count" : "30"
+}
+$DefEnt [ "item_health" : "Item: +25 Health" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "35"
+	def_key : integer : "count" : "Count" : "25"
+}
+$DefEnt [ "item_health_small" : "Item: +5 health" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "35"
+	def_key : integer : "count" : "Count" : "5"
+}
+$DefEnt [ "item_health_large" : "Item: +50 Health" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "35"
+	def_key : integer : "count" : "Count" : "50"
+}
+$DefEnt [ "item_health_mega" : "Item: +100 health" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "40"
+	def_key : integer : "count" : "Count" : "100"
+}
+$DefEnt [ "item_invis" : "Item: Invisibility" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "120"
+	def_key : integer : "count" : "Count" : "30"
+}
+
+$DefEnt [ "item_quad" : "Item: Quad Damage" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "120"
+	def_key : integer : "count" : "Count" : "30"
+}
+$DefEnt [ "item_regen" : "Item: Regeneration" ] [ "base_item" ]
+{
+	def_key : integer : "wait" : "Wait before respawn" : "120"
+	def_key : integer : "count" : "Count" : "30"
+}
+//
+// Light
+//
+$DefEnt [ "light" : "Light Entity" ] [ "base_point" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : color : "_color" : "Color" : "1.000 1.000 1.000"
+	def_key : integer : "light" : "Intensity" : "300"
+	def_key : integer : "radius" : "Cone Radius" : "64"
+	def_key : string : "target" : "Target of Light" : ""
+
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "Linear" : 1 : false
+	}
+}
+//
+// Miscellaneous
+//
+$DefEnt [ "misc_model" : "Misc: Insert Model" ] [ "base_point" ]
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string : "model2" : "Model" : "models/mapobjects/teleporter/teleporter.md3"
+}
+$DefEnt [ "misc_portal_camera" : "Misc: Portal Camera" ] [ "base_gamep" ]
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "angles" 	: "Pitch Yaw" : "0 0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "roll" 	: "Roll" : "180"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SLOWRATE" : 1 : false
+		def_flg : "FASTRATE" : 1 : false
+	}
+}
+$DefEnt [ "misc_portal_surface" : "Misc: Portal Screen" ] [ "base_gamep" ]
+{
+	def_att : "size" : "8 8 8"
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "misc_teleporter_dest" : "Misc: Teleporter Destination" ] [ "base_gamep" ]
+{
+	def_att : "size" : "64 64 40"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : string : "targetname" : "Name" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SF4" : 1 : false
+	}
+}
+//
+// Path Corner
+//
+$DefEnt [ "path_corner" : "Path Corner" ] [ "base_gamep" ]
+{
+	def_att : "size" : "8 8 8"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "speed" : "Speed" : ""
+	def_key : integer : "wait" : "Pause" : "0"
+}
+//
+// Automatic Shooters
+//
+$DefEnt [ "base_shoot" : @VIRTUAL : @NULL ] [ "base_gamep" ] 
+{
+	def_att : "size" : "16 16 16"
+	def_key : string : "angles" : "Pitch Yaw" : "0 0"
+	def_key : integer : "random" : "Random" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+}
+$DefEnt [ "shooter_grenade" : "Shooter: Grenades" ] [ "base_shoot" ] {}
+$DefEnt [ "shooter_plasma" : "Shooter: Plasma" ] [ "base_shoot" ] {}
+$DefEnt [ "shooter_rocket" : "Shooter: Rockets" ] [ "base_shoot" ] {}
+//
+// Target Entities
+//
+$DefEnt [ "base_target" : @VIRTUAL : @NULL ] [ "base_gamep" ] 
+{
+	def_att : "size" : "8 8 8"
+}
+$DefEnt [ "target_delay" : "Target: Time Delay Trigger" ] [ "base_target" ]
+{
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "wait" : "Wait before retargeting" : "1"
+	def_key : integer : "delay" : "Delay before targeting" : "1"
+	def_key : integer : "random" : "Random" : "0"
+}
+$DefEnt [ "target_give" : "Target: Give Items" ] [ "base_target" ]
+{
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+}
+$DefEnt [ "target_kill" : "Target: Kill Player" ] [ "base_target" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+}
+$DefEnt [ "target_laser" : "Laser Beam" ] [ "base_target" ]
+{
+	def_key : string : "angles" : "Pitch Yaw Roll" : "0 0 0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_ON" : 1 : false
+	}
+}
+$DefEnt [ "target_location" : "Target: Location Identifier" ] [ "base_target" ]
+{
+	def_key : string 	: "message" : "Message" : ""
+	$DefOptions [ "count" : "Color" ]
+	{
+		def_flg : "White" : 0 : false
+		def_flg : "Red" : 1 : false
+		def_flg : "Green" : 2 : false
+		def_flg : "Yellow" : 3 : false
+		def_flg : "Blue" : 4 : false
+		def_flg : "Cyan" : 5 : false
+		def_flg : "Magenta" : 6 : false
+		def_flg : "White" : 7 : false
+	}
+}
+$DefEnt [ "target_position" : "Target: Aiming Entity" ] [ "base_target" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+}
+$DefEnt [ "target_print" : "Target: Displays Messages" ] [ "base_target" ]
+{
+	def_key : string 	: "message" : "Message" : ""
+	def_key : string : "targetname" : "Name" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "REDTEAM" : 1 : false
+		def_flg : "BLUETEAM" : 1 : false
+		def_flg : "PRIVATE" : 1 : false
+	}
+}
+$DefEnt [ "target_push" : "Target: Push" ] [ "base_target" ]
+{
+	def_key : string : "angles" : "Pitch Yaw" : "0 0"
+	def_key : integer : "speed" : "Speed" : "1000"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "BOUNCEPAD" : 1 : false
+	}
+}
+$DefEnt [ "target_relay" : "Target: Relay" ] [ "base_target" ]
+{
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "RED_ONLY" : 1 : false
+		def_flg : "BLUE_ONLY" : 1 : false
+		def_flg : "RANDOM" : 1 : false
+	}
+}
+$DefEnt [ "target_remove_powerups" : "Target: Removes Items" ] [ "base_target" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+}
+$DefEnt [ "target_score" : "Target: Frag Points" ] [ "base_target" ]
+{
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "count" : "Count" : "1"
+}
+$DefEnt [ "target_speaker" : "Target: Sound Player" ] [ "base_target" ]
+{
+	def_key : string : "noise" : "Noise" : "sound/world/growll.wav"
+	def_key : integer : "wait" : "Wait before replaying" : ""
+	def_key : integer : "random" : "Random" : ""
+	def_key : string : "targetname" : "Name" : ""
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "LOOPED_ON" : 1 : false
+		def_flg : "LOOPED_OFF" : 1 : false
+		def_flg : "GLOBAL" : 1 : false
+		def_flg : "ACTIVATOR" : 1 : false
+	}
+}
+$DefEnt [ "target_teleporter" : "Target: Teleporter" ] [ "base_target" ]
+{
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+}
+//
+// Team Entities
+//
+$DefEnt [ "base_team" : @VIRTUAL : @NULL ] [ "base_point" ] 
+{
+	def_att : "size" : "32 32 56"
+	def_key : vector : "angle" : "Angle" : "0"
+}
+$DefEnt [ "team_ctf_blueflag" : "CTF: Blue Flag" ] [ "base_team" ] {}
+$DefEnt [ "team_ctf_blueplayer" : "CTF: Blue Team Start" ] [ "base_team" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "team_ctf_bluespawn" : "CTF: Blue Team Restart" ] [ "base_team" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "team_ctf_redflag" : "CTF: Red Flag" ] [ "base_team" ] {}
+$DefEnt [ "team_ctf_redplayer" : "CTF: Red Team Start" ] [ "base_team" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "team_ctf_redspawn" : "CTF: Red Team Restart" ] [ "base_team" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+//
+// Triggers
+//
+$DefEnt [ "base_trigger" : @VIRTUAL : @NULL ] [ "base_gamep" ] 
+{
+	def_att : "size" : "8 8 8"
+}
+$DefEnt [ "trigger_always" : "Trigger: Automatic" ] [ "base_trigger" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "trigger_hurt" : "Trigger: Damage" ] [ "base_trigger" ]
+{
+	def_key : integer : "dmg" : "Damage" : "5"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "START_OFF" : 1 : false
+		def_flg : "SILENT" : 1 : false
+		def_flg : "NO_PROTECTION" : 1 : false
+		def_flg : "SLOW" : 1 : false
+	}
+}
+$DefEnt [ "trigger_multiple" : "Trigger: Repeatable" ] [ "base_trigger" ]
+{
+	def_key : integer : "random" : "Random" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : integer : "wait" : "Wait before respawn" : "0.2"
+}
+$DefEnt [ "trigger_push" : "Trigger: Moves Player" ] [ "base_trigger" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+$DefEnt [ "trigger_teleport" : "Trigger: Teleporter" ] [ "base_trigger" ]
+{
+	def_key : string : "target" : "Target" : ""
+}
+//
+// Weapons
+//
+$DefEnt [ "base_weapon" : @VIRTUAL : @NULL ] [ "base_gamep" ] 
+{
+	def_att : "size" : "32 32 32"
+	def_key : vector : "angle" : "Angle" : "0"
+	def_key : integer : "random" : "Random" : "0"
+	def_key : string : "target" : "Target" : ""
+	def_key : string : "targetname" : "Name" : ""
+	def_key : string : "team" : "Team" : ""
+	def_key : integer : "wait" : "Wait before respawn" : "5"
+	$DefFlags [ "spawnflags" : "Spawn Flags" ]
+	{
+		def_flg : "SUSPENDED" : 1 : false
+	}
+}
+$DefEnt [ "weapon_bfg" : "Weapon: BFG" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "20"
+}
+$DefEnt [ "weapon_gaunlet" : "Weapon: Gaunlet" ] [ "base_weapon" ] {}
+$DefEnt [ "weapon_grapplinghook" : "Weapon: Grappling Hook" ] [ "base_weapon" ] {}
+$DefEnt [ "weapon_grenadelauncher" : "Weapon: Grenade Launcher" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "10"
+}
+$DefEnt [ "weapon_lightning" : "Weapon: Lightning Gun" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "100"
+}
+$DefEnt [ "weapon_machinegun" : "Weapon: Machinegun" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "100"
+}
+$DefEnt [ "weapon_plasmagun" : "Weapon: Plasmagun" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "50"
+}
+$DefEnt [ "weapon_railgun" : "Weapon: Railgun" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "10"
+}
+$DefEnt [ "weapon_rocketlauncher" : "Weapon: Rocket Launcher" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "10"
+}
+$DefEnt [ "weapon_shotgun" : "Weapon: Shotgun" ] [ "base_weapon" ]
+{
+	def_key : integer : "count" : "Count" : "10"
+}

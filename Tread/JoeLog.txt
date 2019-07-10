@@ -1,0 +1,40 @@
+// Logfile for Joe Riedel
+// Started 2/13/2000
+
+-------------------------------
+3/27/2000
+-------------------------------
+
+
+
+-------------------------------
+2/19/2000
+-------------------------------
+
+* Finished Kingping run support, we still need the surface/contents flags.
+
+-------------------------------
+2/13/2000
+-------------------------------
+
+Well, Tread3D 2.0 is nearing full completion, so I thought it would be good to start logging
+the changes to the code base at this point. 
+
+* Fixed TreadMap1X: face textures where loading funny because a rebuild message was generated
+when each attribute was set, so locking would hit after the first one. The locks are now 
+disabled and the face is explicitley rebuilt after.
+
+* Fixed texture locking
+* Fixed weird clip problem, and made things unselected after split
+* Fixed non-visible object bbox selection
+* Added access to texture memory size.
+* Fixed RenderAPI switch crash
+* Added WinGDI I_TARGET drawing
+* Fixed new models crashing
+* Added delete entity paths
+* Reveresed entity drawing
+* Added visgroup saving
+* Finished Quake/Quake2 file importing
+* Finsihed Quake/Quake2/HalfLife exporting
+
+Note that Kingpin has the same format as Quake2

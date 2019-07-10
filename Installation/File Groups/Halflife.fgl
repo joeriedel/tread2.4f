@@ -1,0 +1,31 @@
+[Models\Halflife]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Models\HalfLife\Primitives$Cube$brush.tmd2
+fulldirectory=
+
+[Halflife]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Halflife\Glu32.dll
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Halflife\lights.rad
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Halflife\Opengl32.dll
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Halflife\qbsp2.exe
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Halflife\qcsg.exe
+file5=E:\Development\Projects\My Installations\Tread3D\Files\Halflife\qrad.exe
+file6=E:\Development\Projects\My Installations\Tread3D\Files\Halflife\vis.exe
+fulldirectory=
+
+[Models]
+SubDir0=Models\Halflife
+fulldirectory=
+
+[TopDir]
+SubDir0=Halflife
+SubDir1=Models
+SubDir2=Palettes
+
+[General]
+Type=FILELIST
+Version=1.10.000
+
+[Palettes]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Palettes\Halflife.pal
+fulldirectory=
+

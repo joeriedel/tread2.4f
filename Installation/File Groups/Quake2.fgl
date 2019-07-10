@@ -1,0 +1,29 @@
+[Models]
+SubDir0=Models\Quake2
+fulldirectory=
+
+[TopDir]
+SubDir0=Quake2
+SubDir1=Models
+SubDir2=Palettes
+
+[Quake2]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Quake2\Glu32.dll
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Quake2\Opengl32.dll
+file2=E:\Development\Projects\My Installations\Tread3D\Files\Quake2\Qbsp3.exe
+file3=E:\Development\Projects\My Installations\Tread3D\Files\Quake2\Qrad3.exe
+file4=E:\Development\Projects\My Installations\Tread3D\Files\Quake2\Qvis3.exe
+fulldirectory=
+
+[General]
+Type=FILELIST
+Version=1.10.000
+
+[Palettes]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Palettes\Quake2.pal
+fulldirectory=
+
+[Models\Quake2]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Models\Quake2\Primitives$Cube$brush.tmd2
+fulldirectory=
+

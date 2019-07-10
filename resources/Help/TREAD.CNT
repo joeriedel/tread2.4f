@@ -1,0 +1,43 @@
+:Base Tread.HLP
+1 Welcome!=IDH_Welcome_
+1 Credits=Credits
+1 Interface
+2 Tool Bars=IDH_Tool_Bars
+2 Main Interface=IDH_Main_Interface
+2 Main ToolBar=IDH_Main_ToolBar
+2 Edit Bar=IDH_Edit_Bar
+2 Output Window=IDH_Output_Window
+2 Selection Tool=IDH_Selection_Tool
+2 Properties Sheet=IDH_Properties_Sheet
+2 Visgroup Panel=IDH_Visgroup_Panel
+2 Texture bar=IDH_Texture_bar
+2 Texture Browser=IDH_Texture_Browser
+2 Type Selector=IDH_Type_Selector
+2 Face Applicator Panel=IDH_Face_Applicator_Panel
+1 Map Help
+2 Tutorial One - Getting Set Up=texture_paths>main
+2 Tutorial Two - Basic Room=IDH_Tutorial___Two___Basic_Room
+2 Tutorial Three - Brushes and Carving=tutorial_3>main
+2 Tutorial Four - Doors!=Tutorial_Four
+2 Tutorial Five - Doors!  honest!=Tutorial_Five
+2 Tutorial Six - Triggers=Tutorial_six
+1 Entities
+2 Entity Sets=IDH_Entity_Sets
+2 Entity List (Quake 1)=IDH_Entity_List__Quake_1_
+2 Basic Keys=IDH_Basic_Keys
+2 Triggers=Triggers
+2 Door Keys=IDH_Door_Keys
+2 Illusuory Wall keys=IDH_Illusuory_Wall_keys
+2 Platform Keys=IDH_Platform_Keys_1
+2 Platform Keys=IDH_Platform_Keys_2
+2 Secret Door Keys=IDH_Secret_Door_Keys
+2 Button Keys=IDH_Button_Keys
+2 Wall Keys=IDH_Wall_Keys
+2 Push Area Keys=Push_Area_keys
+1 Other Resources
+2 List of Other Resources=other_resources
+1 Setting Up
+2 First Time=texture_paths>main
+2 Key Bindings=Key_Bindings
+1 Going Further
+1 Errors

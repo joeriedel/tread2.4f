@@ -1,0 +1,25 @@
+Holding down on the "Ctrl" key on your keyboard will allow you to capture more than one brush
+Clicking twice on the "Pointer" button will allow you to capture only brushes
+Clicking three times on the "Pointer" button will allow you to capture only entities
+Using the "Expand Current View" option will fill the Editor Workspace with the current active window
+Clicking once on the "Clip Split" button will allow you to clip a brush
+Clicking twice on the "Clip Split" button will allow you to split a brush
+To modify the orientation of a texture you must first toggle off the "Texture Lock" button
+If the "Hollow Depth" is set to a positive number the brush will be hollowed to the inside
+If the "Hollow Depth" is set to a negative number the brush will be hollowed to the outside
+For complete vertex manipulation click on the "Vertex Manipulation" button
+Grid size and zoom factor can be easily adjusted with the dropdown lists in the "View Toolbar"
+Visgroups can hide portions of the map you are working on
+Multiple brushes and entities can be grouped and then made into a model by using the "Build Model" option
+Tread3D will keep track of your most recently opened maps. They are viewed in the dropdown list under files
+Tread3D will keep track of your most recently used textures. They are accessable through the dropdown list in the "Texture Workspace"
+The "Filer" setting in the "Texture Browser" will allow you to filter out textures by groups
+Using the "Size Drop Down Menu" in the "Texture Browser" will adjust the display size of the textures
+Selecting "Transparency" in the "3D View Mode" drop down list will allow you to view transparent objects as non solids
+Using the "ZombieLight" options in the "Plugins" drop down list will show actual entity lighting in the 3D View
+Using the "Leak Trace" option in the "Plugins" drop down list will show map leaks in the 3D View
+Using the "Cascade" option in the "Window" drop down list will show multiple maps in the Editor Workspace
+Using the "Arrange Icons" option in the "Window" drop down list will allow you to arrange the toolbars within the main map editor window
+Clicking once on a brush will expose its "Handles" and will allow you to adjust its proportions
+Clicking twice on a brush will expose its "Orientation Points" and will allow you to change its orientation
+Anchors can now be added to your map. These are jump points that can located throughout your map

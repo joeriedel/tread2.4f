@@ -1,0 +1,212 @@
+[Components]
+component0=Help Files
+component1=Halflife
+component2=Kingpin
+component3=Quake
+component4=Program Files
+component5=Quake2
+component6=Example Files
+
+[Help Files]
+SELECTED=Yes
+FILENEED=STANDARD
+HTTPLOCATION=
+STATUS=Copy Help Files
+UNINSTALLABLE=Yes
+TARGET=<TARGETDIR>
+FTPLOCATION=
+VISIBLE=Yes
+DESCRIPTION=This component includes all help and tutorial files.
+DISPLAYTEXT=
+IMAGE=
+DEFSELECTION=Yes
+filegroup0=Help Files
+COMMENT=
+INCLUDEINBUILD=Yes
+INSTALLATION=ALWAYSOVERWRITE
+COMPRESSIFSEPARATE=No
+MISC=
+ENCRYPT=No
+DISK=ANYDISK
+TARGETDIRCDROM=
+PASSWORD=
+TARGETHIDDEN=General Application Destination
+
+[Halflife]
+SELECTED=Yes
+FILENEED=STANDARD
+HTTPLOCATION=
+STATUS=Copying Halflife(tm) Files...
+UNINSTALLABLE=Yes
+TARGET=<TARGETDIR>
+FTPLOCATION=
+VISIBLE=Yes
+DESCRIPTION=This component includes all files necessary to create Halflife(tm) maps.
+DISPLAYTEXT=
+IMAGE=
+DEFSELECTION=Yes
+filegroup0=Halflife
+COMMENT=
+INCLUDEINBUILD=Yes
+INSTALLATION=ALWAYSOVERWRITE
+COMPRESSIFSEPARATE=No
+MISC=
+ENCRYPT=No
+DISK=ANYDISK
+TARGETDIRCDROM=
+PASSWORD=
+TARGETHIDDEN=General Application Destination
+
+[TopComponents]
+component0=Program Files
+component1=Example Files
+component2=Help Files
+component3=Quake
+component4=Kingpin
+component5=Halflife
+component6=Quake2
+
+[Kingpin]
+SELECTED=Yes
+FILENEED=STANDARD
+HTTPLOCATION=
+STATUS=Copying Kingpin(tm) Files...
+UNINSTALLABLE=Yes
+TARGET=<TARGETDIR>
+FTPLOCATION=
+VISIBLE=Yes
+DESCRIPTION=This component includes all files necessary to create Kingpin(tm) maps.
+DISPLAYTEXT=
+IMAGE=
+DEFSELECTION=Yes
+filegroup0=Kingpin
+COMMENT=
+INCLUDEINBUILD=Yes
+INSTALLATION=ALWAYSOVERWRITE
+COMPRESSIFSEPARATE=No
+MISC=
+ENCRYPT=No
+DISK=ANYDISK
+TARGETDIRCDROM=
+PASSWORD=
+TARGETHIDDEN=General Application Destination
+
+[SetupType]
+setuptype0=Typical
+
+[Quake]
+SELECTED=Yes
+FILENEED=STANDARD
+HTTPLOCATION=
+STATUS=Copying Quake(tm) Files
+UNINSTALLABLE=Yes
+TARGET=<TARGETDIR>
+FTPLOCATION=
+VISIBLE=Yes
+DESCRIPTION=This component includes all files necessary to create Quake(tm) maps.
+DISPLAYTEXT=
+IMAGE=
+DEFSELECTION=Yes
+filegroup0=Quake
+COMMENT=
+INCLUDEINBUILD=Yes
+INSTALLATION=ALWAYSOVERWRITE
+COMPRESSIFSEPARATE=No
+MISC=
+ENCRYPT=No
+DISK=ANYDISK
+TARGETDIRCDROM=
+PASSWORD=
+TARGETHIDDEN=General Application Destination
+
+[Program Files]
+SELECTED=Yes
+FILENEED=STANDARD
+HTTPLOCATION=
+STATUS=Copy Program Files...
+UNINSTALLABLE=Yes
+TARGET=<TARGETDIR>
+FTPLOCATION=
+VISIBLE=No
+DESCRIPTION=Essential program files that are required for Tread3D to run.
+DISPLAYTEXT=
+IMAGE=
+DEFSELECTION=Yes
+filegroup0=Program Executable Files
+COMMENT=
+INCLUDEINBUILD=Yes
+filegroup1=Support
+INSTALLATION=ALWAYSOVERWRITE
+COMPRESSIFSEPARATE=No
+MISC=
+ENCRYPT=No
+DISK=ANYDISK
+TARGETDIRCDROM=
+PASSWORD=
+TARGETHIDDEN=General Application Destination
+
+[Quake2]
+SELECTED=Yes
+FILENEED=STANDARD
+HTTPLOCATION=
+STATUS=Copying Quake2(tm) Files...
+UNINSTALLABLE=Yes
+TARGET=<TARGETDIR>
+FTPLOCATION=
+VISIBLE=Yes
+DESCRIPTION=This component includes all files necessary to create Quake2(tm) maps.
+DISPLAYTEXT=
+IMAGE=
+DEFSELECTION=Yes
+filegroup0=Quake2
+COMMENT=
+INCLUDEINBUILD=Yes
+INSTALLATION=ALWAYSOVERWRITE
+COMPRESSIFSEPARATE=No
+MISC=
+ENCRYPT=No
+DISK=ANYDISK
+TARGETDIRCDROM=
+PASSWORD=
+TARGETHIDDEN=General Application Destination
+
+[Info]
+Type=CompDef
+Version=1.00.000
+Name=
+
+[Example Files]
+SELECTED=Yes
+FILENEED=STANDARD
+HTTPLOCATION=
+STATUS=Copy Example Files...
+UNINSTALLABLE=Yes
+TARGET=<TARGETDIR>
+FTPLOCATION=
+VISIBLE=Yes
+DESCRIPTION=This component includes all example map files
+DISPLAYTEXT=
+IMAGE=
+DEFSELECTION=Yes
+filegroup0=Example Files
+COMMENT=
+INCLUDEINBUILD=Yes
+INSTALLATION=ALWAYSOVERWRITE
+COMPRESSIFSEPARATE=No
+MISC=
+ENCRYPT=No
+DISK=ANYDISK
+TARGETDIRCDROM=
+PASSWORD=
+TARGETHIDDEN=General Application Destination
+
+[SetupTypeItem-Typical]
+Comment=
+item0=Help Files
+item1=Halflife
+item2=Kingpin
+item3=Quake
+Descrip=
+item4=Example Files
+DisplayText=
+

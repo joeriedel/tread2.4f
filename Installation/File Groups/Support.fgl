@@ -1,0 +1,23 @@
+[Plugins]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\Plugins\leaktrace.dll
+file1=E:\Development\Projects\My Installations\Tread3D\Files\Plugins\lightpreview.dll
+fulldirectory=
+
+[TopDir]
+SubDir0=Scripts
+SubDir1=Plugins
+
+[Scripts]
+file0=E:\Development\Projects\My Installations\Tread3D\Files\SCRIPTS\actionq2.gdf2
+file1=E:\Development\Projects\My Installations\Tread3D\Files\SCRIPTS\halflife.gdf2
+file2=E:\Development\Projects\My Installations\Tread3D\Files\SCRIPTS\kingpin.gdf2
+file3=E:\Development\Projects\My Installations\Tread3D\Files\SCRIPTS\painkeep.gdf2
+file4=E:\Development\Projects\My Installations\Tread3D\Files\SCRIPTS\quake.gdf2
+file5=E:\Development\Projects\My Installations\Tread3D\Files\SCRIPTS\quake2.gdf2
+file6=E:\Development\Projects\My Installations\Tread3D\Files\SCRIPTS\cstrike.gdf2
+fulldirectory=
+
+[General]
+Type=FILELIST
+Version=1.10.000
+

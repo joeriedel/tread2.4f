@@ -1,0 +1,7 @@
+; shapes.def : Declares the module parameters for the DLL.
+
+LIBRARY      "shapes"
+DESCRIPTION  'shapes Windows Dynamic Link Library'
+
+EXPORTS
+    ; Explicit exports can go here

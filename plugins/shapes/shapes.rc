@@ -1,0 +1,250 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\shapes.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "shapes DLL\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "shapes\0"
+            VALUE "LegalCopyright", "Copyright (C) 2000\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "shapes.DLL\0"
+            VALUE "ProductName", "shapes Dynamic Link Library\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ARCH_DIALOG DIALOG DISCARDABLE  0, 0, 237, 167
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Create Arch"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&Create",IDOK,180,126,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,180,146,50,14
+    CONTROL         4001,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,7,7,223,90
+    GROUPBOX        "Axis:",IDC_STATIC,17,124,74,28
+    CONTROL         "X",IDC_ARCH_X,"Button",BS_AUTORADIOBUTTON | WS_GROUP,23,
+                    135,21,10
+    CONTROL         "Y",IDC_ARCH_Y,"Button",BS_AUTORADIOBUTTON,45,135,21,10
+    CONTROL         "Z",IDC_ARCH_Z,"Button",BS_AUTORADIOBUTTON,65,135,21,10
+    LTEXT           "Number Of Sections:",IDC_STATIC,7,104,66,8
+    EDITTEXT        IDC_NUMBER_OF_SECTIONS_EDIT,74,101,20,14,ES_AUTOHSCROLL
+    LTEXT           "Depth:",IDC_STATIC,108,140,22,8
+    EDITTEXT        IDC_DEPTH_EDIT,133,138,20,14,ES_AUTOHSCROLL
+    LTEXT           "Width:",IDC_STATIC,107,108,22,8
+    LTEXT           "Size:",IDC_STATIC,110,124,16,8
+    EDITTEXT        IDC_WIDTH_EDIT,133,105,20,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SIZE_EDIT,133,122,20,14,ES_AUTOHSCROLL
+END
+
+IDD_CONE_DIALOG DIALOG DISCARDABLE  0, 0, 250, 127
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Create Cone"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,135,106,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,193,106,50,14
+    CONTROL         4004,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,7,7,115,113
+    GROUPBOX        "Axis:",IDC_STATIC,151,7,74,28
+    CONTROL         "X",IDC_CONE_X,"Button",BS_AUTORADIOBUTTON | WS_GROUP,
+                    157,17,21,10
+    CONTROL         "Y",IDC_CONE_Y,"Button",BS_AUTORADIOBUTTON,179,17,21,10
+    CONTROL         "Z",IDC_CONE_Z,"Button",BS_AUTORADIOBUTTON,199,17,21,10
+    LTEXT           "Length:",IDC_STATIC,160,49,25,8
+    LTEXT           "Cone Size:",IDC_STATIC,150,65,35,8
+    LTEXT           "Number of Sides:",IDC_STATIC,130,83,55,8
+    EDITTEXT        IDC_LENGTH_EDIT,186,46,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CONE_SIZE_EDIT,186,63,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NUMBER_OF_SIDES_EDIT,186,80,40,14,ES_AUTOHSCROLL
+END
+
+IDD_CYLINDER_DIALOG DIALOG DISCARDABLE  0, 0, 171, 279
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Create Cylinder"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,31,258,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,87,258,50,14
+    CONTROL         4003,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,7,7,157,145
+    GROUPBOX        "Axis:",IDC_STATIC,47,156,74,28
+    CONTROL         "X",IDC_CYLINDER_X,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,53,167,21,10
+    CONTROL         "Y",IDC_CYLINDER_Y,"Button",BS_AUTORADIOBUTTON,75,167,21,
+                    10
+    CONTROL         "Z",IDC_CYLINDER_Z,"Button",BS_AUTORADIOBUTTON,95,167,21,
+                    10
+    LTEXT           "Size:",IDC_STATIC,71,202,16,8
+    LTEXT           "Depth:",IDC_STATIC,65,214,22,8
+    EDITTEXT        IDC_SIZE_EDIT,90,196,18,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DEPTH_EDIT,90,211,18,14,ES_AUTOHSCROLL
+    LTEXT           "Number of Sides:",IDC_STATIC,32,228,55,8
+    EDITTEXT        IDC_NUMBER_OF_SIDES_EDIT,90,226,18,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ARCH_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 230
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 160
+    END
+
+    IDD_CONE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 120
+    END
+
+    IDD_CYLINDER_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 164
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 272
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP  DISCARDABLE     "arch.bmp"
+IDB_BITMAP2             BITMAP  DISCARDABLE     "cylinder.bmp"
+IDB_BITMAP3             BITMAP  DISCARDABLE     "cone.bmp"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\shapes.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

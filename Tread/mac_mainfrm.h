@@ -1,0 +1,1 @@
+// MAC_MAINFRM.H// Copyright (c) 2000 Joe Riedel, Nick Randal.// Author: Joe Riedel.#ifndef MAC_MAINFRM_H#define MAC_MAINFRM_Hclass CMainFrame{public:	bool m_bMapOpen;		CMainFrame();	virtual ~CMainFrame();		void SetTimer(int nId, int nInterval, void* x=NULL);	void KillTimer(int nId);	void BuildPluginMenu(bool bBuild);};#endif

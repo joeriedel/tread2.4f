@@ -1,0 +1,1 @@
+// MAC_TIME.H// Copyright (c) 2000 Joe Riedel, Nick Randal.// Author: Joe Riedel.#ifndef MAC_TIME_H#define MAC_TIME_Hunsigned int timeGetTime();#endif
